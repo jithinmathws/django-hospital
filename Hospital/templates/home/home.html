@@ -1,5 +1,5 @@
 {% extends 'home/base.html' %}
-
+{% load static %}
 {% block title %} Home Page {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
       <div class="row icon-boxes">
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
-            <div class="icon"><i class="ri-stack-line"></i></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/doctor.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="{% url 'index' %}">Doctor</a></h4>
             <p class="description">Manage and list Docotor details</p>
           </div>
@@ -19,23 +19,23 @@
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="300">
           <div class="icon-box">
-            <div class="icon"><i class="ri-command-line"></i></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/patient.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Patient</a></h4>
             <p class="description">Manage and List Patient details</p>
           </div>
         </div>
 
-        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
-            <div class="icon"><i class="ri-stack-line"></i></div>
-            <h4 class="title"><a href="">Staff</a></h4>
-            <p class="description">Manage and List Staff details</p>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/nurse.png' %}" alt="" class="img-fluid"></a></div>
+            <h4 class="title"><a href="">Nurse</a></h4>
+            <p class="description">Manage and list Nurse details</p>
           </div>
         </div>
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
-            <div class="icon"><i class="ri-command-line"></i></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/treatment-image.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Consulting</a></h4>
             <p class="description">Manage and list Consulting details</p>
           </div>
@@ -44,17 +44,18 @@
       </div>
 
       <div class="row icon-boxes">
-        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="200">
+        
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
           <div class="icon-box">
-            <div class="icon"><i class="ri-stack-line"></i></div>
-            <h4 class="title"><a href="">Nurse</a></h4>
-            <p class="description">Manage and list Nurse details</p>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/support-staff.png' %}" alt="" class="img-fluid"></a></div>
+            <h4 class="title"><a href="">Staff</a></h4>
+            <p class="description">Manage and List Staff details</p>
           </div>
         </div>
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="300">
           <div class="icon-box">
-            <div class="icon"><i class="ri-command-line"></i></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/assign-bed-image.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Assign Bed</a></h4>
             <p class="description">Manage and List Occupancy details</p>
           </div>
@@ -62,7 +63,7 @@
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
           <div class="icon-box">
-            <div class="icon"><i class="ri-stack-line"></i></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/accountant.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Accounts</a></h4>
             <p class="description">Manage and Accounts Staff details</p>
           </div>
@@ -70,7 +71,7 @@
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
-            <div class="icon"><i class="ri-command-line"></i></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Pharmaceuticals</a></h4>
             <p class="description">Manage and list Pharmacy products</p>
           </div>
