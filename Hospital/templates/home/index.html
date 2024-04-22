@@ -1,0 +1,58 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %} Home Page {% endblock %}
+
+{% block content %}
+
+  <!-- ======= Hero Section ======= -->
+
+  <section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+
+      <div>
+        <img src="{% static 'img/hsp.png' %}" class="img-fluid" alt="">
+        <!--<iframe style="border:0; width: 1700px; height: 880px;" src="{% static 'img/hsp.png' %}" frameborder="0"></iframe>-->
+      </div>
+
+      
+    </div>
+  </section>
+
+  <!-- End Hero -->
+
+
+  <!-- ======= About Section ======= -->
+  <section id="about" class="about">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row content">
+
+        <div class="col-lg-6">
+
+          <div class="section-title">
+            <h2>VISION</h2>
+            
+          </div>
+          <p>
+            We live by this promise that sums up what we do and why we exist. This is our guiding philosophy in our interactions with patients, doctors, employees and society at large.
+          </p>
+          
+        </div>
+        <div class="col-lg-6 pt-4 pt-lg-0">
+
+          <div class="section-title">
+            <h2>MISSION</h2>
+            
+          </div>
+
+          <p>
+            We have been consistent in our mission to provide quality healthcare at an affordable cost. Our team believes there is no finishing line in the race for excellence, and accessibility to healthcare services is a priority. Therefore, we provide services closer to our customers through the extensive network of Hospitals, clinics, Diagnostic labs and pharmacies.
+          </p>
+          
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End About Section -->
+
+{% endblock %}
