@@ -42,6 +42,8 @@ INSTALLED_APPS = [
 EXTERNAL_APPS = [
     "home",
     "doctor",
+
+    'widget_tweaks',#package
 ]
 INSTALLED_APPS += EXTERNAL_APPS
 
