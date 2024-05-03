@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login, authenticate
-from home.forms import SignUpForm, LoginForm
+from home.forms import SignUpForm, LoginForm, ChangePasswordForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -41,3 +41,8 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'home/login.html', {'form':form})
+
+@login_required
+def change_password(request):
+    form = ChangePasswordForm(request.user)
+    return render(request, "home/change_password.html", {'form': form})

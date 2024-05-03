@@ -1,4 +1,4 @@
-{% extends 'home/base.html' %}
+{% extends 'home/base1.html' %}
 {% load static %}
 {% block title %} Home Page {% endblock %}
 
@@ -73,6 +73,14 @@
           <div class="icon-box">
             <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Pharmaceuticals</a></h4>
+            <p class="description">Manage and list Pharmacy products</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+          <div class="icon-box">
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
+            <h4 class="title"><a href="{% url 'change_password' %}">Change Password</a></h4>
             <p class="description">Manage and list Pharmacy products</p>
           </div>
         </div>
