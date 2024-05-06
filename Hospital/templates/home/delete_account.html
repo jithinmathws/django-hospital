@@ -1,7 +1,7 @@
 {% extends 'home/base-login.html' %}
 {% load static %}
 {% load widget_tweaks %}
-{% block title %} Change Password {% endblock %}
+{% block title %} Change Profile {% endblock %}
 
 {% block content %}
 
@@ -14,8 +14,8 @@
              </div>
              <div class="login-right">
                 <div class="login-right-wrap">
-                   <h1>Login</h1>
-                   <p class="account-subtitle">Access to our dashboard</p>
+                   <h1>Delete Account</h1>
+                   <p class="account-subtitle">Are you sure to delete account</p>
                    <form method="POST">
                     {% csrf_token %}
 
@@ -27,7 +27,7 @@
                          <input class="form-control" type="text" placeholder="Password">
                       </div> -->
                       <div class="form-group">
-                         <button class="btn btn-primary btn-block" type="submit">Change Password</button>
+                         <button class="btn btn-primary btn-block" type="submit">Submit</button>
                       </div>
                    </form>
                    <!-- <div class="text-center forgotpass"><a href="forgot-password.html">Forgot Password?</a></div> -->

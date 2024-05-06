@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UserChangeForm
 from django.contrib.auth import login, authenticate
-from home.forms import SignUpForm, LoginForm, ChangePasswordForm
+from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -17,7 +17,7 @@ def signup(request):
             user = form.save()
 
             login(request, user)
-            return redirect('Home')
+            return redirect('login')
     
     else:
         form = SignUpForm()
@@ -46,3 +46,28 @@ def login_view(request):
 def change_password(request):
     form = ChangePasswordForm(request.user)
     return render(request, "home/change_password.html", {'form': form})
+
+@login_required
+def editProfile(request):
+    return render(request, "home/edit_profile.html", {})
+
+@login_required
+def change_details(request):
+
+    if request.method == 'POST':
+        form = ChangeProfileForm(request.POST, instance = request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('Home')
+
+    else:
+        #form = UserChangeForm(instance=request.user)
+        form = ChangeProfileForm(instance=request.user)
+    return render(request, "home/change_profile.html", {'form': form})
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        request.user.delete()
+        return redirect('login')
+    return render(request, "home/delete_account.html", {})
