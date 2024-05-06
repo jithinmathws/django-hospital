@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UserChangeForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm
 from django.contrib.auth.decorators import login_required
 
@@ -71,3 +71,8 @@ def delete_account(request):
         request.user.delete()
         return redirect('login')
     return render(request, "home/delete_account.html", {})
+
+@login_required
+def signout(request):
+    logout(request)
+    return redirect('login')
