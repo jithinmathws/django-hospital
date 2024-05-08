@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UserChangeForm
 from django.contrib.auth import login, logout, authenticate
-from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm
-from django.contrib.auth.decorators import login_required
+from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm, RoleForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import Group
 
 # Create your views here.
 def index(request):
@@ -76,3 +77,29 @@ def delete_account(request):
 def signout(request):
     logout(request)
     return redirect('login')
+
+def is_superuser(user):
+    return user.is_superuser
+
+@login_required
+@user_passes_test(is_superuser)
+def roles(request):
+    return render(request, "home/roles_index.html", {})
+
+@login_required
+@user_passes_test(is_superuser)
+def rolelist(request):
+    roles = Group.objects.all()
+    return render(request, "home/role_list.html", {'roles': roles})
+
+@login_required
+@user_passes_test(is_superuser)
+def create_role(request):
+    if request.method == 'POST':
+        form = RoleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('roles')
+    else:
+        form = RoleForm()
+    return render(request, "home/create_role.html", {'form': form})

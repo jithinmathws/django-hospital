@@ -1,6 +1,7 @@
 from typing import Any
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordChangeForm
 
 class SignUpForm(UserCreationForm): 
@@ -74,6 +75,24 @@ class ChangeProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+            new_data = {
+                "label": '',
+                
+                "class": 'form-control'
+            }
+            self.fields[str(field)].widget.attrs.update(
+                new_data
+            )
+
+class RoleForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -1,0 +1,31 @@
+{% extends 'home/base1.html' %}
+{% load static %}
+{% block title %} Role list {% endblock %}
+
+{% block content %}
+
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+
+    {% for role in roles %}
+      <div class="row icon-boxes">
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+            <div class="icon-box">
+              <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
+              <h4 class="title"><a href="">{{role.id}} - {{role.name}}</a></h4>
+              <p class="description">Edit</p>
+            </div>
+          </div>
+
+          {% endfor %}
+      </div>
+        
+
+    </div>
+  </section><!-- End Hero -->
+
+  
+  {% endblock %}
+ 
