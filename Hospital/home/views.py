@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UserChangeForm
 from django.contrib.auth import login, logout, authenticate
-from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm, RoleForm
+from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm, RoleForm, CreateStaffEmployeeForm, EditStaffEmployeeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 # Create your views here.
 def index(request):
@@ -103,3 +103,95 @@ def create_role(request):
     else:
         form = RoleForm()
     return render(request, "home/create_role.html", {'form': form})
+
+@login_required
+@user_passes_test(is_superuser)
+def edit_role(request, role_id):
+    role = Group.objects.get(pk=role_id)
+    if request.method == 'POST':
+        form = RoleForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('rolelist')
+
+    else:
+        form = RoleForm(instance=role)
+    return render(request, 'home/edit_role.html', {'form': form, 'role': role})
+
+
+@login_required
+@user_passes_test(is_superuser)
+def delete_role(request, role_id):
+    role = Group.objects.get(pk=role_id)
+
+    GroupUsers = User.objects.filter(groups_name=role).count()
+
+    if(GroupUsers == 0):
+        role.delete()
+        return redirect('rolelist')
+    else:
+        ErrorMessage = "This Role cannot be deleted, as it has users"
+        return HttpResponse(ErrorMessage)
+    
+
+@login_required
+@user_passes_test(is_superuser)
+def staff(request):
+    return render(request, "home/staff_index.html", {})
+
+@login_required
+@user_passes_test(is_superuser)
+def staff_list(request):
+    staff_members = User.objects.filter(is_staff=True)
+    return render(request, "home/staff_list.html", {'staff_members': staff_members})
+
+@login_required
+@user_passes_test(is_superuser)
+def create_staff_employee(request):
+
+    if request.method  == 'POST':
+        form = CreateStaffEmployeeForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_staff = True
+            user.save()
+
+            rolename = form.cleaned_data.get('role')
+            staff_group, created = Group.objects.get_or_create(name=rolename)
+            user.groups.add(staff_group)
+
+            return redirect('staff')
+    else:
+        form = CreateStaffEmployeeForm()
+    return render(request, "home/create_staff_employee.html", {'form': form})
+
+@login_required
+@user_passes_test(is_superuser)
+def edit_staff_employee(request, user_id):
+    staff_member = User.objects.get(pk=user_id)
+
+    if request.method == 'POST':
+        form = EditStaffEmployeeForm(request.POST, instance=staff_member)
+        if form.is_valid():
+            user = form.save()
+
+            rolename = form.cleaned_data.get('role')
+            staff_group, created = Group.objects.get_or_create(name=rolename)
+            user.groups.clear()
+            user.groups.add(staff_group)
+
+            return redirect('staff_list')
+    
+    else:
+        groupname = staff_member.groups.values_list('name', flat=True).first()
+        staff_group = Group.objects.get(name=groupname)
+        form = EditStaffEmployeeForm(instance=staff_member)
+    return render(request, "home/edit_staff.html", {'form': form, 'staff_member': staff_member, 'staff_group': staff_group})
+
+
+@login_required
+@user_passes_test(is_superuser)
+def delete_staff_employee(request, user_id):
+    staff_member = User.objects.get(pk=user_id)
+    staff_member.delete()
+    return redirect('staff_list')    

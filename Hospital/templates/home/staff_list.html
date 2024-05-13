@@ -1,6 +1,6 @@
 {% extends 'home/base-login.html' %}
 {% load static %}
-{% block title %} Role list {% endblock %}
+{% block title %} Staff list {% endblock %}
 
 {% block content %}
 
@@ -28,30 +28,29 @@
                     <table class="table table-hover table-center mb-0 datatable">
                        <thead>
                           <tr>
-                             <th>ID</th>
-                             <th>Name</th>
-                             
+                             <th>First Name</th>
+                             <th>Last Name</th>
+                             <th>Username</th>
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for role in roles %}
+                       {% for staff_member in staff_members %}
                        <tbody>
                           <tr>
-                             <td>{{ role.id }}</td>
-                             <td>
-                                {{ role.name }}
-                             </td>
-                             
+                             <td>{{ staff_member.first_name }}</td>
+                             <td>{{ staff_member.last_name }}</td>
+                             <td>{{ staff_member.username }}</td>
                              <td class="text-right">
-                                <div class="actions">
-                                   <a href="{% url 'edit_role' role.id %}" class="btn btn-sm bg-success-light mr-2">
-                                   <i class="fas fa-pen"></i>
-                                   </a>
-                                   <a href="{% url 'delete_role' role_id=0 %}" class="btn btn-sm bg-danger-light" >
-                                   <i class="fas fa-trash"></i>
-                                   </a>
-                                </div>
-                             </td>
+                              <div class="actions">
+                                 <a href="{% url 'edit_staff' staff_member.id %}" class="btn btn-sm bg-success-light mr-2">
+                                 <i class="fas fa-pen"></i>
+                                 </a>
+                                 <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ staff_member.username }}', '{{ staff_member.id }}')">
+                                 <i class="fas fa-trash"></i>
+                                 </a> 
+                              </div>
+                           </td>
+                             
                           </tr>
                           
                        </tbody>
@@ -59,15 +58,14 @@
                     </table>
                  </div>
               </div>
-   
-              <!-- onclick="confirmDelete('{{ role.name }}', '{{ role.id }}')"
+
   <script>
-   function confirmDelete(roleName, roleId){
-      if(confirm(`Are you sure you want to delete ${roleName}?`)) {
-         window.location.href = `{% url 'delete_role' role_id=0 %}`.replace('0', roleId);
+   function confirmDelete(username, userId){
+      if(confirm(`Are you sure you want to delete ${username}?`)) {
+         window.location.href = `{% url 'delete_staff' user_id=0 %}`.replace('0', userId);
       }
    }
-  </script> -->
+  </script>
 
   
   {% endblock %}

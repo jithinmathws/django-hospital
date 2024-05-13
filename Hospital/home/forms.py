@@ -106,3 +106,44 @@ class RoleForm(forms.ModelForm):
             self.fields[str(field)].widget.attrs.update(
                 new_data
             )
+
+class CreateStaffEmployeeForm(UserCreationForm):
+    role = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+            new_data = {
+                "label": '',
+                
+                "class": 'form-control'
+            }
+            self.fields[str(field)].widget.attrs.update(
+                new_data
+            )
+
+class EditStaffEmployeeForm(UserChangeForm):
+    role = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+
+    password = None # Excluded
+     
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+            new_data = {
+                "label": '',
+                
+                "class": 'form-control'
+            }
+            self.fields[str(field)].widget.attrs.update(
+                new_data
+            )

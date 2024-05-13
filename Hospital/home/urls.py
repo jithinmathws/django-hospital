@@ -14,4 +14,13 @@ urlpatterns = [
     path("roles/", views.roles, name="roles"),
     path("rolelist/", views.rolelist, name="rolelist"),
     path("createrole/", views.create_role, name="createrole"),
+    path("edit_role-account/<int:role_id>/", views.edit_role, name="edit_role"),
+    path("delete_role-account/<int:role_id>/", views.delete_role, name="delete_role"),
+    
+    path("staff/", views.staff, name="staff"),
+    path("staff_list/", views.staff_list, name="staff_list"),
+    path("createstaff/", views.create_staff_employee, name="createstaff"),
+    path("edit_staff-account/<int:user_id>/", views.edit_staff_employee, name="edit_staff"),
+    path("delete_staff-account/<int:user_id>/", views.delete_staff_employee, name="delete_staff"),
+
 ]
