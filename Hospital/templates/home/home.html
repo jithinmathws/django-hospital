@@ -45,11 +45,11 @@
 
       <div class="row icon-boxes">
         
-        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
             <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/support-staff.png' %}" alt="" class="img-fluid"></a></div>
-            <h4 class="title"><a href="">Staff</a></h4>
-            <p class="description">Manage and List Staff details</p>
+            <h4 class="title"><a href="{% url 'staff' %}">Staff</a></h4>
+            <p class="description">Manage and list of Staff</p>
           </div>
         </div>
 
@@ -79,7 +79,7 @@
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
-            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/edit-profile.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="{% url 'Edit' %}">Edit Profile</a></h4>
             <p class="description">Make Changes to your Profile</p>
           </div>
@@ -87,23 +87,17 @@
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
-            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/roles.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="{% url 'roles' %}">Roles</a></h4>
             <p class="description">List of roles</p>
           </div>
         </div>
 
-        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
-          <div class="icon-box">
-            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
-            <h4 class="title"><a href="{% url 'staff' %}">Staff</a></h4>
-            <p class="description">List of Staff</p>
-          </div>
-        </div>
+        
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
-            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/medicine.png' %}" alt="" class="img-fluid"></a></div>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/logout.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="{% url 'signout' %}">Logout</a></h4>
             <p class="description">Sign out from dashboard</p>
           </div>
