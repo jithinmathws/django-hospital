@@ -1,17 +1,16 @@
 {% extends 'home/base-login.html' %}
 {% load static %}
 {% load widget_tweaks %}
-{% block title %} Add new role {% endblock %}
+{% block title %} Edit Doctor {% endblock %}
 
 {% block content %}
 
-
-    <div class="content container-fluid">
+<div class="content container-fluid">
     
     <div class="page-header">
     <div class="row align-items-center">
     <div class="col">
-    <h3 class="page-title">Add Role</h3>
+    <h3 class="page-title">Edit Doctor</h3>
     
     </div>
     </div>
@@ -25,18 +24,17 @@
     
     <form method="post">
         {% csrf_token %}
-    
         <div class="col-12 col-sm-6">
      <div class="form-group">
         {{ form.as_p }}
         </div>
-    </div>
+        </div>
    
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Submit</button>
             </div>
+            </div> 
     </form>
-            </div>
     
     <!-- <div class="login-or">
     <span class="or-line"></span>
@@ -48,14 +46,12 @@
     <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
     </div> -->
     
-    <div class="text-center dont-have"><a href="{% url 'roles' %}">Back</a></div>
+    <div class="text-center dont-have"><a href="{% url 'doctor_list' %}">Back</a></div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-
-
 
 {% endblock %}
