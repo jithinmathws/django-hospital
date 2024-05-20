@@ -88,6 +88,13 @@ def patient_add(request):
     return render(request, "patient/addPatient.html", {'form': form})
 
 @login_required
+def patient_list(request):
+
+    patients = PatientDetails.objects.all()
+    
+    return render(request, "patient/patient_list.html", {'patients': patients})
+
+@login_required
 def guardian_add(request):
     if request.method == 'POST':
         form = GuardianForm(request.POST)
