@@ -6,4 +6,10 @@ urlpatterns = [
     path("department/", views.doctor_department, name="department"),
     path("doctor/", views.doctor_add, name="doctor"),
     path("doctorlist/", views.doctor_list, name="doctor_list"),
+    path("doctor_edit-account/<int:doctor_id>/", views.doctor_edit, name="doctor_edit"),
+    path("doctor_delete-account/<int:doctor_id>/", views.doctor_delete, name="doctor_delete"),
+    
+    path("patient/", views.patient_index, name="Pindex"),
+    path("addPatient/", views.patient_add, name="patient"),
+    path("addGuardian/", views.guardian_add, name="guardian"),
 ]

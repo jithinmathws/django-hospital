@@ -6,11 +6,19 @@
 
 
 
+   
+      
+      <div class="content container-fluid">
+         
+         <div class="page-header">
+
+            
+
         <div class="row align-items-center">
            <div class="col">
-              <h3 class="page-title">Roles</h3>
+              <h3 class="page-title">Doctors</h3>
               <ul class="breadcrumb">
-                 <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                 <li class="breadcrumb-item"><a href="{% url 'Dindex' %}">Dashboard</a></li>
                  <li class="breadcrumb-item active">List of Doctors</li>
               </ul>
            </div>
@@ -20,6 +28,12 @@
            </div>
         </div>
      </div>
+     <div class="top-nav-search">
+      <form method="get" action="">
+         <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
+         <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+         </form>
+      </div>
      <div class="row">
         <div class="col-sm-12">
            <div class="card card-table">
@@ -47,7 +61,7 @@
                                 {{ doctor.name }}
                              </td>
                              <td>
-                                {{ doctor.departmemt_name }}
+                                {{ doctor.department_name }}
                              </td>
                              <td>
                                 {{ doctor.date_of_birth }}
@@ -65,10 +79,10 @@
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'doctor_edit' doctor.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="" class="btn btn-sm bg-danger-light" >
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ doctor.username }}', '{{ doctor.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
@@ -78,20 +92,33 @@
                        </tbody>
                        {% endfor %}
                     </table>
+
+                    
+
                  </div>
+                 <nav>
+                  <ul class="pagination">
+
+                     {% for page_num in doctors.paginator.page_range %}
+                        <li class="page-item{% if page_num == doctors.number %} active{% endif %}"> -->
+                           <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
+                        </li> 
+                     {% endfor %}
+                  </ul>
+                 </nav>
               </div>
-   
-              <!--
-                
-                
-                onclick="confirmDelete('{{ role.name }}', '{{ role.id }}')"
+            </div>
+         </div>
+      
+         
   <script>
    function confirmDelete(roleName, roleId){
-      if(confirm(`Are you sure you want to delete ${roleName}?`)) {
-         window.location.href = `{% url 'delete_role' role_id=0 %}`.replace('0', roleId);
+      if(confirm(`Are you sure you want to delete ${name}?`)) {
+         window.location.href = `{% url 'doctor_delete' doctor_id=0 %}`.replace('0', roleId);
       }
    }
-  </script> -->
+  </script>
+  <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
 
   
   {% endblock %}
