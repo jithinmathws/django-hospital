@@ -20,7 +20,7 @@ class DoctorDepartment(models.Model):
 
 class DoctorDetails(models.Model):
 
-    name = models.CharField(max_length=50)
+    doctor_name = models.CharField(max_length=50)
     department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
     gender = models.CharField(
@@ -33,7 +33,7 @@ class DoctorDetails(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.doctor_name)
     
 class PatientDetails(models.Model):
 
@@ -49,7 +49,7 @@ class PatientDetails(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.patient_name)
     
 class GuardianDetails(models.Model):
 
@@ -67,4 +67,4 @@ class GuardianDetails(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.guardian_name)

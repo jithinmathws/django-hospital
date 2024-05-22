@@ -30,13 +30,13 @@ class DoctorForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
     class Meta:
         model = DoctorDetails
-        fields = ['name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number']
+        fields = ['doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             print(field)
-        self.fields["name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["doctor_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["department_name"].widget.attrs.update({"class": 'form-control'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
