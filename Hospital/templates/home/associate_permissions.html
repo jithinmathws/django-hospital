@@ -1,0 +1,55 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} Permissions for role {% endblock %}
+
+{% block content %}
+
+<div class="main-wrapper login-body">
+    <div class="login-wrapper">
+    <div class="container">
+    <div class="loginbox">
+    <div class="login-left">
+    <!-- <img class="img-fluid" src="{% static 'img/outshine-logo.png' %}" alt="Logo"> -->
+    </div>
+    <div class="login-right">
+    <div class="login-right-wrap">
+    <h1>New Role</h1>
+    
+    
+    <form method="post">
+        {% csrf_token %}
+    
+     {% for permission in all_permissions %}
+        
+        
+            <input type="checkbox" name="permissions" value="{{ permission.id }}" {% if permission in role.permissions.all %}checked{% endif %}>
+            {{ permission.name }}
+        <br>
+
+     {% endfor %}
+   
+    <div class="form-group mb-0">
+    <button class="btn btn-primary btn-block" type="submit">submit</button>
+    </div> 
+    </form>
+    
+    <!-- <div class="login-or">
+    <span class="or-line"></span>
+    <span class="span-or">or</span>
+    </div>
+    
+    <div class="social-login">
+    <span>Register with</span>
+    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
+    </div> -->
+    
+    <div class="text-center dont-have"><a href="{% url 'rolelist' %}">Back</a></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+{% endblock %}

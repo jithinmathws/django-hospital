@@ -10,7 +10,7 @@
            <div class="col">
               <h3 class="page-title">Roles</h3>
               <ul class="breadcrumb">
-                 <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                 <li class="breadcrumb-item"><a href="{% url 'staff' %}">Dashboard</a></li>
                  <li class="breadcrumb-item active">List of roles</li>
               </ul>
            </div>
@@ -31,6 +31,7 @@
                              <th>First Name</th>
                              <th>Last Name</th>
                              <th>Username</th>
+                             
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
@@ -40,6 +41,7 @@
                              <td>{{ staff_member.first_name }}</td>
                              <td>{{ staff_member.last_name }}</td>
                              <td>{{ staff_member.username }}</td>
+                             
                              <td class="text-right">
                               <div class="actions">
                                  <a href="{% url 'edit_staff' staff_member.id %}" class="btn btn-sm bg-success-light mr-2">

@@ -22,5 +22,5 @@ urlpatterns = [
     path("createstaff/", views.create_staff_employee, name="createstaff"),
     path("edit_staff-account/<int:user_id>/", views.edit_staff_employee, name="edit_staff"),
     path("delete_staff-account/<int:user_id>/", views.delete_staff_employee, name="delete_staff"),
-
+    path("associate_pemissions/<int:role_id>/", views.associate_permissions, name="associate_permissions"),
 ]

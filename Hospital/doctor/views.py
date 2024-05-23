@@ -104,3 +104,9 @@ def guardian_add(request):
     else:
         form = GuardianForm()
     return render(request, "patient/addGuardian.html", {'form': form})
+
+# Nurse Fields
+
+@login_required
+def nurse_index(request):
+    return render(request, "nurse/index.html", {})

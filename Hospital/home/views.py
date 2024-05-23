@@ -3,7 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from django.contrib.auth import login, logout, authenticate
 from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm, RoleForm, CreateStaffEmployeeForm, EditStaffEmployeeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group, User, Permission
+from djano.contrib import messages
 
 # Create your views here.
 def index(request):
@@ -99,7 +100,7 @@ def create_role(request):
         form = RoleForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('roles')
+            return redirect('staff')
     else:
         form = RoleForm()
     return render(request, "home/create_role.html", {'form': form})
@@ -195,3 +196,28 @@ def delete_staff_employee(request, user_id):
     staff_member = User.objects.get(pk=user_id)
     staff_member.delete()
     return redirect('staff_list')    
+
+@login_required
+@user_passes_test(is_superuser)
+def associate_permissions(request, role_id):
+    role = Group.objects.get(pk=role_id)
+    relevant_permissions = ['view_staffuser', 'change_staffuser', 'delete_staffuser', 'add_staffuser',]
+
+    if request.method == 'POST':
+        try:
+            selected_permission_ids = request.POST.getlist('permissions')
+            selected_permissions = Permission.objects.filter(pk__in=selected_permission_ids)
+
+            role.permissions.set(selected_permissions)
+
+            messages.success(request, "Permissions associated successfully!")
+            return redirect('role_list')
+        
+        except Exception as e:
+            print(f"Error associating permissions: {e}")
+            messages.error(request, "An error occured while associating permissions. Please try again!")
+
+    else:    
+        all_permissions = Permission.objects.filter(codename__in=relevant_permissions)
+    
+    return render(request, 'home/associate_permissions.html', {'role': role, 'all_permissions': all_permissions})

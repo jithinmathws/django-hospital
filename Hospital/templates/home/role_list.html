@@ -10,7 +10,7 @@
            <div class="col">
               <h3 class="page-title">Roles</h3>
               <ul class="breadcrumb">
-                 <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                 <li class="breadcrumb-item"><a href="{% url 'staff' %}">Dashboard</a></li>
                  <li class="breadcrumb-item active">List of roles</li>
               </ul>
            </div>
@@ -30,7 +30,7 @@
                           <tr>
                              <th>ID</th>
                              <th>Name</th>
-                             
+                             <th class="text-right">Permission</th>
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
@@ -42,6 +42,15 @@
                                 {{ role.name }}
                              </td>
                              
+                             <td class="text-right">
+                              <div class="actions">
+                                 <a href="{% url 'associate_permissions' role.id %}" class="btn btn-sm bg-success-light mr-2">
+                                 <i class="fas fa-pen"></i>
+                                 </a>
+                                 
+                              </div>
+                           </td>
+
                              <td class="text-right">
                                 <div class="actions">
                                    <a href="{% url 'edit_role' role.id %}" class="btn btn-sm bg-success-light mr-2">

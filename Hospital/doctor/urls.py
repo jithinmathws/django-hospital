@@ -12,6 +12,7 @@ urlpatterns = [
     path("patient/", views.patient_index, name="Pindex"),
     path("addPatient/", views.patient_add, name="patient"),
     path("patientlist/", views.patient_list, name="patient_list"),
-
     path("addGuardian/", views.guardian_add, name="guardian"),
+
+    path("nurse/", views.nurse_index, name="Nurseindex"),
 ]
