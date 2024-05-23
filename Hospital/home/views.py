@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileForm, RoleForm, CreateStaffEmployeeForm, EditStaffEmployeeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group, User, Permission
-from djano.contrib import messages
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
