@@ -5,6 +5,7 @@ from home.forms import SignUpForm, LoginForm, ChangePasswordForm, ChangeProfileF
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group, User, Permission
 from django.contrib import messages
+from functools import wraps
 
 # Create your views here.
 def index(request):
@@ -79,6 +80,20 @@ def signout(request):
     logout(request)
     return redirect('login')
 
+def user_has_role_or_superuser(roles):
+    def decorator(view_func):
+        @wraps(view_func)
+        @login_required
+        def _wrapped_view(request, *args, **kwargs):
+            user_groups = request.user.groups.all().value_list('name', flat=True)
+
+            if request.user.is_superuser or any(role in user_groups for role in roles):
+                return view_func(request, *args, **kwargs)
+            else:
+                return redirect('home')
+        return _wrapped_view
+    return decorator
+
 def is_superuser(user):
     return user.is_superuser
 
@@ -141,13 +156,15 @@ def staff(request):
     return render(request, "home/staff_index.html", {})
 
 @login_required
-@user_passes_test(is_superuser)
+#@user_passes_test(is_superuser)
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def staff_list(request):
     staff_members = User.objects.filter(is_staff=True)
     return render(request, "home/staff_list.html", {'staff_members': staff_members})
 
 @login_required
-@user_passes_test(is_superuser)
+#@user_passes_test(is_superuser)
+@user_has_role_or_superuser(['HR'])
 def create_staff_employee(request):
 
     if request.method  == 'POST':
@@ -167,7 +184,8 @@ def create_staff_employee(request):
     return render(request, "home/create_staff_employee.html", {'form': form})
 
 @login_required
-@user_passes_test(is_superuser)
+#@user_passes_test(is_superuser)
+@user_has_role_or_superuser(['SeniorHR'])
 def edit_staff_employee(request, user_id):
     staff_member = User.objects.get(pk=user_id)
 
@@ -191,7 +209,8 @@ def edit_staff_employee(request, user_id):
 
 
 @login_required
-@user_passes_test(is_superuser)
+#@user_passes_test(is_superuser)
+@user_has_role_or_superuser(['Director'])
 def delete_staff_employee(request, user_id):
     staff_member = User.objects.get(pk=user_id)
     staff_member.delete()
@@ -221,3 +240,5 @@ def associate_permissions(request, role_id):
         all_permissions = Permission.objects.filter(codename__in=relevant_permissions)
     
     return render(request, 'home/associate_permissions.html', {'role': role, 'all_permissions': all_permissions})
+
+
