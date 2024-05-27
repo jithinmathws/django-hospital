@@ -7,12 +7,32 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
 from django.db.models import Q
+from functools import wraps
+from tablib import Dataset
+from .resources import doctorResources
+
 
 # Create your views here.
 
 # Doctor Fields
 
+def user_has_role_or_superuser(roles):
+    def decorator(view_func):
+        @wraps(view_func)
+        @login_required
+        def _wrapped_view(request, *args, **kwargs):
+            user_groups = request.user.groups.all().values_list('name', flat=True)
+
+            if request.user.is_superuser or any(role in user_groups for role in roles):
+                return view_func(request, *args, **kwargs)
+            else:
+                return redirect('Home')
+        return _wrapped_view
+    return decorator
+
+
 @login_required
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def doctor_index(request):
     return render(request, "doctor/index.html", {})
 
@@ -70,9 +90,31 @@ def doctor_delete(request, doctor_id):
     member.delete()
     return redirect('doctor_list')
 
+@login_required
+def importDoctorExcel(request):
+    if request.method == 'POST':
+        doctor_resource = doctorResources()
+        dataset = Dataset()
+        new_doctors = request.FILES['my_file']
+        imported_data = dataset.load(new_doctors.read(), format='xlsx')
+        for data in imported_data:
+            value = DoctorDetails(
+                data[0],
+                data[1],
+                data[2],
+                data[3],
+                data[4],
+                data[5],
+                data[6],
+            )
+            value.save()
+
+    return render(request, 'doctor/import.html')
+
 # Patient Fields
 
 @login_required
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def patient_index(request):
     return render(request, "patient/index.html", {})
 
@@ -108,5 +150,6 @@ def guardian_add(request):
 # Nurse Fields
 
 @login_required
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def nurse_index(request):
     return render(request, "nurse/index.html", {})

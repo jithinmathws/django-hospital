@@ -85,12 +85,12 @@ def user_has_role_or_superuser(roles):
         @wraps(view_func)
         @login_required
         def _wrapped_view(request, *args, **kwargs):
-            user_groups = request.user.groups.all().value_list('name', flat=True)
+            user_groups = request.user.groups.all().values_list('name', flat=True)
 
             if request.user.is_superuser or any(role in user_groups for role in roles):
                 return view_func(request, *args, **kwargs)
             else:
-                return redirect('home')
+                return redirect('Home')
         return _wrapped_view
     return decorator
 
@@ -160,7 +160,8 @@ def staff(request):
 @user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def staff_list(request):
     staff_members = User.objects.filter(is_staff=True)
-    return render(request, "home/staff_list.html", {'staff_members': staff_members})
+    user_groups = request.user.groups.all().values_list('name', flat=True)
+    return render(request, "home/staff_list.html", {'staff_members': staff_members, 'user': request.user, 'user_groups': user_groups})
 
 @login_required
 #@user_passes_test(is_superuser)

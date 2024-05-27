@@ -9,6 +9,7 @@
     <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
 
       <div class="row icon-boxes">
+        {% if user.is_superuser or 'HR' or 'SeniorHR' or 'Director' in user_groups %}
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
             <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/doctor.png' %}" alt="" class="img-fluid"></a></div>
@@ -32,6 +33,7 @@
             <p class="description">Manage and list Nurse details</p>
           </div>
         </div>
+        {% endif %}
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
@@ -65,7 +67,7 @@
           <div class="icon-box">
             <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/accountant.png' %}" alt="" class="img-fluid"></a></div>
             <h4 class="title"><a href="">Accounts</a></h4>
-            <p class="description">Manage and Accounts Staff details</p>
+            <p class="description">Manage and Account details</p>
           </div>
         </div>
 

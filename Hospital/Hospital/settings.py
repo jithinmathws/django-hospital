@@ -43,8 +43,11 @@ EXTERNAL_APPS = [
     "home",
     "doctor",
 
-    'widget_tweaks',#package
+    #packages
+    'widget_tweaks',
+    'import_export',
 ]
+
 INSTALLED_APPS += EXTERNAL_APPS
 
 MIDDLEWARE = [

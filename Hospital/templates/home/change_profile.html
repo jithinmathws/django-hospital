@@ -14,7 +14,7 @@
              </div>
              <div class="login-right">
                 <div class="login-right-wrap">
-                   <h1>Login</h1>
+                   <h1>Edit Profile</h1>
                    <p class="account-subtitle">Access to our dashboard</p>
                    <form method="POST">
                     {% csrf_token %}
@@ -30,6 +30,7 @@
                          <button class="btn btn-primary btn-block" type="submit">Submit</button>
                       </div>
                    </form>
+                   <div class="text-center dont-have"><a href="{% url 'Edit' %}">Back</a></div>
                    <!-- <div class="text-center forgotpass"><a href="forgot-password.html">Forgot Password?</a></div> -->
                    
                    
