@@ -1,0 +1,109 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% block title %} Guardian list {% endblock %}
+
+{% block content %}
+
+
+
+   
+      
+      <div class="content container-fluid">
+         
+         <div class="page-header">
+
+            
+
+        <div class="row align-items-center">
+           <div class="col">
+              <h3 class="page-title">Guardian</h3>
+              <ul class="breadcrumb">
+                 <li class="breadcrumb-item"><a href="{% url 'Pindex' %}">Dashboard</a></li>
+                 <li class="breadcrumb-item active">List of Patient</li>
+              </ul>
+           </div>
+           <div class="col-auto text-right float-right ml-auto">
+              <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
+              <a href="add-student.html" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+           </div>
+        </div>
+     </div>
+     
+     <div class="row">
+        <div class="col-sm-12">
+           <div class="card card-table">
+              <div class="card-body">
+                 <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0 datatable">
+                       <thead>
+                          <tr>
+                             <th>ID</th>
+                             <th>Name</th>
+                             
+                             <th>Date of birth</th>
+                             <th>Gender</th>
+                             <th>email</th>
+                             <th>Phone</th>
+                             
+                             <th class="text-right">Action</th>
+                          </tr>
+                       </thead>
+                       {% for guardian in guardians %}
+                       <tbody>
+                          <tr>
+                             <td>{{ guardian.id }}</td>
+                             
+                             <td>
+                                {{ guardian.patient_name }}
+                             </td>
+                             <td>
+                                {{ guardian.date_of_birth }}
+                             </td>
+                             <td>
+                                {{ guardian.gender }}
+                             </td>
+                             <td>
+                                {{ guardian.email }}
+                             </td>
+                             <td>
+                                {{ guardian.phone_number }}
+                             </td>
+
+                             
+                             <td class="text-right">
+                                <div class="actions">
+                                   <a href="" class="btn btn-sm bg-success-light mr-2">
+                                   <i class="fas fa-pen"></i>
+                                   </a>
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ doctor.username }}', '{{ doctor.id }}')">
+                                   <i class="fas fa-trash"></i>
+                                   </a>
+                                </div>
+                             </td>
+                          </tr>
+                          
+                       </tbody>
+                       {% endfor %}
+                    </table>
+
+                    
+
+                 </div>
+                 
+              </div>
+            </div>
+         </div>
+      
+         
+  <script>
+   function confirmDelete(roleName, roleId){
+      if(confirm(`Are you sure you want to delete ${name}?`)) {
+         window.location.href = `{% url 'doctor_delete' doctor_id=0 %}`.replace('0', roleId);
+      }
+   }
+  </script>
+  <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
+
+  
+  {% endblock %}
+ 

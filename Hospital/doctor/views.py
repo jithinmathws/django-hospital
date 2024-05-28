@@ -147,6 +147,13 @@ def guardian_add(request):
         form = GuardianForm()
     return render(request, "patient/addGuardian.html", {'form': form})
 
+@login_required
+def guardian_list(request):
+
+    guardians = GuardianDetails.objects.all()
+    
+    return render(request, "patient/guardian_list.html", {'guardians': guardians})
+
 # Nurse Fields
 
 @login_required

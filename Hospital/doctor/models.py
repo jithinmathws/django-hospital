@@ -27,7 +27,7 @@ class DoctorDetails(models.Model):
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
-    email = models.EmailField(default="", max_length=50)
+    email = models.EmailField(default="", max_length=50, unique=True)
     phone_number = models.CharField(default="", max_length=20)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -42,7 +42,7 @@ class PatientDetails(models.Model):
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
-    email = models.EmailField(default="", max_length=50)
+    email = models.EmailField(default="", max_length=50, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(default="", max_length=20)
     created = models.DateTimeField(auto_now_add=True)
@@ -60,7 +60,7 @@ class GuardianDetails(models.Model):
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
-    email = models.EmailField(default="", max_length=50)
+    email = models.EmailField(default="", max_length=50, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(default="", max_length=20)
     created = models.DateTimeField(auto_now_add=True)

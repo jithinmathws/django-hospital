@@ -46,6 +46,8 @@ EXTERNAL_APPS = [
     #packages
     'widget_tweaks',
     'import_export',
+    'data_wizard',
+    'data_wizard.sources',
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
