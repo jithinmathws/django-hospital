@@ -33,19 +33,21 @@
             <p class="description">Manage and list Nurse details</p>
           </div>
         </div>
-        {% endif %}
 
-        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
-            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/treatment-image.png' %}" alt="" class="img-fluid"></a></div>
-            <h4 class="title"><a href="">Consulting</a></h4>
-            <p class="description">Manage and list Consulting details</p>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/roles.png' %}" alt="" class="img-fluid"></a></div>
+            <h4 class="title"><a href="{% url 'Pharmacistindex' %}">Pharmacist</a></h4>
+            <p class="description">Manage and list Pharmacist details</p>
           </div>
         </div>
-
+        {% endif %}
       </div>
+        
 
       <div class="row icon-boxes">
+
+        
         
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
@@ -55,10 +57,20 @@
           </div>
         </div>
 
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+          <div class="icon-box">
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/treatment-image.png' %}" alt="" class="img-fluid"></a></div>
+            <h4 class="title"><a href="">Consulting</a></h4>
+            <p class="description">Manage and list Consulting details</p>
+          </div>
+        </div>
+
+      
+
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="300">
           <div class="icon-box">
             <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/assign-bed-image.png' %}" alt="" class="img-fluid"></a></div>
-            <h4 class="title"><a href="">Assign Bed</a></h4>
+            <h4 class="title"><a href="{% url 'Bindex' %}">Assign Bed</a></h4>
             <p class="description">Manage and List Occupancy details</p>
           </div>
         </div>
@@ -87,14 +99,15 @@
           </div>
         </div>
 
-        <!-- <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+        <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
           <div class="icon-box">
-            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/roles.png' %}" alt="" class="img-fluid"></a></div>
-            <h4 class="title"><a href="{% url 'roles' %}">Roles</a></h4>
-            <p class="description">List of roles</p>
+            <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/invoice.png' %}" alt="" class="img-fluid"></a></div>
+            <h4 class="title"><a href="{% url 'roles' %}">Invoice</a></h4>
+            <p class="description">Manage and list Invoice</p>
           </div>
-        </div> -->
+        </div> 
 
+        
         
 
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">

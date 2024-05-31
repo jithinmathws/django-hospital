@@ -68,3 +68,56 @@ class GuardianDetails(models.Model):
 
     def __str__(self):
         return str(self.guardian_name)
+    
+class NurseDetails(models.Model):
+
+    nurse_name = models.CharField(max_length=50)
+    gender = models.CharField(
+         max_length=20,
+         choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
+     )
+    email = models.EmailField(default="", max_length=50, unique=True)
+    date_of_birth = models.DateField()
+    phone_number = models.CharField(default="", max_length=20)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.nurse_name)
+    
+class PharmacistDetails(models.Model):
+
+    pharmacist_name = models.CharField(max_length=50)
+    gender = models.CharField(
+         max_length=20,
+         choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
+     )
+    email = models.EmailField(default="", max_length=50, unique=True)
+    date_of_birth = models.DateField()
+    phone_number = models.CharField(default="", max_length=20)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.pharmacist_name)
+    
+class BedCategory(models.Model):
+    bedCategory_name = models.CharField(max_length=200, unique=True)
+    #slug = models.SlugField(blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.bedCategory_name)
+
+class AddBed(models.Model):
+    bedCategory_name = models.ForeignKey(BedCategory, on_delete=models.CASCADE)
+    bed_number = models.CharField(max_length=50)
+    charges = models.CharField(max_length=50)
+    tax = models.CharField(
+         max_length=20,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
+
+    def __str__(self):
+        return str(self.bed_number)

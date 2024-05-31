@@ -18,4 +18,13 @@ urlpatterns = [
     path("guradianlist/", views.guardian_list, name="guardian_list"),
 
     path("nurse/", views.nurse_index, name="Nurseindex"),
+    path("addNurse/", views.nurse_add, name="nurse"),
+    path("nurselist/", views.nurse_list, name="nurse_list"),
+
+    path("pharmacist/", views.pharmacist_index, name="Pharmacistindex"),
+    path("addPharmacist/", views.pharmacist_add, name="pharmacist"),
+
+    path("bed/", views.bed_index, name="Bindex"),
+    path("bedCategory/", views.bed_category, name="bedCategory"),
+    path("addBed/", views.bed_add, name="addBed"),
 ]

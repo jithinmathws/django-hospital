@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails    
-from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm
+from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails
+from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -160,3 +160,64 @@ def guardian_list(request):
 @user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def nurse_index(request):
     return render(request, "nurse/index.html", {})
+
+@login_required
+def nurse_add(request):
+    if request.method == 'POST':
+        form = NurseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Nurseindex')
+    else:
+        form = NurseForm()
+    return render(request, "nurse/addNurse.html", {'form': form})
+
+@login_required
+def nurse_list(request):
+
+    nurses = NurseDetails.objects.all()
+    
+    return render(request, "nurse/nurse_list.html", {'nurses': nurses})
+
+#pharmacist
+@login_required
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
+def pharmacist_index(request):
+    return render(request, "pharmacist/index.html", {})
+
+@login_required
+def pharmacist_add(request):
+    if request.method == 'POST':
+        form = PharmacistForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Pharmacistindex')
+    else:
+        form = PharmacistForm()
+    return render(request, "pharmacist/addPharmacist.html", {'form': form})
+
+@login_required
+def bed_index(request):
+    return render(request, "assignBed/index.html", {})
+
+@login_required
+def bed_category(request):
+    if request.method == 'POST':
+        form = BedCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Bindex')
+    else:
+        form = BedCategoryForm()
+    return render(request, "assignBed/bedcategory.html", {'form': form})
+
+@login_required
+def bed_add(request):
+    if request.method == 'POST':
+        form = AddBedForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Bindex')
+    else:
+        form = AddBedForm()
+    return render(request, "assignBed/addBed.html", {'form': form})
