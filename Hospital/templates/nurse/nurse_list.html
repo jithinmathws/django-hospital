@@ -72,10 +72,10 @@
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'nurse_edit' nurse.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ doctor.username }}', '{{ doctor.id }}')">
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ nurse.username }}', '{{ nurse.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
@@ -98,7 +98,7 @@
   <script>
    function confirmDelete(roleName, roleId){
       if(confirm(`Are you sure you want to delete ${name}?`)) {
-         window.location.href = `{% url 'doctor_delete' doctor_id=0 %}`.replace('0', roleId);
+         window.location.href = `{% url 'nurse_delete' nurse_id=0 %}`.replace('0', roleId);
       }
    }
   </script>

@@ -51,6 +51,20 @@ class PatientDetails(models.Model):
     def __str__(self):
         return str(self.patient_name)
     
+class PatientStatus(models.Model):
+    patient_status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return str(self.patient_status)
+    
+class AdmissionDetails(models.Model):
+    admission_date = models.DateTimeField(null=True, blank=True)
+    patient_status = models.ForeignKey(PatientStatus, on_delete=models.CASCADE)
+    doctor_name = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.doctor_name)
+    
 class GuardianDetails(models.Model):
 
     guardian_name = models.CharField(max_length=50)
@@ -121,3 +135,14 @@ class AddBed(models.Model):
 
     def __str__(self):
         return str(self.bed_number)
+    
+class InvoiceDetails(models.Model):
+    invoice_id = models.BigAutoField(primary_key=True)
+    patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    invoice_title = models.CharField(max_length=50)
+    subtotal_amount = models.CharField(max_length=50)
+    adjusted_amount = models.CharField(max_length=50)
+    date = models.DateField()
+
+    def __str__(self):
+        return str(self.invoice_title)

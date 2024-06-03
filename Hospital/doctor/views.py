@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails
-from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm
+from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails
+from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -46,6 +46,30 @@ def doctor_department(request):
     else:
         form = DepartmentForm()
     return render(request, "doctor/department.html", {'form': form})
+
+@login_required
+def department_list(request):
+    departments = DoctorDepartment.objects.all()
+    return render(request, "doctor/department_list.html", {'departments': departments})
+
+@login_required
+def department_edit(request, department_id):
+    role = DoctorDepartment.objects.get(pk=department_id)
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('department_list')
+
+    else:
+        form = DoctorForm(instance=role)
+    return render(request, 'doctor/department_edit.html', {'form': form, 'role': role})
+
+@login_required
+def department_delete(request, department_id):
+    member = DoctorDetails.objects.get(pk=department_id)
+    member.delete()
+    return redirect('department_list')
 
 @login_required
 def doctor_add(request):
@@ -130,11 +154,50 @@ def patient_add(request):
     return render(request, "patient/addPatient.html", {'form': form})
 
 @login_required
-def patient_list(request):
+def patient_status(request):
+    if request.method == 'POST':
+        form = PatientStatusForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Pindex')
+    else:
+        form = PatientStatusForm()
+    return render(request, "patient/patient_status.html", {'form': form})
 
+@login_required
+def patient_admission(request):
+    if request.method == 'POST':
+        form = AdmissionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Pindex')
+    else:
+        form = AdmissionForm()
+    return render(request, "patient/patient_admission.html", {'form': form})
+
+@login_required
+def patient_list(request):
     patients = PatientDetails.objects.all()
-    
     return render(request, "patient/patient_list.html", {'patients': patients})
+
+@login_required
+def patient_edit(request, patient_id):
+    role = PatientDetails.objects.get(pk=patient_id)
+    if request.method == 'POST':
+        form = PatientForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('patient_list')
+
+    else:
+        form = PatientForm(instance=role)
+    return render(request, 'patient/patient_edit.html', {'form': form, 'role': role})
+
+@login_required
+def patient_delete(request, patient_id):
+    member = PatientDetails.objects.get(pk=patient_id)
+    member.delete()
+    return redirect('patient_list')
 
 @login_required
 def guardian_add(request):
@@ -153,6 +216,25 @@ def guardian_list(request):
     guardians = GuardianDetails.objects.all()
     
     return render(request, "patient/guardian_list.html", {'guardians': guardians})
+
+@login_required
+def guardian_delete(request, guardian_id):
+    member = GuardianDetails.objects.get(pk=guardian_id)
+    member.delete()
+    return redirect('guardian_list')
+
+@login_required
+def guardian_edit(request, guardian_id):
+    role = GuardianDetails.objects.get(pk=guardian_id)
+    if request.method == 'POST':
+        form = GuardianForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('guardian_list')
+
+    else:
+        form = GuardianForm(instance=role)
+    return render(request, 'patient/guardian_edit.html', {'form': form, 'role': role})
 
 # Nurse Fields
 
@@ -179,6 +261,25 @@ def nurse_list(request):
     
     return render(request, "nurse/nurse_list.html", {'nurses': nurses})
 
+@login_required
+def nurse_edit(request, nurse_id):
+    role = NurseDetails.objects.get(pk=nurse_id)
+    if request.method == 'POST':
+        form = NurseForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('nurse_list')
+
+    else:
+        form = NurseForm(instance=role)
+    return render(request, 'nurse/nurse_edit.html', {'form': form, 'role': role})
+
+@login_required
+def nurse_delete(request, nurse_id):
+    member = GuardianDetails.objects.get(pk=nurse_id)
+    member.delete()
+    return redirect('nurse_list')
+
 #pharmacist
 @login_required
 @user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
@@ -197,6 +298,31 @@ def pharmacist_add(request):
     return render(request, "pharmacist/addPharmacist.html", {'form': form})
 
 @login_required
+def pharmacist_list(request):
+    pharmacists = PharmacistDetails.objects.all()
+    return render(request, "pharmacist/pharmacist_list.html", {'pharmacists': pharmacists})
+
+@login_required
+def pharmacist_edit(request, pharmacist_id):
+    role = PharmacistDetails.objects.get(pk=pharmacist_id)
+    if request.method == 'POST':
+        form = PharmacistForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('nurse_list')
+
+    else:
+        form = PharmacistForm(instance=role)
+    return render(request, 'pharmacist/pharmacist_edit.html', {'form': form, 'role': role})
+
+@login_required
+def pharmacist_delete(request, pharmacist_id):
+    member = PharmacistDetails.objects.get(pk=pharmacist_id)
+    member.delete()
+    return redirect('pharmacist_list')
+
+#Assign Bed
+@login_required
 def bed_index(request):
     return render(request, "assignBed/index.html", {})
 
@@ -212,6 +338,30 @@ def bed_category(request):
     return render(request, "assignBed/bedcategory.html", {'form': form})
 
 @login_required
+def category_list(request):
+    categories = BedCategory.objects.all()
+    return render(request, "assignBed/bedcategory_list.html", {'categories': categories})
+
+@login_required
+def category_edit(request, category_id):
+    role = BedCategory.objects.get(pk=category_id)
+    if request.method == 'POST':
+        form = BedCategoryForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('category_list')
+
+    else:
+        form = BedCategoryForm(instance=role)
+    return render(request, 'assignBed/bedCategory_edit.html', {'form': form, 'role': role})
+
+@login_required
+def category_delete(request, category_id):
+    member = PharmacistDetails.objects.get(pk=category_id)
+    member.delete()
+    return redirect('category_list')
+
+@login_required
 def bed_add(request):
     if request.method == 'POST':
         form = AddBedForm(request.POST)
@@ -221,3 +371,19 @@ def bed_add(request):
     else:
         form = AddBedForm()
     return render(request, "assignBed/addBed.html", {'form': form})
+
+#invoice
+@login_required
+def invoice_index(request):
+    return render(request, "invoice/index.html", {})
+
+@login_required
+def invoice_add(request):
+    if request.method == 'POST':
+        form = InvoiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Invoiceindex')
+    else:
+        form = InvoiceForm()
+    return render(request, "invoice/addInvoice.html", {'form': form})

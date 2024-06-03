@@ -4,7 +4,7 @@ from django import forms
 import django.forms.utils
 import django.forms.widgets
 
-from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed
+from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
@@ -60,7 +60,32 @@ class PatientForm(forms.ModelForm):
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-                                
+
+class PatientStatusForm(forms.ModelForm):
+    class Meta:
+        model = PatientStatus
+        fields = ['patient_status']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["patient_status"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+
+class AdmissionForm(forms.ModelForm):
+    admission_date = forms.DateTimeField(widget=forms.DateInput(attrs={"type": 'datetime-local'}))
+    
+    class Meta:
+        model = AdmissionDetails
+        fields = ['admission_date', 'patient_status', 'doctor_name']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["admission_date"].widget.attrs.update({"class": 'form-control', "type": 'datetime-local'})
+        self.fields["patient_status"].widget.attrs.update({"class": 'form-control'})
+        self.fields["doctor_name"].widget.attrs.update({"class": 'form-control'})
+        
+
 class GuardianForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
@@ -144,3 +169,22 @@ class AddBedForm(forms.ModelForm):
         self.fields["bed_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["charges"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["tax"].widget.attrs.update({"class": 'form-control'})
+
+class InvoiceForm(forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    
+    class Meta:
+        model = InvoiceDetails
+        fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'adjusted_amount', 'date']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        #self.fields["invoice_id"].widget.attrs.update({"class": 'form-control'})
+        self.fields["patient_name"].widget.attrs.update({"class": 'form-control'})
+        self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        

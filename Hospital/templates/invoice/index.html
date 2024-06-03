@@ -1,11 +1,8 @@
 {% extends 'home/base2.html' %}
 
-{% block title %} Pharmacist Page {% endblock %}
+{% block title %} Nurse Page {% endblock %}
 
 {% block content %}
-
-
-  
 
 
   <!-- ======= Hero Section ======= -->
@@ -16,20 +13,26 @@
         <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-2" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
             <div class="icon"><i class="ri-stack-line"></i></div>
-            <h4 class="title"><a href="{% url 'pharmacist' %}">Add Pharmacist</a></h4>
+            <h4 class="title"><a href="{% url 'invoice' %}">Add Invoice</a></h4>
             <!--<p class="description"></p>-->
           </div>
         </div>
 
-        
+        <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-2" data-aos="zoom-in" data-aos-delay="200">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-stack-line"></i></div>
+            <h4 class="title"><a href="{% url 'category_list' %}">List of Patient Invoice</a></h4>
+            <!--<p class="description"></p>-->
+          </div>
+        </div>
 
-        <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-2" data-aos="zoom-in" data-aos-delay="300">
+        <!-- <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-2" data-aos="zoom-in" data-aos-delay="300">
           <div class="icon-box">
             <div class="icon"><i class="ri-command-line"></i></div>
-            <h4 class="title"><a href="{% url 'pharmacist_list' %}">View and Edit Pharmacist</a></h4>
+            <h4 class="title"><a href="{% url 'addBed' %}">Assign Bed</a></h4>
             <!--<p class="description"></p>-->
           </div>
-        </div>
+        </div> -->
 
         
 
