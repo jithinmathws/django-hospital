@@ -10,6 +10,7 @@ urlpatterns = [
 
     path("doctor/", views.doctor_add, name="doctor"),
     path("doctorlist/", views.doctor_list, name="doctor_list"),
+    path("doctorProfile/", views.doctor_profile, name="doctor_profile"),
     path("importDoctor/", views.importDoctorExcel, name="doctorExcel"),
     path("doctor_edit-account/<int:doctor_id>/", views.doctor_edit, name="doctor_edit"),
     path("doctor_delete-account/<int:doctor_id>/", views.doctor_delete, name="doctor_delete"),

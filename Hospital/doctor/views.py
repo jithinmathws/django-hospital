@@ -96,6 +96,11 @@ def doctor_list(request):
     return render(request, "doctor/doctor_list.html", {'doctors': doctors, 'page_size': page_size})
 
 @login_required
+def doctor_profile(request):
+    doctors = DoctorDetails.objects.all()
+    return render(request, "doctor/doctor_details.html", {'doctors': doctors})
+
+@login_required
 def doctor_edit(request, doctor_id):
     role = DoctorDetails.objects.get(pk=doctor_id)
     if request.method == 'POST':
@@ -138,7 +143,6 @@ def importDoctorExcel(request):
 # Patient Fields
 
 @login_required
-@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
 def patient_index(request):
     return render(request, "patient/index.html", {})
 

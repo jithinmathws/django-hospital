@@ -3,16 +3,11 @@
 {% block title %} Doctor list {% endblock %}
 
 {% block content %}
-
-
-
-   
+  
       
       <div class="content container-fluid">
          
          <div class="page-header">
-
-            
 
         <div class="row align-items-center">
            <div class="col">
@@ -58,7 +53,9 @@
                           <tr>
                              <td>{{ doctor.id }}</td>
                              <td>
-                                {{ doctor.name }}
+                              <h2 class="#">
+                                 <a href="{% url 'doctor_profile' %}">{{ doctor.doctor_name }}</a>
+                              </h2>
                              </td>
                              <td>
                                 {{ doctor.department_name }}
