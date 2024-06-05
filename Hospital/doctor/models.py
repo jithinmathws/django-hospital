@@ -36,7 +36,6 @@ class DoctorDetails(models.Model):
         return str(self.doctor_name)
     
 class PatientDetails(models.Model):
-
     patient_name = models.CharField(max_length=50)
     gender = models.CharField(
          max_length=20,
@@ -61,6 +60,15 @@ class AdmissionDetails(models.Model):
     admission_date = models.DateTimeField(null=True, blank=True)
     patient_status = models.ForeignKey(PatientStatus, on_delete=models.CASCADE)
     doctor_name = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.doctor_name)
+
+class AppointmentDetails(models.Model):
+    patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
+    doctor_name = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
+    booking_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return str(self.doctor_name)
@@ -146,3 +154,11 @@ class InvoiceDetails(models.Model):
 
     def __str__(self):
         return str(self.invoice_title)
+    
+class TreatmentDetails(models.Model):
+    treatment_name = models.CharField(max_length=50)
+    treatment_price = models.CharField(max_length=50)
+    tax = models.CharField(
+         max_length=20,
+         choices=(("5%", "5%"), ("10%", "10%"), ("15%", "15%")),
+     )

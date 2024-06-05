@@ -4,7 +4,7 @@ from django import forms
 import django.forms.utils
 import django.forms.widgets
 
-from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails
+from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
@@ -84,6 +84,20 @@ class AdmissionForm(forms.ModelForm):
         self.fields["admission_date"].widget.attrs.update({"class": 'form-control', "type": 'datetime-local'})
         self.fields["patient_status"].widget.attrs.update({"class": 'form-control'})
         self.fields["doctor_name"].widget.attrs.update({"class": 'form-control'})
+
+class AppointmentForm(forms.ModelForm):
+    booking_date = forms.DateTimeField(widget=forms.DateInput(attrs={"type": 'datetime-local'}))
+    
+    class Meta:
+        model = AppointmentDetails
+        fields = ['patient_name', 'department_name', 'doctor_name', 'booking_date']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["patient_name"].widget.attrs.update({"class": 'form-control'})
+        self.fields["department_name"].widget.attrs.update({"class": 'form-control'})
+        self.fields["doctor_name"].widget.attrs.update({"class": 'form-control'})
+        self.fields["booking_date"].widget.attrs.update({"class": 'form-control', "type": 'datetime-local'})
         
 
 class GuardianForm(forms.ModelForm):
@@ -187,4 +201,17 @@ class InvoiceForm(forms.ModelForm):
         self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
-        
+
+class TreatmentForm(forms.ModelForm):
+    class Meta:
+        model = TreatmentDetails
+        fields = ['treatment_name',  'treatment_price', 'tax']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["treatment_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["treatment_price"].widget.attrs.update({"class": 'form-control', "type": 'text'}) 
+        self.fields["tax"].widget.attrs.update({"class": 'form-control'})
+              

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails
-from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm
+from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
+from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -176,6 +176,17 @@ def patient_admission(request):
     return render(request, "patient/patient_admission.html", {'form': form})
 
 @login_required
+def patient_appointment(request):
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Pindex')
+    else:
+        form = AppointmentForm()
+    return render(request, "patient/patient_appointment.html", {'form': form})
+
+@login_required
 def patient_list(request):
     patients = PatientDetails.objects.all()
     return render(request, "patient/patient_list.html", {'patients': patients})
@@ -269,7 +280,6 @@ def nurse_edit(request, nurse_id):
         if form.is_valid():
             role = form.save()
             return redirect('nurse_list')
-
     else:
         form = NurseForm(instance=role)
     return render(request, 'nurse/nurse_edit.html', {'form': form, 'role': role})
@@ -310,7 +320,6 @@ def pharmacist_edit(request, pharmacist_id):
         if form.is_valid():
             role = form.save()
             return redirect('nurse_list')
-
     else:
         form = PharmacistForm(instance=role)
     return render(request, 'pharmacist/pharmacist_edit.html', {'form': form, 'role': role})
@@ -350,14 +359,13 @@ def category_edit(request, category_id):
         if form.is_valid():
             role = form.save()
             return redirect('category_list')
-
     else:
         form = BedCategoryForm(instance=role)
     return render(request, 'assignBed/bedCategory_edit.html', {'form': form, 'role': role})
 
 @login_required
 def category_delete(request, category_id):
-    member = PharmacistDetails.objects.get(pk=category_id)
+    member = BedCategory.objects.get(pk=category_id)
     member.delete()
     return redirect('category_list')
 
@@ -387,3 +395,66 @@ def invoice_add(request):
     else:
         form = InvoiceForm()
     return render(request, "invoice/addInvoice.html", {'form': form})
+
+@login_required
+def invoice_list(request):
+    invoices = InvoiceDetails.objects.all()
+    return render(request, "invoice/invoice_list.html", {'invoices': invoices})
+
+@login_required
+def invoice_edit(request, invoice_id):
+    role = InvoiceDetails.objects.get(pk=invoice_id)
+    if request.method == 'POST':
+        form = InvoiceForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('invoice_list')
+    else:
+        form = InvoiceForm(instance=role)
+    return render(request, 'invoice/invoice_edit.html', {'form': form, 'role': role})
+
+@login_required
+def invoice_delete(request, invoice_id):
+    member = InvoiceDetails.objects.get(pk=invoice_id)
+    member.delete()
+    return redirect('invoice_list')
+
+#Treatment
+@login_required
+def treatment_index(request):
+    return render(request, "treatment/index.html", {})
+
+@login_required
+def treatment_add(request):
+    if request.method == 'POST':
+        form = TreatmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Treatmentindex')
+    else:
+        form = TreatmentForm()
+    return render(request, "treatment/addTreatment.html", {'form': form})
+
+@login_required
+def treatment_list(request):
+    treatments = TreatmentDetails.objects.all()
+    return render(request, "treatment/treatment_list.html", {'treatments': treatments})
+
+@login_required
+def treatment_edit(request, treatment_id):
+    role = TreatmentDetails.objects.get(pk=treatment_id)
+    if request.method == 'POST':
+        form = TreatmentForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('treatment_list')
+
+    else:
+        form = TreatmentForm(instance=role)
+    return render(request, 'treatment/treatment_edit.html', {'form': form, 'role': role})
+
+@login_required
+def treatment_delete(request, treatment_id):
+    member = TreatmentDetails.objects.get(pk=treatment_id)
+    member.delete()
+    return redirect('treatment_list')

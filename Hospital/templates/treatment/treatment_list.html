@@ -1,6 +1,6 @@
 {% extends 'home/base-login.html' %}
 {% load static %}
-{% block title %} Bed Category list {% endblock %}
+{% block title %} Pharmacist list {% endblock %}
 
 {% block content %}
 
@@ -16,10 +16,10 @@
 
         <div class="row align-items-center">
            <div class="col">
-              <h3 class="page-title">Bed Category</h3>
+              <h3 class="page-title">Pharmacist</h3>
               <ul class="breadcrumb">
-                 <li class="breadcrumb-item"><a href="{% url 'Bindex' %}">Dashboard</a></li>
-                 <li class="breadcrumb-item active">List of Bed Category</li>
+                 <li class="breadcrumb-item"><a href="{% url 'Treatmentindex' %}">Dashboard</a></li>
+                 <li class="breadcrumb-item active">List of Pharmacist</li>
               </ul>
            </div>
            <div class="col-auto text-right float-right ml-auto">
@@ -38,27 +38,34 @@
                        <thead>
                           <tr>
                              <th>ID</th>
-                             <th>Name</th>
-                             
+                             <th>Treatment name</th>
+                             <th>Treatment price</th>
+                             <th>Tax</th>
+                                                          
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for category in categories %}
+                       {% for treatment in treatments %}
                        <tbody>
                           <tr>
-                             <td>{{ category.id }}</td>
-                             
+                             <td>{{ treatment.id }}</td>
                              <td>
-                                {{ category.bedCategory_name }}
+                                {{ treatment.treatment_name }}
                              </td>
-
+                             <td>
+                                {{ treatment.treatment_price }}
+                             </td>
+                             <td>
+                                {{ treatment.tax }}
+                             </td>
+                             
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'category_edit' category.id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'treatment_edit' treatment.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ category.bedCategory_name }}', '{{ category.id }}')">
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ treatment.treatment_name }}', '{{ treatment.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
@@ -69,8 +76,6 @@
                        {% endfor %}
                     </table>
 
-                    
-
                  </div>
                  
               </div>
@@ -80,10 +85,11 @@
    <script>
             function confirmDelete(roleName, roleId){
                if(confirm(`Are you sure you want to delete ${name}?`)) {
-                  window.location.href = `{% url 'category_delete' category_id=0 %}`.replace('0', roleId);
+                  window.location.href = `{% url 'treatment_delete' treatment_id=0 %}`.replace('0', roleId);
                }
             }
    </script>
+  
   <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
 
   

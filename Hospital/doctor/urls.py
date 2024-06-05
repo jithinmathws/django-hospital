@@ -18,6 +18,7 @@ urlpatterns = [
     path("addPatient/", views.patient_add, name="patient"),
     path("statusPatient/", views.patient_status, name="patient_status"),
     path("admissionPatient/", views.patient_admission, name="patient_admission"),
+    path("appointmentPatient/", views.patient_appointment, name="patient_appointment"),
     path("patientlist/", views.patient_list, name="patient_list"),
     path("patient_edit-account/<int:patient_id>/", views.patient_edit, name="patient_edit"),
     path("patient_delete-account/<int:patient_id>/", views.patient_delete, name="patient_delete"),
@@ -48,4 +49,13 @@ urlpatterns = [
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
     path("addInvoice/", views.invoice_add, name="invoice"),
+    path("invoicelist/", views.invoice_list, name="invoice_list"),
+    path("invoice_edit-account/<int:invoice_id>/", views.invoice_edit, name="invoice_edit"),
+    path("invoice_delete-account/<int:invoice_id>/", views.invoice_delete, name="invoice_delete"),
+
+    path("treatment/", views.treatment_index, name="Treatmentindex"),
+    path("addTreatment/", views.treatment_add, name="treatment"),
+    path("treatmentlist/", views.treatment_list, name="treatment_list"),
+    path("treatment_edit-account/<int:treatment_id>/", views.treatment_edit, name="treatment_edit"),
+    path("treatment_delete-account/<int:treatment_id>/", views.treatment_delete, name="treatment_delete"),
 ]
