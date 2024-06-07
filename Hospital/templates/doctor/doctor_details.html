@@ -25,11 +25,12 @@
     <div class="col-md-12">
     <div class="about-info">
     <h4>About Me</h4>
-    <div class="media mt-3">
-    <img src="assets/img/user.jpg" class="mr-3" alt="...">
-    <div class="media-body">
+    {% for doctor in doctors %}
+            <div class="media mt-3">
+            <img src="{{ doctor.doctor_image }}" class="mr-3" alt="...">
+            <div class="media-body">
 
-        {% for doctor in doctors %}
+        
 
             <ul>
             <li>
@@ -57,7 +58,7 @@
             <span class="info-span">{{ doctor.date_of_birth }}</span>
             </li>
             </ul>
-        {% endfor %}
+    {% endfor %}
     </div>
     </div>
     

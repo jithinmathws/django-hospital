@@ -30,7 +30,7 @@ class DoctorForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
     class Meta:
         model = DoctorDetails
-        fields = ['doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number']
+        fields = ['doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number', 'cv_file', 'doctor_image']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,6 +42,8 @@ class DoctorForm(forms.ModelForm):
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["cv_file"].widget.attrs.update({"class": 'form-control', "type": 'file'})
+        self.fields["doctor_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
             
 
 class PatientForm(forms.ModelForm):

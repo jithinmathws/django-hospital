@@ -74,7 +74,7 @@ def department_delete(request, department_id):
 @login_required
 def doctor_add(request):
     if request.method == 'POST':
-        form = DoctorForm(request.POST)
+        form = DoctorForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('Dindex')
@@ -290,7 +290,7 @@ def nurse_edit(request, nurse_id):
 
 @login_required
 def nurse_delete(request, nurse_id):
-    member = GuardianDetails.objects.get(pk=nurse_id)
+    member = NurseDetails.objects.get(pk=nurse_id)
     member.delete()
     return redirect('nurse_list')
 

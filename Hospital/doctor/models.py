@@ -19,7 +19,6 @@ class DoctorDepartment(models.Model):
 
 
 class DoctorDetails(models.Model):
-
     doctor_name = models.CharField(max_length=50)
     department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
@@ -29,12 +28,20 @@ class DoctorDetails(models.Model):
      )
     email = models.EmailField(default="", max_length=50, unique=True)
     phone_number = models.CharField(default="", max_length=20)
-    #doctor_image = models.ImageField(upload_to='doctor/')
+    cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
+    doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.doctor_name)
+
+def certificate_path(instance, filename):
+    return f'media/doctor/certificates/{instance.doctor.id}/{filename}'
+
+class DoctorCertificate(models.Model):
+    doctor = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
+    certificate_file = models.FileField(upload_to=certificate_path, null=True, blank=True)
     
 class PatientDetails(models.Model):
     patient_name = models.CharField(max_length=50)
