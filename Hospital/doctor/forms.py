@@ -9,7 +9,7 @@ from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDet
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = DoctorDepartment
-        fields = "__all__"
+        fields = ['department_name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

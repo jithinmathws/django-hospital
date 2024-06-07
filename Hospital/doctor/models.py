@@ -29,6 +29,7 @@ class DoctorDetails(models.Model):
      )
     email = models.EmailField(default="", max_length=50, unique=True)
     phone_number = models.CharField(default="", max_length=20)
+    #doctor_image = models.ImageField(upload_to='doctor/')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
