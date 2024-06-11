@@ -1,8 +1,11 @@
+import os
+
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorDetails, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
+from .models import DoctorDetails, DoctorCertificate, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
 from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
@@ -75,8 +78,33 @@ def department_delete(request, department_id):
 def doctor_add(request):
     if request.method == 'POST':
         form = DoctorForm(request.POST, request.FILES)
+        certificate_files = request.FILES.getlist('certificate_file')
         if form.is_valid():
-            form.save()
+            doctor = form.save()
+            if len(certificate_files)> 10:
+                messages.error(request, 'You can only upload a maximum of 10 certificates.')
+                
+            
+            #create a folder for doctor certificates using doctor id
+            doctor_folder = os.path.join('doctor_certificates', 'certificates', str(doctor.id))
+            os.makedirs(doctor_folder, exist_ok=True)
+
+            for idx, certificate_file in enumerate(certificate_files, start=1):
+                original_extension = os.path.splitext(certificate_file.name)[1]
+
+                #Rename and save the certificate file
+                new_filename = f'{doctor.id}_{doctor.email}_{idx}{original_extension}'
+                new_file_path = os.path.join(doctor_folder, new_filename)
+
+                #save the certificate file
+                with open(new_file_path, 'wb+') as destination:
+                    for chunk in certificate_file.chunks():
+                        destination.write(chunk)
+                
+                DoctorCertificate.objects.create(
+                    doctor=doctor,
+                    certificate_file = new_file_path, # save the path; not the file object
+                )
             return redirect('Dindex')
     else:
         form = DoctorForm()

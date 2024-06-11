@@ -42,6 +42,9 @@ def certificate_path(instance, filename):
 class DoctorCertificate(models.Model):
     doctor = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
     certificate_file = models.FileField(upload_to=certificate_path, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.doctor)
     
 class PatientDetails(models.Model):
     patient_name = models.CharField(max_length=50)
