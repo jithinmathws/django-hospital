@@ -1,4 +1,8 @@
+from django.conf import settings
 from django.urls import path
+from django.views.static import serve
+from django.conf.urls.static import static
+
 from . import views
 
 urlpatterns = [
@@ -10,7 +14,7 @@ urlpatterns = [
 
     path("doctor/", views.doctor_add, name="doctor"),
     path("doctorlist/", views.doctor_list, name="doctor_list"),
-    path("doctorProfile/", views.doctor_profile, name="doctor_profile"),
+    path("doctorProfile/<int:doctor_id>/", views.doctor_profile, name="doctor_profile"),
     path("importDoctor/", views.importDoctorExcel, name="doctorExcel"),
     path("doctor_edit-account/<int:doctor_id>/", views.doctor_edit, name="doctor_edit"),
     path("doctor_delete-account/<int:doctor_id>/", views.doctor_delete, name="doctor_delete"),
@@ -59,4 +63,6 @@ urlpatterns = [
     path("treatmentlist/", views.treatment_list, name="treatment_list"),
     path("treatment_edit-account/<int:treatment_id>/", views.treatment_edit, name="treatment_edit"),
     path("treatment_delete-account/<int:treatment_id>/", views.treatment_delete, name="treatment_delete"),
+
+    path('/<path:path>/', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

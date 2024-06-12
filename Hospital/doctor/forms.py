@@ -28,9 +28,11 @@ class DepartmentForm(forms.ModelForm):
 class DoctorForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
+    image = forms.ImageField(required=False)
     class Meta:
         model = DoctorDetails
-        fields = ['doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number', 'cv_file', 'doctor_image']
+        #fields = ['doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number', 'cv_file', 'doctor_image']
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,7 +45,8 @@ class DoctorForm(forms.ModelForm):
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["cv_file"].widget.attrs.update({"class": 'form-control', "type": 'file'})
-        self.fields["doctor_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
+        #self.fields["doctor_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
+        self.fields["image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
             
 
 class PatientForm(forms.ModelForm):

@@ -29,7 +29,8 @@ class DoctorDetails(models.Model):
     email = models.EmailField(default="", max_length=50, unique=True)
     phone_number = models.CharField(default="", max_length=20)
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
-    doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
+    #doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
+    image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

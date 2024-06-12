@@ -1,4 +1,5 @@
 import os
+import base64
 
 from django.shortcuts import render, redirect, HttpResponse
 from .models import DoctorDetails, DoctorCertificate, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
@@ -6,6 +7,7 @@ from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseF
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
@@ -80,7 +82,15 @@ def doctor_add(request):
         form = DoctorForm(request.POST, request.FILES)
         certificate_files = request.FILES.getlist('certificate_file')
         if form.is_valid():
-            doctor = form.save()
+            #doctor = form.save()
+
+            doctor = form.save(commit=False)
+            image_blob = request.FILES.get('image')
+            if image_blob:
+                doctor.image = image_blob.read()
+
+            doctor.save()
+
             if len(certificate_files)> 10:
                 messages.error(request, 'You can only upload a maximum of 10 certificates.')
                 
@@ -116,17 +126,27 @@ def doctor_list(request):
     page = request.GET.get('page', 1)
 
     doctors = DoctorDetails.objects.all()
+    doctor_data = []
+    for doctor in doctors:
+        existing_certificates = len(DoctorCertificate.objects.filter(doctor=doctor))
+        remaining_certificates = 10 - existing_certificates
+        doctor_data.append({'doctor': doctor, 'remaining_certificates': remaining_certificates})
+
     paginator = Paginator(doctors, page_size)
     try:
         doctors_page = paginator.page(page)
     except PageNotAnInteger:
         doctors_page = paginator.page(1)
-    return render(request, "doctor/doctor_list.html", {'doctors': doctors, 'page_size': page_size})
+    return render(request, "doctor/doctor_list.html", {'doctor_data': doctor_data, 'page_size': page_size})
 
 @login_required
-def doctor_profile(request):
-    doctors = DoctorDetails.objects.all()
-    return render(request, "doctor/doctor_details.html", {'doctors': doctors})
+def doctor_profile(request, doctor_id):
+    doctor = get_object_or_404(DoctorDetails, pk=doctor_id)
+    certificates = DoctorCertificate.objects.filter(doctor=doctor)
+
+    image_base64 = base64.b64encode(doctor.image).decode('utf-8') if doctor.image else None
+
+    return render(request, "doctor/doctor_profile.html", {'doctor': doctor, 'image_base64': image_base64, 'certificates': certificates})
 
 @login_required
 def doctor_edit(request, doctor_id):

@@ -48,38 +48,38 @@
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for doctor in doctors %}
+                       {% for data in doctor_data %}
                        <tbody>
                           <tr>
-                             <td>{{ doctor.id }}</td>
+                             <td>{{ data.doctor.id }}</td>
                              <td>
                               <h2 class="#">
-                                 <a href="{% url 'doctor_profile' %}">{{ doctor.doctor_name }}</a>
+                                 <a href="{% url 'doctor_profile' data.doctor.id %}">{{ data.doctor.doctor_name }}</a>
                               </h2>
                              </td>
                              <td>
-                                {{ doctor.department_name }}
+                                {{ data.doctor.department_name }}
                              </td>
                              <td>
-                                {{ doctor.date_of_birth }}
+                                {{ data.doctor.date_of_birth }}
                              </td>
                              <td>
-                                {{ doctor.gender }}
+                                {{ data.doctor.gender }}
                              </td>
                              <td>
-                                {{ doctor.email }}
+                                {{ data.doctor.email }}
                              </td>
                              <td>
-                                {{ doctor.phone_number }}
+                                {{ data.doctor.phone_number }}
                              </td>
 
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'doctor_edit' doctor.id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'doctor_edit' data.doctor.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ doctor.username }}', '{{ doctor.id }}')">
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.doctor.doctor_name }}', '{{ data.doctor.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
@@ -97,7 +97,7 @@
                   <ul class="pagination">
 
                      {% for page_num in doctors.paginator.page_range %}
-                        <li class="page-item{% if page_num == doctors.number %} active{% endif %}"> -->
+                        <li class="page-item{% if page_num == doctor_data.number %} active{% endif %}"> -->
                            <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
                         </li> 
                      {% endfor %}

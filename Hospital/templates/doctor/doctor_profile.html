@@ -25,12 +25,14 @@
     <div class="col-md-12">
     <div class="about-info">
     <h4>About Me</h4>
-    {% for doctor in doctors %}
+    
             <div class="media mt-3">
-            <img src="{{ doctor.doctor_image }}" class="mr-3" alt="...">
+            {% if image_base64 %}
+            <img src="data:image/jpeg;base64,{{ image_base64 }}" class="mr-3" alt="Image">
+            {% else %}
+            <p>No image.</p>
+            {% endif %}
             <div class="media-body">
-
-        
 
             <ul>
             <li>
@@ -57,8 +59,29 @@
             <span class="title-span">DOB : </span>
             <span class="info-span">{{ doctor.date_of_birth }}</span>
             </li>
+            {% if doctor.cv_file %}
+            <li>
+                <span class="title-span">CV : </span>
+                <span class="info-span"><a href="{{ doctor.cv_file.url }}" download="{{ doctor.cv_file.name }}">{{ doctor.cv_file.name }}</a></span>
+            </li>
+            {% else %}
+            <li>
+                <span class="title-span">CV : </span>
+                <span class="info-span">No CV available</span>
+            </li>
+            {% endif %}
             </ul>
-    {% endfor %}
+            
+            <ul>
+                <h5 class="title-span">Certificates : </h5>
+                {% for certificate in certificates %}
+                    <li>
+                        
+                        <span class="info-span"><a href="{{ certificate.certificate_file.url }}" download="{{ certificate.certificate_file.name }}">{{ certificate.certificate_file.name }}</a></span>
+                    </li>
+                {% endfor %}
+            </ul>
+    
     </div>
     </div>
     
