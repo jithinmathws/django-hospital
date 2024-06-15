@@ -16,6 +16,8 @@ urlpatterns = [
     path("doctorlist/", views.doctor_list, name="doctor_list"),
     path("doctorProfile/<int:doctor_id>/", views.doctor_profile, name="doctor_profile"),
     path("importDoctor/", views.importDoctorExcel, name="doctorExcel"),
+    path("exportDoctor/", views.ExportToCsv, name="doctorExportCsv"),
+      
     path("doctor_edit-account/<int:doctor_id>/", views.doctor_edit, name="doctor_edit"),
     path("doctor_delete-account/<int:doctor_id>/", views.doctor_delete, name="doctor_delete"),
     

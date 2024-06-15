@@ -18,8 +18,21 @@
               </ul>
            </div>
            <div class="col-auto text-right float-right ml-auto">
-              <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
+            
+            <ul class="nav user-menu">
+            
+               <a href="#" class="btn btn-outline-primary dropdown-toggle nav-link mr-2" data-toggle="dropdown"><i class="fas fa-download"></i> Download</a>
+
+            <div class="dropdown-menu">
+               
+               <a class="dropdown-item" href="{% url 'doctorExportCsv' %}" download>CSV file</a>
+               
+               
+            </div>          
+            
+            
               <a href="{% url 'doctorExcel' %}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+            </ul>
            </div>
         </div>
      </div>

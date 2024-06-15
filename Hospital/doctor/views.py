@@ -1,20 +1,27 @@
+from io import BytesIO
+
+from docx import Document
+
 import os
+import csv
+
 import base64
 
 from django.shortcuts import render, redirect, HttpResponse
 from .models import DoctorDetails, DoctorCertificate, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
 from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm
+from .resources import doctorResources
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
 from django.db.models import Q
 from functools import wraps
 from tablib import Dataset
-from .resources import doctorResources
 
 
 # Create your views here.
@@ -187,6 +194,19 @@ def importDoctorExcel(request):
             value.save()
 
     return render(request, 'doctor/import.html')
+
+@login_required
+def ExportToCsv(request):
+    doctors = DoctorDetails.objects.all()
+    file_name = f"doctor_data.csv"
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+    writer = csv.writer(response)
+    writer.writerow(['doctor_id', 'doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number'])
+    for doctor in doctors:
+        writer.writerow([doctor.id, doctor.doctor_name, doctor.department_name, doctor.date_of_birth, doctor.gender, doctor.email, doctor.phone_number])
+    
+    return response
 
 # Patient Fields
 

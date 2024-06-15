@@ -1,0 +1,41 @@
+<table class="table table-hover table-center mb-0 datatable">
+    <thead>
+       <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Department Name</th>
+          <th>Date of birth</th>
+          <th>Gender</th>
+          <th>email</th>
+          <th>Phone</th>
+       </tr>
+    </thead>
+    {% for data in doctor_data %}
+    <tbody>
+       <tr>
+          <td>{{ data.doctor.id }}</td>
+          <td>
+           
+            {{ data.doctor.doctor_name }}
+           
+          </td>
+          <td>
+             {{ data.doctor.department_name }}
+          </td>
+          <td>
+             {{ data.doctor.date_of_birth }}
+          </td>
+          <td>
+             {{ data.doctor.gender }}
+          </td>
+          <td>
+             {{ data.doctor.email }}
+          </td>
+          <td>
+             {{ data.doctor.phone_number }}
+          </td>
+       </tr>
+       
+    </tbody>
+    {% endfor %}
+ </table>
