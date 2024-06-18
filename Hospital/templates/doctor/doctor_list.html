@@ -17,8 +17,16 @@
                  <li class="breadcrumb-item active">List of Doctors</li>
               </ul>
            </div>
+
+           <div class="top-nav-search">
+            <form method="get" action="">
+               <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
+               <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+
            <div class="col-auto text-right float-right ml-auto">
-            
+
             <ul class="nav user-menu">
             
                <a href="#" class="btn btn-outline-primary dropdown-toggle nav-link mr-2" data-toggle="dropdown"><i class="fas fa-download"></i> Download</a>
@@ -27,23 +35,28 @@
                
                <a class="dropdown-item" href="{% url 'doctorExportCsv' %}" download>CSV file</a>
                
-               
             </div>          
-            
             
               <a href="{% url 'doctorExcel' %}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
             </ul>
            </div>
+           
         </div>
      </div>
-     <div class="top-nav-search">
-      <form method="get" action="">
-         <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
-         <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-         </form>
-      </div>
+     
      <div class="row">
         <div class="col-sm-12">
+
+         <form id="page-size-form" method="get" action="">
+            <label for="page_size">Items per page:</label>
+            <select id="page_size" name="page_size" onchange="updatePageSize()">
+               <option value="5" {% if page_size == 5 %}selected{% endif %}>5</option>
+               <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+               <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+               <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
+            </select>
+         </form>
+
            <div class="card card-table">
               <div class="card-body">
                  <div class="table-responsive">
@@ -53,15 +66,19 @@
                              <th>ID</th>
                              <th>Name</th>
                              <th>Department Name</th>
+                             <th>Specialization</th>
                              <th>Date of birth</th>
                              <th>Gender</th>
-                             <th>email</th>
+                             <th>Address</th>
+                             <th>Email</th>
                              <th>Phone</th>
+                             <th>Visiting Charge</th>
+                             <th>Consulting Charge</th>
                              
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for data in doctor_data %}
+                       {% for data in doctors_page %}
                        <tbody>
                           <tr>
                              <td>{{ data.doctor.id }}</td>
@@ -74,17 +91,29 @@
                                 {{ data.doctor.department_name }}
                              </td>
                              <td>
+                              {{ data.doctor.specialization }}
+                           </td>
+                             <td>
                                 {{ data.doctor.date_of_birth }}
                              </td>
                              <td>
                                 {{ data.doctor.gender }}
                              </td>
                              <td>
+                              {{ data.doctor.address_line }}
+                           </td>
+                             <td>
                                 {{ data.doctor.email }}
                              </td>
                              <td>
                                 {{ data.doctor.phone_number }}
                              </td>
+                             <td>
+                              {{ data.doctor.visiting_charge }}
+                           </td>
+                           <td>
+                              {{ data.doctor.consulting_charge }}
+                           </td>
 
                              
                              <td class="text-right">
@@ -109,8 +138,8 @@
                  <nav>
                   <ul class="pagination">
 
-                     {% for page_num in doctors.paginator.page_range %}
-                        <li class="page-item{% if page_num == doctor_data.number %} active{% endif %}"> -->
+                     {% for page_num in doctors_page.paginator.page_range %}
+                        <li class="page-item{% if page_num == doctors_page.number %} active{% endif %}"> -->
                            <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
                         </li> 
                      {% endfor %}
@@ -120,7 +149,11 @@
             </div>
          </div>
       
-         
+   <script>
+      function updatePageSize(){
+         document.getElementById("page-size-form").submit();
+      }
+   </script>         
   <script>
    function confirmDelete(roleName, roleId){
       if(confirm(`Are you sure you want to delete ${name}?`)) {

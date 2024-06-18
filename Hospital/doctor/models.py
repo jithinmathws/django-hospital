@@ -21,13 +21,28 @@ class DoctorDepartment(models.Model):
 class DoctorDetails(models.Model):
     doctor_name = models.CharField(max_length=50)
     department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
+    specialization = models.CharField(max_length=50, blank=True, null=True)
     date_of_birth = models.DateField()
     gender = models.CharField(
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
+    address_line = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    pin_code = models.BigIntegerField(blank=True, null=True)
     email = models.EmailField(default="", max_length=50, unique=True)
     phone_number = models.CharField(default="", max_length=20)
+    visiting_charge = models.CharField(max_length=50, blank=True, null=True)
+    visiting_charge_tax = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
+    consulting_charge = models.CharField(max_length=50, blank=True, null=True)
+    consulting_charge_tax = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
     #doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
     image = models.BinaryField(blank=True, null=True)
@@ -53,9 +68,27 @@ class PatientDetails(models.Model):
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
+    blood_group = models.CharField(
+        max_length=20, blank=True, null=True,
+        choices=(
+            ("O-", "O-"),
+            ("O+", "O+"),
+            ("A-", "A-"),
+            ("A+", "A+"),
+            ("B-", "B-"),
+            ("B+", "B+"),
+            ("AB-", "AB-"),
+            ("AB+", "AB+"),
+        ),
+    )
+    address = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    pin_code = models.BigIntegerField(blank=True, null=True)
     email = models.EmailField(default="", max_length=50, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(default="", max_length=20)
+    patient_image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -106,13 +139,24 @@ class GuardianDetails(models.Model):
 class NurseDetails(models.Model):
 
     nurse_name = models.CharField(max_length=50)
+    department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE, blank=True, null=True)
     gender = models.CharField(
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
+    address = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    pin_code = models.BigIntegerField(blank=True, null=True)
     email = models.EmailField(default="", max_length=50, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(default="", max_length=20)
+    salary = models.CharField(max_length=50, blank=True, null=True)
+    salary_tax = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
+    nurse_image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -126,9 +170,19 @@ class PharmacistDetails(models.Model):
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
      )
+    address = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    pin_code = models.BigIntegerField(blank=True, null=True)
     email = models.EmailField(default="", max_length=50, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(default="", max_length=20)
+    charges = models.CharField(max_length=50, blank=True, null=True)
+    charges_tax = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
+    pharmacist_image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

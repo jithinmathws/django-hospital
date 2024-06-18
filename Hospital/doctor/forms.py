@@ -40,10 +40,19 @@ class DoctorForm(forms.ModelForm):
             print(field)
         self.fields["doctor_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["department_name"].widget.attrs.update({"class": 'form-control'})
+        self.fields["specialization"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
+        self.fields["address_line"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["state"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["country"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["pin_code"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["visiting_charge"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["visiting_charge_tax"].widget.attrs.update({"class": 'form-control'})
+        self.fields["consulting_charge"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["consulting_charge_tax"].widget.attrs.update({"class": 'form-control'})
         self.fields["cv_file"].widget.attrs.update({"class": 'form-control', "type": 'file'})
         #self.fields["doctor_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
         self.fields["image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
@@ -52,9 +61,11 @@ class DoctorForm(forms.ModelForm):
 class PatientForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
+    patient_image = forms.ImageField(required=False)
     class Meta:
         model = PatientDetails
-        fields = ['patient_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        #fields = ['patient_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -62,9 +73,15 @@ class PatientForm(forms.ModelForm):
             print(field)
         self.fields["patient_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
+        self.fields["blood_group"].widget.attrs.update({"class": 'form-control'})
+        self.fields["address"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["state"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["country"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["pin_code"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["patient_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
 
 class PatientStatusForm(forms.ModelForm):
     class Meta:
@@ -124,9 +141,11 @@ class GuardianForm(forms.ModelForm):
 class NurseForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
+    nurse_image = forms.ImageField(required=False)
     class Meta:
         model = NurseDetails
-        fields = ['nurse_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        #fields = ['nurse_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -134,16 +153,25 @@ class NurseForm(forms.ModelForm):
             print(field)
         self.fields["nurse_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
+        self.fields["address"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["state"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["country"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["pin_code"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["salary"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["salary_tax"].widget.attrs.update({"class": 'form-control'})
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["nurse_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
 
 class PharmacistForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
+    pharmacist_image = forms.ImageField(required=False)
     class Meta:
         model = PharmacistDetails
-        fields = ['pharmacist_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        #fields = ['pharmacist_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -151,9 +179,17 @@ class PharmacistForm(forms.ModelForm):
             print(field)
         self.fields["pharmacist_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
+        self.fields["address"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["state"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["country"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["pin_code"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["email"].widget.attrs.update({"class": 'form-control', "type": 'email'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["charges"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["charges_tax"].widget.attrs.update({"class": 'form-control'})
+        self.fields["pharmacist_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
+        
 
 class BedCategoryForm(forms.ModelForm):
     class Meta:

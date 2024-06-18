@@ -1,10 +1,8 @@
 from io import BytesIO
-
 from docx import Document
 
 import os
 import csv
-
 import base64
 
 from django.shortcuts import render, redirect, HttpResponse
@@ -98,7 +96,7 @@ def doctor_add(request):
 
             doctor.save()
 
-            if len(certificate_files)> 10:
+            if len(certificate_files)> 15:
                 messages.error(request, 'You can only upload a maximum of 10 certificates.')
                 
             
@@ -132,19 +130,27 @@ def doctor_list(request):
     page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
     page = request.GET.get('page', 1)
 
-    doctors = DoctorDetails.objects.all()
+    search_query = request.GET.get('search', '')
+
+    doctors = DoctorDetails.objects.filter(
+        Q(id__icontains=search_query) |
+        Q(doctor_name__icontains=search_query) |
+        Q(email__icontains=search_query) |
+        Q(phone_number__icontains=search_query) 
+    )
+
     doctor_data = []
     for doctor in doctors:
         existing_certificates = len(DoctorCertificate.objects.filter(doctor=doctor))
         remaining_certificates = 10 - existing_certificates
         doctor_data.append({'doctor': doctor, 'remaining_certificates': remaining_certificates})
 
-    paginator = Paginator(doctors, page_size)
+    paginator = Paginator(doctor_data, page_size)
     try:
         doctors_page = paginator.page(page)
     except PageNotAnInteger:
         doctors_page = paginator.page(1)
-    return render(request, "doctor/doctor_list.html", {'doctor_data': doctor_data, 'page_size': page_size})
+    return render(request, "doctor/doctor_list.html", {'doctors_page': doctors_page, 'page_size': page_size, 'search_query': search_query})
 
 @login_required
 def doctor_profile(request, doctor_id):
@@ -190,6 +196,15 @@ def importDoctorExcel(request):
                 data[4],
                 data[5],
                 data[6],
+                data[7],
+                data[8],
+                data[9],
+                data[10],
+                data[11],
+                data[12],
+                data[13],
+                data[14],
+                data[15]
             )
             value.save()
 
@@ -217,9 +232,15 @@ def patient_index(request):
 @login_required
 def patient_add(request):
     if request.method == 'POST':
-        form = PatientForm(request.POST)
+        form = PatientForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            #form.save()
+            patient = form.save(commit=False)
+            image_blob = request.FILES.get('patient_image')
+            if image_blob:
+                patient.patient_image = image_blob.read()
+
+            patient.save()
             return redirect('Pindex')
     else:
         form = PatientForm()
@@ -260,8 +281,32 @@ def patient_appointment(request):
 
 @login_required
 def patient_list(request):
-    patients = PatientDetails.objects.all()
-    return render(request, "patient/patient_list.html", {'patients': patients})
+    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page = request.GET.get('page', 1)
+
+    search_query = request.GET.get('search', '')
+
+    patients = PatientDetails.objects.filter(
+        Q(id__icontains=search_query) |
+        Q(patient_name__icontains=search_query) |
+        Q(email__icontains=search_query) |
+        Q(phone_number__icontains=search_query) 
+    )
+
+    paginator = Paginator(patients, page_size)
+    try:
+        patient_page = paginator.page(page)
+    except PageNotAnInteger:
+        patient_page = paginator.page(1)
+    return render(request, "patient/patient_list.html", {'patient_page': patient_page, 'page_size': page_size, 'search_query': search_query})
+
+@login_required
+def patient_profile(request, patient_id):
+    patient = get_object_or_404(PatientDetails, pk=patient_id)
+    
+    image_base64 = base64.b64encode(patient.patient_image).decode('utf-8') if patient.patient_image else None
+
+    return render(request, "patient/patient_profile.html", {'patient': patient, 'image_base64': image_base64})
 
 @login_required
 def patient_edit(request, patient_id):
@@ -329,9 +374,15 @@ def nurse_index(request):
 @login_required
 def nurse_add(request):
     if request.method == 'POST':
-        form = NurseForm(request.POST)
+        form = NurseForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            #form.save()
+            nurse = form.save(commit=False)
+            image_blob = request.FILES.get('nurse_image')
+            if image_blob:
+                nurse.nurse_image = image_blob.read()
+
+            nurse.save()
             return redirect('Nurseindex')
     else:
         form = NurseForm()
@@ -339,10 +390,25 @@ def nurse_add(request):
 
 @login_required
 def nurse_list(request):
+    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page = request.GET.get('page', 1)
 
-    nurses = NurseDetails.objects.all()
+    search_query = request.GET.get('search', '')
+
+    nurses = NurseDetails.objects.filter(
+        Q(id__icontains=search_query) |
+        Q(nurse_name__icontains=search_query) |
+        Q(email__icontains=search_query) |
+        Q(phone_number__icontains=search_query) 
+    )
+
+    paginator = Paginator(nurses, page_size)
+    try:
+        nurse_page = paginator.page(page)
+    except PageNotAnInteger:
+        nurse_page = paginator.page(1)
     
-    return render(request, "nurse/nurse_list.html", {'nurses': nurses})
+    return render(request, "nurse/nurse_list.html", {'nurse_page': nurse_page, 'page_size': page_size, 'search_query': search_query})
 
 @login_required
 def nurse_edit(request, nurse_id):
@@ -371,9 +437,15 @@ def pharmacist_index(request):
 @login_required
 def pharmacist_add(request):
     if request.method == 'POST':
-        form = PharmacistForm(request.POST)
+        form = PharmacistForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            #form.save()
+            pharmacist = form.save(commit=False)
+            image_blob = request.FILES.get('pharmacist_image')
+            if image_blob:
+                pharmacist.pharmacist_image = image_blob.read()
+
+            pharmacist.save()
             return redirect('Pharmacistindex')
     else:
         form = PharmacistForm()
@@ -381,8 +453,24 @@ def pharmacist_add(request):
 
 @login_required
 def pharmacist_list(request):
-    pharmacists = PharmacistDetails.objects.all()
-    return render(request, "pharmacist/pharmacist_list.html", {'pharmacists': pharmacists})
+    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page = request.GET.get('page', 1)
+
+    search_query = request.GET.get('search', '')
+
+    pharmacists = PharmacistDetails.objects.filter(
+        Q(id__icontains=search_query) |
+        Q(pharmacist_name__icontains=search_query) |
+        Q(email__icontains=search_query) |
+        Q(phone_number__icontains=search_query) 
+    )
+
+    paginator = Paginator(pharmacists, page_size)
+    try:
+        pharmacist_page = paginator.page(page)
+    except PageNotAnInteger:
+        pharmacist_page = paginator.page(1)
+    return render(request, "pharmacist/pharmacist_list.html", {'pharmacist_page': pharmacist_page, 'page_size': page_size, 'search_query': search_query})
 
 @login_required
 def pharmacist_edit(request, pharmacist_id):

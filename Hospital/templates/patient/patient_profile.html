@@ -1,0 +1,96 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% block title %} Patient details {% endblock %}
+
+{% block content %}
+
+<div class="main-wrapper">
+
+    
+    <div class="content container-fluid">
+    <div class="page-header">
+    <div class="row">
+    <div class="col-sm-12">
+    <h3 class="page-title">Patient profile</h3>
+    <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'patient_list' %}">Patient List</a></li>
+    <li class="breadcrumb-item active">Patient Profile</li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    <div class="card">
+    <div class="card-body">
+    <div class="row">
+    <div class="col-md-12">
+    <div class="about-info">
+    <h4>About Me</h4>
+    
+            <div class="media mt-3">
+            {% if image_base64 %}
+            <img src="data:image/jpeg;base64,{{ image_base64 }}" class="mr-3" alt="Image">
+            {% else %}
+            <p>No image.</p>
+            {% endif %}
+            <div class="media-body">
+
+            <ul>
+            <li>
+            <span class="title-span">Full Name : </span>
+            <span class="info-span">{{ patient.patient_name }}</span>
+            </li>
+            <li>
+            <span class="title-span">Blood Group : </span>
+            <span class="info-span">{{ patient.blood_group }}</span>
+            </li>
+            <li>
+            <span class="title-span">Mobile : </span>
+            <span class="info-span">{{ patient.phone_number }}</span>
+            </li>
+            <li>
+            <span class="title-span">Email : </span>
+            <span class="info-span">{{ patient.email }}</span>
+            </li>
+            <li>
+            <span class="title-span">Gender : </span>
+            <span class="info-span">{{ patient.gender }}</span>
+            </li>
+            <li>
+            <span class="title-span">DOB : </span>
+            <span class="info-span">{{ patient.date_of_birth }}</span>
+            </li>
+            
+            </ul>
+           
+    </div>
+    </div>
+    
+    
+    <div class="row mt-2">
+    <div class="col-md-12">
+    <h5>Address</h5>
+    <p>{{ patient.address }}</p>
+    </div>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    <div class="row mt-2">
+    <div class="col-md-12">
+    <div class="skill-info">
+    
+    
+    </div>
+    </div>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    
+    
+    
+    
+
+{% endblock %}

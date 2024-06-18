@@ -22,6 +22,14 @@
                  <li class="breadcrumb-item active">List of Patient</li>
               </ul>
            </div>
+
+           <div class="top-nav-search">
+            <form method="get" action="">
+               <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
+               <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+
            <div class="col-auto text-right float-right ml-auto">
               <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
               <a href="add-student.html" class="btn btn-primary"><i class="fas fa-plus"></i></a>
@@ -39,43 +47,64 @@
                           <tr>
                              <th>ID</th>
                              <th>Name</th>
-                             
+                             <th>Blood Group</th>
                              <th>Date of birth</th>
                              <th>Gender</th>
-                             <th>email</th>
+                             <th>Address</th>
+                             <th>State</th>
+                             <th>Country</th>
+                             <th>Pincode</th>
+                             <th>Email</th>
                              <th>Phone</th>
                              
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for patient in patients %}
+                       {% for data in patient_page %}
                        <tbody>
                           <tr>
-                             <td>{{ patient.id }}</td>
+                             <td>{{ data.id }}</td>
                              
                              <td>
-                                {{ patient.patient_name }}
+                              <h2 class="#">
+                                 <a href="{% url 'patient_profile' data.id %}">{{ data.patient_name }}</a>
+                              </h2>
                              </td>
                              <td>
-                                {{ patient.date_of_birth }}
+                              {{ data.blood_group }}
+                           </td>
+                             <td>
+                                {{ data.date_of_birth }}
                              </td>
                              <td>
-                                {{ patient.gender }}
+                                {{ data.gender }}
                              </td>
                              <td>
-                                {{ patient.email }}
+                              {{ data.address }}
+                           </td>
+                           <td>
+                              {{ data.state }}
+                           </td>
+                           <td>
+                              {{ data.country }}
+                           </td>
+                           <td>
+                              {{ data.pin_code }}
+                           </td>
+                             <td>
+                                {{ data.email }}
                              </td>
                              <td>
-                                {{ patient.phone_number }}
+                                {{ data.phone_number }}
                              </td>
 
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'patient_edit' patient.id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'patient_edit' data.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ patient.username }}', '{{ patient.id }}')">
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.patient_name }}', '{{ data.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
                                 </div>

@@ -4,9 +4,6 @@
 
 {% block content %}
 
-
-
-   
       
       <div class="content container-fluid">
          
@@ -22,6 +19,14 @@
                  <li class="breadcrumb-item active">List of Pharmacist</li>
               </ul>
            </div>
+
+           <div class="top-nav-search">
+            <form method="get" action="">
+               <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
+               <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+
            <div class="col-auto text-right float-right ml-auto">
               <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
               <a href="add-student.html" class="btn btn-primary"><i class="fas fa-plus"></i></a>
@@ -31,6 +36,17 @@
      
      <div class="row">
         <div class="col-sm-12">
+
+         <form id="page-size-form" method="get" action="">
+            <label for="page_size">Items per page:</label>
+            <select id="page_size" name="page_size" onchange="updatePageSize()">
+               <option value="5" {% if page_size == 5 %}selected{% endif %}>5</option>
+               <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+               <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+               <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
+            </select>
+         </form>
+
            <div class="card card-table">
               <div class="card-body">
                  <div class="table-responsive">
@@ -42,13 +58,18 @@
                              
                              <th>Date of birth</th>
                              <th>Gender</th>
+                             <th>Address</th>
+                             <th>State</th>
+                             <th>Country</th>
+                             <th>Pincode</th>
                              <th>email</th>
                              <th>Phone</th>
+                             <th>Salary</th>
                              
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for pharmacist in pharmacists %}
+                       {% for pharmacist in pharmacist_page %}
                        <tbody>
                           <tr>
                              <td>{{ pharmacist.id }}</td>
@@ -68,6 +89,9 @@
                              <td>
                                 {{ pharmacist.phone_number }}
                              </td>
+                             <td>
+                              {{ pharmacist.charges }}
+                           </td>
 
                              
                              <td class="text-right">
@@ -94,7 +118,12 @@
             </div>
          </div>
       
-         
+         <script>
+            function updatePageSize(){
+               document.getElementById("page-size-form").submit();
+            }
+         </script> 
+       
   <script>
    function confirmDelete(roleName, roleId){
       if(confirm(`Are you sure you want to delete ${name}?`)) {
