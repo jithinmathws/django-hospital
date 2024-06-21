@@ -4,7 +4,7 @@ from django import forms
 import django.forms.utils
 import django.forms.widgets
 
-from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
+from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
@@ -242,6 +242,24 @@ class InvoiceForm(forms.ModelForm):
         self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+
+class IncomeForm(forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    
+    class Meta:
+        model = IncomeDetails
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["patient_name"].widget.attrs.update({"class": 'form-control'})
+        self.fields["payment_status"].widget.attrs.update({"class": 'form-control'})
+        self.fields["payment_method"].widget.attrs.update({"class": 'form-control'})
+        self.fields["payment_details"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["payment_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
 
 class TreatmentForm(forms.ModelForm):
     class Meta:

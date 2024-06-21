@@ -221,6 +221,20 @@ class InvoiceDetails(models.Model):
     def __str__(self):
         return str(self.invoice_title)
     
+class IncomeDetails(models.Model):
+    patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    payment_status = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("PD", "Paid"), ("PNDG", "PENDING"), ("NPD", "Not Paid")),
+     )
+    payment_method = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("CSH", "Cash"), ("CRD", "Card"), ("UPI", "Upi")),
+     )
+    payment_details = models.CharField(max_length=50)
+    date = models.DateField()
+    payment_amount = models.CharField(max_length=50)
+
 class TreatmentDetails(models.Model):
     treatment_name = models.CharField(max_length=50)
     treatment_price = models.CharField(max_length=50)

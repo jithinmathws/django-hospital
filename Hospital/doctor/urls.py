@@ -58,6 +58,7 @@ urlpatterns = [
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
     path("addInvoice/", views.invoice_add, name="invoice"),
+    path("addIncome/", views.income_add, name="income"),
     path("invoicelist/", views.invoice_list, name="invoice_list"),
     path("invoice_edit-account/<int:invoice_id>/", views.invoice_edit, name="invoice_edit"),
     path("invoice_delete-account/<int:invoice_id>/", views.invoice_delete, name="invoice_delete"),

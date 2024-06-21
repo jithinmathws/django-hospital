@@ -6,8 +6,8 @@ import csv
 import base64
 
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorDetails, DoctorCertificate, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails
-from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm
+from .models import DoctorDetails, DoctorCertificate, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
+from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm, IncomeForm
 from .resources import doctorResources
 
 from django.contrib.auth.decorators import login_required
@@ -578,6 +578,17 @@ def invoice_delete(request, invoice_id):
     member = InvoiceDetails.objects.get(pk=invoice_id)
     member.delete()
     return redirect('invoice_list')
+
+@login_required
+def income_add(request):
+    if request.method == 'POST':
+        form = IncomeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Incomeindex')
+    else:
+        form = InvoiceForm()
+    return render(request, "invoice/addIncome.html", {'form': form})
 
 #Treatment
 @login_required
