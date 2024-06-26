@@ -17,6 +17,47 @@ class DoctorDepartment(models.Model):
             self.slug = slugify(self.department_name)
         super().save(*args, **kwargs)
 
+class DoctorInfo(models.Model):
+    doctor_name = models.CharField(max_length=50)
+    department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
+    specialization = models.CharField(max_length=50, blank=True, null=True)
+    date_of_birth = models.DateField()
+    gender = models.CharField(
+         max_length=20,
+         choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
+     )
+    address_line = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    pin_code = models.BigIntegerField(blank=True, null=True)
+    email = models.EmailField(default="", max_length=50, unique=True)
+    phone_number = models.CharField(default="", max_length=20)
+    visiting_charge = models.CharField(max_length=50, blank=True, null=True)
+    visiting_charge_tax = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
+    consulting_charge = models.CharField(max_length=50, blank=True, null=True)
+    consulting_charge_tax = models.CharField(
+         max_length=20, blank=True, null=True,
+         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+     )
+    cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
+    #certificate = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
+    #doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
+    image = models.BinaryField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.doctor_name)
+
+class CertificateDoctor(models.Model):
+    doctor = models.ForeignKey(DoctorInfo, on_delete=models.CASCADE)
+    certificate_file = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
+
+    def __str__(self):
+        return str(self.doctor)
 
 class DoctorDetails(models.Model):
     doctor_name = models.CharField(max_length=50)
@@ -44,6 +85,7 @@ class DoctorDetails(models.Model):
          choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
      )
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
+    certificate = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
     #doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
     image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -53,7 +95,7 @@ class DoctorDetails(models.Model):
         return str(self.doctor_name)
 
 def certificate_path(instance, filename):
-    return f'media/doctor/certificates/{instance.doctor.id}/{filename}'
+    return f'doctor/certificates/{instance.doctor.id}/{filename}'
 
 class DoctorCertificate(models.Model):
     doctor = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
@@ -104,7 +146,7 @@ class PatientStatus(models.Model):
 class AdmissionDetails(models.Model):
     admission_date = models.DateTimeField(null=True, blank=True)
     patient_status = models.ForeignKey(PatientStatus, on_delete=models.CASCADE)
-    doctor_name = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
+    doctor_name = models.ForeignKey(DoctorInfo, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.doctor_name)
@@ -112,7 +154,7 @@ class AdmissionDetails(models.Model):
 class AppointmentDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
     department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
-    doctor_name = models.ForeignKey(DoctorDetails, on_delete=models.CASCADE)
+    doctor_name = models.ForeignKey(DoctorInfo, on_delete=models.CASCADE)
     booking_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

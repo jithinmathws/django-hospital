@@ -3,4 +3,4 @@ from .models import *
 
 class doctorResources(resources.ModelResource):
     class meta:
-        model = DoctorDetails
+        model = DoctorInfo

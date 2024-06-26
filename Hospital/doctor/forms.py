@@ -4,7 +4,7 @@ from django import forms
 import django.forms.utils
 import django.forms.widgets
 
-from .models import DoctorDepartment, DoctorDetails, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
+from .models import DoctorDepartment, DoctorInfo, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
@@ -30,8 +30,8 @@ class DoctorForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
     image = forms.ImageField(required=False)
     class Meta:
-        model = DoctorDetails
-        #fields = ['doctor_name', 'department_name', 'date_of_birth', 'gender', 'email', 'phone_number', 'cv_file', 'doctor_image']
+        model = DoctorInfo
+        #fields = ['doctor_name', 'department_name', 'specialization', 'date_of_birth', 'gender', 'address_line', 'state', 'country', 'pin_code', 'email', 'phone_number', 'visiting_charge', 'visiting_charge_tax', 'consulting_charge', 'consulting_charge_tax', 'cv_file', 'image']
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):

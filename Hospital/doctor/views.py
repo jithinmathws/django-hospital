@@ -6,7 +6,7 @@ import csv
 import base64
 
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorDetails, DoctorCertificate, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
+from .models import DoctorInfo, CertificateDoctor, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
 from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm, IncomeForm
 from .resources import doctorResources
 
@@ -77,7 +77,7 @@ def department_edit(request, department_id):
 
 @login_required
 def department_delete(request, department_id):
-    member = DoctorDetails.objects.get(pk=department_id)
+    member = DoctorDepartment.objects.get(pk=department_id)
     member.delete()
     return redirect('department_list')
 
@@ -85,7 +85,7 @@ def department_delete(request, department_id):
 def doctor_add(request):
     if request.method == 'POST':
         form = DoctorForm(request.POST, request.FILES)
-        certificate_files = request.FILES.getlist('certificate_file')
+        certificate_files = request.FILES.getlist('certificate[]')
         if form.is_valid():
             #doctor = form.save()
 
@@ -97,28 +97,15 @@ def doctor_add(request):
             doctor.save()
 
             if len(certificate_files)> 15:
-                messages.error(request, 'You can only upload a maximum of 10 certificates.')
+                messages.error(request, 'You can only upload a maximum of 15 certificates.')
                 
             
-            #create a folder for doctor certificates using doctor id
-            doctor_folder = os.path.join('doctor_certificates', 'certificates', str(doctor.id))
-            os.makedirs(doctor_folder, exist_ok=True)
-
-            for idx, certificate_file in enumerate(certificate_files, start=1):
-                original_extension = os.path.splitext(certificate_file.name)[1]
-
-                #Rename and save the certificate file
-                new_filename = f'{doctor.id}_{doctor.email}_{idx}{original_extension}'
-                new_file_path = os.path.join(doctor_folder, new_filename)
-
-                #save the certificate file
-                with open(new_file_path, 'wb+') as destination:
-                    for chunk in certificate_file.chunks():
-                        destination.write(chunk)
-                
-                DoctorCertificate.objects.create(
+            
+           
+            for i in certificate_files:            
+                CertificateDoctor.objects.create(
                     doctor=doctor,
-                    certificate_file = new_file_path, # save the path; not the file object
+                    certificate_file = i, # save the path; not the file object
                 )
             return redirect('Dindex')
     else:
@@ -132,7 +119,7 @@ def doctor_list(request):
 
     search_query = request.GET.get('search', '')
 
-    doctors = DoctorDetails.objects.filter(
+    doctors = DoctorInfo.objects.filter(
         Q(id__icontains=search_query) |
         Q(doctor_name__icontains=search_query) |
         Q(email__icontains=search_query) |
@@ -141,7 +128,7 @@ def doctor_list(request):
 
     doctor_data = []
     for doctor in doctors:
-        existing_certificates = len(DoctorCertificate.objects.filter(doctor=doctor))
+        existing_certificates = len(CertificateDoctor.objects.filter(doctor=doctor))
         remaining_certificates = 10 - existing_certificates
         doctor_data.append({'doctor': doctor, 'remaining_certificates': remaining_certificates})
 
@@ -154,8 +141,8 @@ def doctor_list(request):
 
 @login_required
 def doctor_profile(request, doctor_id):
-    doctor = get_object_or_404(DoctorDetails, pk=doctor_id)
-    certificates = DoctorCertificate.objects.filter(doctor=doctor)
+    doctor = get_object_or_404(DoctorInfo, pk=doctor_id)
+    certificates = CertificateDoctor.objects.filter(doctor=doctor)
 
     image_base64 = base64.b64encode(doctor.image).decode('utf-8') if doctor.image else None
 
@@ -163,7 +150,7 @@ def doctor_profile(request, doctor_id):
 
 @login_required
 def doctor_edit(request, doctor_id):
-    role = DoctorDetails.objects.get(pk=doctor_id)
+    role = DoctorInfo.objects.get(pk=doctor_id)
     if request.method == 'POST':
         form = DoctorForm(request.POST, instance=role)
         if form.is_valid():
@@ -176,7 +163,7 @@ def doctor_edit(request, doctor_id):
 
 @login_required
 def doctor_delete(request, doctor_id):
-    member = DoctorDetails.objects.get(pk=doctor_id)
+    member = DoctorInfo.objects.get(pk=doctor_id)
     member.delete()
     return redirect('doctor_list')
 
@@ -188,7 +175,7 @@ def importDoctorExcel(request):
         new_doctors = request.FILES['my_file']
         imported_data = dataset.load(new_doctors.read(), format='xlsx')
         for data in imported_data:
-            value = DoctorDetails(
+            value = DoctorInfo(
                 data[0],
                 data[1],
                 data[2],
@@ -212,7 +199,7 @@ def importDoctorExcel(request):
 
 @login_required
 def ExportToCsv(request):
-    doctors = DoctorDetails.objects.all()
+    doctors = DoctorInfo.objects.all()
     file_name = f"doctor_data.csv"
     response = HttpResponse(content_type = 'text/csv')
     response['Content-Disposition'] = f'attachment; filename="{file_name}"'
@@ -589,6 +576,29 @@ def income_add(request):
     else:
         form = InvoiceForm()
     return render(request, "invoice/addIncome.html", {'form': form})
+
+@login_required
+def income_list(request):
+    incomes = IncomeDetails.objects.all()
+    return render(request, "invoice/income_list.html", {'incomes': incomes})
+
+@login_required
+def income_edit(request, income_id):
+    role = InvoiceDetails.objects.get(pk=income_id)
+    if request.method == 'POST':
+        form = IncomeForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('income_list')
+    else:
+        form = InvoiceForm(instance=role)
+    return render(request, 'invoice/income_edit.html', {'form': form, 'role': role})
+
+@login_required
+def income_delete(request, income_id):
+    member = InvoiceDetails.objects.get(pk=income_id)
+    member.delete()
+    return redirect('income_list')
 
 #Treatment
 @login_required

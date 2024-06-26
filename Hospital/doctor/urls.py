@@ -60,8 +60,11 @@ urlpatterns = [
     path("addInvoice/", views.invoice_add, name="invoice"),
     path("addIncome/", views.income_add, name="income"),
     path("invoicelist/", views.invoice_list, name="invoice_list"),
+    path("incomelist/", views.income_list, name="income_list"),
     path("invoice_edit-account/<int:invoice_id>/", views.invoice_edit, name="invoice_edit"),
     path("invoice_delete-account/<int:invoice_id>/", views.invoice_delete, name="invoice_delete"),
+    path("income_edit-account/<int:income_id>/", views.income_edit, name="income_edit"),
+    path("income_delete-account/<int:income_id>/", views.income_delete, name="income_delete"),
 
     path("treatment/", views.treatment_index, name="Treatmentindex"),
     path("addTreatment/", views.treatment_add, name="treatment"),
@@ -69,5 +72,5 @@ urlpatterns = [
     path("treatment_edit-account/<int:treatment_id>/", views.treatment_edit, name="treatment_edit"),
     path("treatment_delete-account/<int:treatment_id>/", views.treatment_delete, name="treatment_delete"),
 
-    path('/<path:path>/', serve, {'document_root': settings.MEDIA_ROOT}),
+    
 ]
