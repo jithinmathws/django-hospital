@@ -54,7 +54,7 @@ class DoctorInfo(models.Model):
 
 class CertificateDoctor(models.Model):
     doctor = models.ForeignKey(DoctorInfo, on_delete=models.CASCADE)
-    certificate_file = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
+    certificate_file = models.FileField(upload_to='doctor/certificates/', null=True, blank=True)
 
     def __str__(self):
         return str(self.doctor)
@@ -257,6 +257,8 @@ class InvoiceDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
     invoice_title = models.CharField(max_length=50)
     subtotal_amount = models.CharField(max_length=50)
+    discount_amount = models.CharField(max_length=50, blank=True, null=True)
+    discount_percentage = models.CharField(max_length=50, blank=True, null=True)
     adjusted_amount = models.CharField(max_length=50)
     date = models.DateField()
 

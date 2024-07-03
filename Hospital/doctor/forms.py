@@ -152,6 +152,7 @@ class NurseForm(forms.ModelForm):
         for field in self.fields:
             print(field)
         self.fields["nurse_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["department_name"].widget.attrs.update({"class": 'form-control'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
         self.fields["address"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["state"].widget.attrs.update({"class": 'form-control', "type": 'text'})
@@ -230,7 +231,7 @@ class InvoiceForm(forms.ModelForm):
     
     class Meta:
         model = InvoiceDetails
-        fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'adjusted_amount', 'date']
+        fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'adjusted_amount', 'date']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -239,8 +240,10 @@ class InvoiceForm(forms.ModelForm):
         #self.fields["invoice_id"].widget.attrs.update({"class": 'form-control'})
         self.fields["patient_name"].widget.attrs.update({"class": 'form-control'})
         self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'total(this)'})
+        self.fields["discount_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'discountcalc(this)', "value": 0 })
+        self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "type": 'number', "value": 0, "onkeyup": 'percentagecalc(this)'})
+        self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
 
 class IncomeForm(forms.ModelForm):

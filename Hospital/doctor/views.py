@@ -98,14 +98,12 @@ def doctor_add(request):
 
             if len(certificate_files)> 15:
                 messages.error(request, 'You can only upload a maximum of 15 certificates.')
-                
+               
             
-            
-           
-            for i in certificate_files:            
+            for file in certificate_files:
                 CertificateDoctor.objects.create(
                     doctor=doctor,
-                    certificate_file = i, # save the path; not the file object
+                    certificate_file = file,
                 )
             return redirect('Dindex')
     else:
