@@ -61,9 +61,21 @@
                {{ form.discount_amount }}
             </div>
             </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                   <label>Tax Percentage<b>(%)</b></label>
+                   {{ form.tax_percentage }}
+                 </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                   <label>Tax Amount</label>
+                   {{ form.tax_amount }}
+                </div>
+                </div>
        <div class="col-12 col-sm-6">
             <div class="form-group">
-                <label>Adjusted Amount</label>
+                <label>Grand Total</label>
                 {{ form.adjusted_amount }}
             </div>
         </div>
@@ -109,15 +121,29 @@
             $('#id_discount_amount').val(disc.toFixed(3))
             calc_total()
         })
-    })
-    function calc_total(){
-        var sub_total =  $('#id_subtotal_amount').val()
-        var disc =  $('#id_discount_amount').val()
-        
+    
+        // calculating discount amount from percentage
+        $('#id_tax_percentage').on('change', function(){
+            var perc = $(this).val()
+                perc = perc > 0 ? perc : 0;
 
-        var total = parseFloat(sub_total) - parseFloat(disc)
-        $('#id_adjusted_amount').val(total.toFixed(3))
-    }
+            var sub_total =  $('#id_subtotal_amount').val()
+            
+            var tax = parseFloat(perc / 100) * parseFloat(sub_total) ;
+            $('#id_tax_amount').val(tax.toFixed(3))
+            calc_total()
+        
+        })
+
+        function calc_total(){
+            var sub_total =  $('#id_subtotal_amount').val()
+            var disc =  $('#id_discount_amount').val()
+            var tax =  $('#id_tax_amount').val()
+
+            var total = (parseFloat(sub_total) - parseFloat(disc)) + parseFloat(tax)
+            $('#id_adjusted_amount').val(total.toFixed(3))
+        }
+})
 </script>
 
 {% endblock %}

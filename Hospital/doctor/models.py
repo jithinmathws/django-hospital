@@ -259,7 +259,10 @@ class InvoiceDetails(models.Model):
     subtotal_amount = models.CharField(max_length=50)
     discount_amount = models.CharField(max_length=50, blank=True, null=True)
     discount_percentage = models.CharField(max_length=50, blank=True, null=True)
+    tax_percentage = models.CharField(max_length=50, blank=True, null=True)
+    tax_amount = models.CharField(max_length=50, blank=True, null=True)
     adjusted_amount = models.CharField(max_length=50)
+    
     date = models.DateField()
 
     def __str__(self):
