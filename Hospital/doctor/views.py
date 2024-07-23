@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.urls import reverse
+from django.views.generic.edit import CreateView
 
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
@@ -536,15 +538,39 @@ def invoice_add(request):
         form = InvoiceForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('Invoiceindex')
+            
+            def get_success_url(self):
+                return reverse('invoice_profile')
     else:
         form = InvoiceForm()
     return render(request, "invoice/addInvoice.html", {'form': form})
 
 @login_required
+class create_invoice(CreateView):
+
+    model = InvoiceDetails
+    fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
+    template_name = "invoice/addInvoice.html"
+
+    def get_success_url(self):
+        return reverse('invoice_profile')
+
+@login_required
 def invoice_list(request):
     invoices = InvoiceDetails.objects.all()
     return render(request, "invoice/invoice_list.html", {'invoices': invoices})
+
+@login_required
+def invoice_profile(request, invoice_id):
+    #invoice = get_object_or_404(InvoiceDetails, pk=invoice_id)
+    #print(invoice.query)
+    invoice = InvoiceDetails.objects.select_related('patient_name').filter(invoice_id=invoice_id)
+
+    return render(request, "invoice/invoice_profile.html", {'invoice': invoice})
+
+@login_required
+def redirect_me(request):
+    return redirect(reverse('invoice_profile', kwargs={'invoice_id': invoice_id}))
 
 @login_required
 def invoice_edit(request, invoice_id):

@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 from django.utils.text import slugify
 
 # Create your models here.
@@ -262,11 +264,13 @@ class InvoiceDetails(models.Model):
     tax_percentage = models.CharField(max_length=50, blank=True, null=True)
     tax_amount = models.CharField(max_length=50, blank=True, null=True)
     adjusted_amount = models.CharField(max_length=50)
-    
     date = models.DateField()
-
+    
     def __str__(self):
         return str(self.invoice_title)
+    
+    def get_absolute_url(self):
+        return reverse('invoice_profile', kwargs={'pk', self.pk})
     
 class IncomeDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)

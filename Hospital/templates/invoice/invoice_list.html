@@ -47,9 +47,15 @@
                           <tr>
                              <td>{{ invoice.invoice_id }}</td>
                              
+
                              <td>
-                                {{ invoice.patient_name }}
+                              <h2 class="#">
+                                 <a href="{% url 'invoice_profile' invoice.invoice_id %}">{{ invoice.patient_name }}</a>
+                              </h2>
                              </td>
+
+
+                             
 
                              <td>
                                 {{ invoice.invoice_title }}

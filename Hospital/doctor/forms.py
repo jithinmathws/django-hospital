@@ -231,7 +231,8 @@ class InvoiceForm(forms.ModelForm):
     
     class Meta:
         model = InvoiceDetails
-        fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
+        #fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
+        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -242,7 +243,7 @@ class InvoiceForm(forms.ModelForm):
         self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'total(this)'})
         self.fields["discount_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'discountcalc(this)', "value": 0 })
-        self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "type": 'number', "value": 0, "onkeyup": 'percentagecalc(this)'})
+        self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0})
         self.fields["tax_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'discountcalc(this)', "value": 0 })
         self.fields["tax_percentage"].widget.attrs.update({"class": 'form-control', "type": 'number', "value": 0, "onkeyup": 'percentagecalc(this)'})
         self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
