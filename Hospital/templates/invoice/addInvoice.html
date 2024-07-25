@@ -29,6 +29,7 @@
             <div class="col-12">
                <h5 class="form-title"><span>Invoice Details</span></h5>
             </div>
+            
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Patient Name</label>
@@ -144,17 +145,17 @@
             $('#id_adjusted_amount').val(total.toFixed(3))
         }
     })
-    document.getElementById('btnTab').addEventListener('click', this.openTab);
-    function openTab(ev) {
-            console.log('open a tab');
-            let win = window.open('{% url 'invoice_list' %}', 5000);
-            win.onload = (ev) => {
+    // document.getElementById('btnTab').addEventListener('click', this.openTab);
+    // function openTab(ev) {
+    //         console.log('open a tab');
+    //         let win = window.open('{% url 'invoice_list' %}', 5000);
+    //         win.onload = (ev) => {
                 
-            setTimeout(() => {
-                win.close();
-                }, 2500);
-            };
-            };
+    //         setTimeout(() => {
+    //             win.close();
+    //             }, 2500);
+    //         };
+    //         };
         
     </script>
 

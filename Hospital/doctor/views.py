@@ -537,19 +537,18 @@ def invoice_add(request):
     if request.method == 'POST':
         form = InvoiceForm(request.POST)
         if form.is_valid():
-            form.save()
-            
-            def get_success_url(self):
-                return reverse('invoice_profile')
+            form.save()           
+            return redirect('invoice_list')
     else:
         form = InvoiceForm()
     return render(request, "invoice/addInvoice.html", {'form': form})
 
-@login_required
+
 class create_invoice(CreateView):
 
     model = InvoiceDetails
-    fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
+    #fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
+    form_class = InvoiceForm
     template_name = "invoice/addInvoice.html"
 
     def get_success_url(self):

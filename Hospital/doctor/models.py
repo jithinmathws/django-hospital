@@ -270,7 +270,7 @@ class InvoiceDetails(models.Model):
         return str(self.invoice_title)
     
     def get_absolute_url(self):
-        return reverse('invoice_profile', kwargs={'pk', self.pk})
+        return reverse('invoice_profile', kwargs={'pk', self.invoice_id})
     
 class IncomeDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
