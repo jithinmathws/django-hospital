@@ -74,7 +74,7 @@ def department_edit(request, department_id):
             return redirect('department_list')
 
     else:
-        form = DoctorForm(instance=role)
+        form = DepartmentForm(instance=role)
     return render(request, 'doctor/department_edit.html', {'form': form, 'role': role})
 
 @login_required
