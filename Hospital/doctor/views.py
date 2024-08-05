@@ -561,9 +561,9 @@ def invoice_list(request):
 
 @login_required
 def invoice_profile(request, invoice_id):
-    #invoice = get_object_or_404(InvoiceDetails, pk=invoice_id)
+    invoice = get_object_or_404(InvoiceDetails, pk=invoice_id)
     #print(invoice.query)
-    invoice = InvoiceDetails.objects.select_related('patient_name').filter(invoice_id=invoice_id)
+    #invoice = InvoiceDetails.objects.select_related('patient_name').filter(invoice_id=invoice_id)
 
     return render(request, "invoice/invoice_profile.html", {'invoice': invoice})
 

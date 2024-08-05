@@ -43,9 +43,11 @@
                                 <ul>
                                     <li class = 'text-bold'>Invoiced To:</li>
                                     <li>{{ invoice.patient_name }}</li>
-                                    <li>{{ invoice.patient_name.address }}</li>
-                                    <li>{{ invoice.patient_name.email }}</li>
-                                    <li>{{ invoice.patient_name.state }}</li>
+                                    
+                                        <li>{{ invoice.patient_name.address }}</li>
+                                        <li>{{ invoice.patient_name.email }}</li>
+                                        <li>{{ invoice.patient_name.state }}</li>
+                                    
                                 </ul>
                             </div>
                             <div class = "invoice-head-bottom-right">
@@ -86,7 +88,7 @@
                                     </tr> -->
                                 </tbody>
                             </table>
-                            <div class = "invoice-body-bottom">
+                            <!-- <div class = "invoice-body-bottom">
                                 <div class = "invoice-body-info-item border-bottom">
                                     <div class = "info-item-td text-end text-bold">Sub Total:</div>
                                     <div class = "info-item-td text-end">$2150.00</div>
@@ -99,7 +101,7 @@
                                     <div class = "info-item-td text-end text-bold">Total:</div>
                                     <div class = "info-item-td text-end">$21365.00</div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class = "invoice-foot text-center">
@@ -112,12 +114,7 @@
                                 </span>
                                 <span>Print</span>
                             </button>
-                            <button type = "button" class = "invoice-btn">
-                                <span>
-                                    <i class="fa-solid fa-download"></i>
-                                </span>
-                                <span>Download</span>
-                            </button>
+                            
                         </div>
                     </div>
                 </div>
