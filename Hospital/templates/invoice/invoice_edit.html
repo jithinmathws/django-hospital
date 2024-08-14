@@ -22,19 +22,74 @@
     <div class="card-body">
     
     
-    <form method="post">
-        {% csrf_token %}
-        <div class="col-12 col-sm-6">
-     <div class="form-group">
-        {{ form.as_p }}
-        </div>
-        </div>
-   
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Submit</button>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                   <h5 class="form-title"><span>Invoice Details</span></h5>
+                </div>
+                
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Patient Name</label>
+                        {{ form.patient_name }}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                       <label>Date</label>
+                       {{ form.date }}
+                   </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Invoice Title</label>
+                        {{ form.invoice_title }}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Subtotal Amount</label>
+                        {{ form.subtotal_amount }}
+                    </div>
+                </div>
+            
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Discount Percentage<b>(%)</b></label>
+                        {{ form.discount_percentage }}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Discount Amount</label>
+                        {{ form.discount_amount }}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                       <label>Tax Percentage<b>(%)</b></label>
+                       {{ form.tax_percentage }}
+                     </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                       <label>Tax Amount</label>
+                       {{ form.tax_amount }}
+                    </div>
+                    </div>
+           <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Grand Total</label>
+                    {{ form.adjusted_amount }}
+                </div>
             </div>
-            </div> 
-    </form>
+            
+            <div class="col-12">
+                <button id="btnTab" type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                </div>
+        </form>
     
     <!-- <div class="login-or">
     <span class="or-line"></span>
@@ -53,5 +108,59 @@
 </div>
 </div>
 </div>
+
+<script>// src="{% static 'invoice/invo.js' %}
+    document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        })
+    $(document).ready(function(){
+        // calculating discount amount from percentage
+        $('#id_discount_percentage').on('change', function(){
+            var perc = $(this).val()
+                perc = perc > 0 ? perc : 0;
+    
+            var sub_total =  $('#id_subtotal_amount').val()
+                
+            var disc = parseFloat(perc / 100) * parseFloat(sub_total) ;
+            $('#id_discount_amount').val(disc.toFixed(3))
+            calc_total()
+        })
+        
+        // calculating discount amount from percentage
+        $('#id_tax_percentage').on('change', function(){
+            var perc = $(this).val()
+                perc = perc > 0 ? perc : 0;
+    
+            var sub_total =  $('#id_subtotal_amount').val()
+            var disc_amount = $('#id_discount_amount').val()
+            var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
+                
+            var tax = parseFloat(perc / 100) * parseFloat(total_afterdisc) ;
+            $('#id_tax_amount').val(tax.toFixed(3))
+            calc_total()
+            
+        })
+        function calc_total(){
+            var sub_total =  $('#id_subtotal_amount').val()
+            var disc =  $('#id_discount_amount').val()
+            var tax =  $('#id_tax_amount').val()
+    
+            var total = (parseFloat(sub_total) - parseFloat(disc)) + parseFloat(tax)
+            $('#id_adjusted_amount').val(total.toFixed(3))
+        }
+    })
+    // document.getElementById('btnTab').addEventListener('click', this.openTab);
+    // function openTab(ev) {
+    //         console.log('open a tab');
+    //         let win = window.open('{% url 'invoice_list' %}', 5000);
+    //         win.onload = (ev) => {
+                
+    //         setTimeout(() => {
+    //             win.close();
+    //             }, 2500);
+    //         };
+    //         };
+        
+    </script>
 
 {% endblock %}

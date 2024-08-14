@@ -132,8 +132,10 @@
                 perc = perc > 0 ? perc : 0;
     
             var sub_total =  $('#id_subtotal_amount').val()
+            var disc_amount = $('#id_discount_amount').val()
+            var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
                 
-            var tax = parseFloat(perc / 100) * parseFloat(sub_total) ;
+            var tax = parseFloat(perc / 100) * parseFloat(total_afterdisc) ;
             $('#id_tax_amount').val(tax.toFixed(3))
             calc_total()
             
