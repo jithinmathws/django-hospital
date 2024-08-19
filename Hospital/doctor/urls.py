@@ -77,5 +77,7 @@ urlpatterns = [
     path("treatment_edit-account/<int:treatment_id>/", views.treatment_edit, name="treatment_edit"),
     path("treatment_delete-account/<int:treatment_id>/", views.treatment_delete, name="treatment_delete"),
 
+    path("pharmacy/", views.pharmacy_index, name="Pharmacyindex"),
+
     
 ]

@@ -662,3 +662,8 @@ def treatment_delete(request, treatment_id):
     member = TreatmentDetails.objects.get(pk=treatment_id)
     member.delete()
     return redirect('treatment_list')
+
+#Pharmaceuticals
+@login_required
+def pharmacy_index(request):
+    return render(request, "pharmaceuticals/index.html", {})
