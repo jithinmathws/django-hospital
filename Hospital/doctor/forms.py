@@ -226,6 +226,21 @@ class AddBedForm(forms.ModelForm):
         self.fields["charges"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["tax"].widget.attrs.update({"class": 'form-control'})
 
+    def clean_bed_category(self):
+        bed_category = self.cleaned_data.get('bedCategory_name')
+        if not bed_category:
+            raise forms.ValidationError('Bed Category required')
+        return bed_category
+    
+    def clean_bed_number(self):
+        bed_number = self.cleaned_data.get('bed_number')
+        if not bed_number:
+            raise forms.ValidationError('Bed Number required')
+        for instance in AddBed.objects.all():
+            if instance.bed_number == bed_number:
+                raise forms.ValidationError('Bed already exist')
+        return bed_number
+
 class InvoiceForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     
@@ -241,7 +256,12 @@ class InvoiceForm(forms.ModelForm):
         #self.fields["invoice_id"].widget.attrs.update({"class": 'form-control'})
         self.fields["patient_name"].widget.attrs.update({"class": 'form-control'})
         self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'total(this)'})
+        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["invoice_title1"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["subtotal_amount1"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["invoice_title2"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["subtotal_amount2"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["total_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'totalcalc(this)'})
         self.fields["discount_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'discountcalc(this)', "value": 0 })
         self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0})
         self.fields["tax_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'discountcalc(this)', "value": 0 })

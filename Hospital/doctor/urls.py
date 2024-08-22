@@ -57,6 +57,7 @@ urlpatterns = [
     path("addBed/", views.bed_add, name="addBed"),
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
+    path("invoiceItem/", views.invoice_item, name="invoice_item"),
     path("addInvoice/", views.invoice_add, name="invoice"),
     path("createInvoice/", views.create_invoice.as_view(), name="create_invoice"),
     path("addIncome/", views.income_add, name="income"),

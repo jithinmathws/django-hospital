@@ -534,15 +534,29 @@ def invoice_index(request):
 
 @login_required
 def invoice_add(request):
+    context = {}
+    form = InvoiceForm()
+    invoice = InvoiceDetails.objects.all()
+    context['invoice'] = invoice
+    context['form'] = form
     if request.method == 'POST':
         form = InvoiceForm(request.POST)
         if form.is_valid():
-            form.save()           
-            return redirect('invoice_list')
+            
+            form.save()
+                   
+            return redirect('Invoiceindex')
     else:
         form = InvoiceForm()
-    return render(request, "invoice/addInvoice.html", {'form': form})
+    return render(request, "invoice/addInvoice.html", context)
 
+@login_required
+def invoice_item(request):
+    context = {}
+    form = InvoiceForm()
+    invoice = InvoiceDetails.objects.all()
+    context['invoice'] = invoice
+    return render(request, "partials/invoice.html", context)
 
 class create_invoice(CreateView):
 
@@ -663,7 +677,7 @@ def treatment_delete(request, treatment_id):
     member.delete()
     return redirect('treatment_list')
 
-#Pharmaceuticals
+#Pharmacy
 @login_required
 def pharmacy_index(request):
     return render(request, "pharmaceuticals/index.html", {})

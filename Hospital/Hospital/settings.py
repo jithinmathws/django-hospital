@@ -44,6 +44,7 @@ EXTERNAL_APPS = [
     "doctor",
 
     #packages
+    'crispy_forms',
     'widget_tweaks',
     'import_export',
     'data_wizard',
@@ -144,3 +145,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 
 PAGE_SIZE = 5
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

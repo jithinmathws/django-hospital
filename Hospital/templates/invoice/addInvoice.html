@@ -54,7 +54,37 @@
                     {{ form.subtotal_amount }}
                 </div>
             </div>
-        
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Invoice Title</label>
+                    {{ form.invoice_title1 }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Subtotal Amount</label>
+                    {{ form.subtotal_amount1 }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Invoice Title</label>
+                    {{ form.invoice_title2 }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Subtotal Amount</label>
+                    {{ form.subtotal_amount2 }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6"></div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Total Amount</label>
+                    {{ form.total_amount }}
+                </div>
+            </div>
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Discount Percentage<b>(%)</b></label>
@@ -87,7 +117,7 @@
         </div>
         
         <div class="col-12">
-            <button id="btnTab" type="submit" class="btn btn-primary">Submit</button>
+            <button id="btnTab" name="save" type="submit" class="btn btn-primary">Submit</button>
             </div>
             </div>
     </form>
@@ -114,14 +144,47 @@
             event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
         })
     $(document).ready(function(){
+        // Calculating Sub Total
+        $('#id_subtotal_amount').on('change', function(){
+            var sub_total = 0
+            var val1 = $('#id_subtotal_amount').val()
+            var val2 = $('#id_subtotal_amount1').val()
+            var val3 = $('#id_subtotal_amount2').val()
+            sub_total = parseFloat(val1)+parseFloat(val2)+parseFloat(val3)
+            
+            $('#id_total_amount').val(sub_total.toFixed(3))
+            calc_total()
+        })
+        $('#id_subtotal_amount1').on('change', function(){
+            var sub_total = 0
+            var val1 = $('#id_subtotal_amount').val()
+            var val2 = $('#id_subtotal_amount1').val()
+            var val3 = $('#id_subtotal_amount2').val()
+            sub_total = parseFloat(val1)+parseFloat(val2)+parseFloat(val3)
+            
+            $('#id_total_amount').val(sub_total.toFixed(3))
+            calc_total()
+        })
+        $('#id_subtotal_amount2').on('change', function(){
+            var sub_total = 0
+            var val1 = $('#id_subtotal_amount').val()
+            var val2 = $('#id_subtotal_amount1').val()
+            var val3 = $('#id_subtotal_amount2').val()
+            sub_total = parseFloat(val1)+parseFloat(val2)+parseFloat(val3)
+            
+            $('#id_total_amount').val(sub_total.toFixed(3))
+            calc_total()
+        })
+
         // calculating discount amount from percentage
         $('#id_discount_percentage').on('change', function(){
             var perc = $(this).val()
                 perc = perc > 0 ? perc : 0;
-    
-            var sub_total =  $('#id_subtotal_amount').val()
+            
+            var total = $('#id_total_amount').val()
+            
                 
-            var disc = parseFloat(perc / 100) * parseFloat(sub_total) ;
+            var disc = parseFloat(perc / 100) * parseFloat(total) ;
             $('#id_discount_amount').val(disc.toFixed(3))
             calc_total()
         })
@@ -131,7 +194,7 @@
             var perc = $(this).val()
                 perc = perc > 0 ? perc : 0;
     
-            var sub_total =  $('#id_subtotal_amount').val()
+            var sub_total =  $('#id_total_amount').val()
             var disc_amount = $('#id_discount_amount').val()
             var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
                 
@@ -141,7 +204,7 @@
             
         })
         function calc_total(){
-            var sub_total =  $('#id_subtotal_amount').val()
+            var sub_total =  $('#id_total_amount').val()
             var disc =  $('#id_discount_amount').val()
             var tax =  $('#id_tax_amount').val()
     
