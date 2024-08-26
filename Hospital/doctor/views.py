@@ -576,6 +576,7 @@ def invoice_list(request):
 @login_required
 def invoice_profile(request, invoice_id):
     invoice = get_object_or_404(InvoiceDetails, pk=invoice_id)
+    #patient_invoice = InvoiceDetails.objects.filter(invoice=invoice, invoice_title,  invoice_title1, invoice_title2, subtotal_amount, subtotal_amount1, subtotal_amount2)
     #print(invoice.query)
     #invoice = InvoiceDetails.objects.select_related('patient_name').filter(invoice_id=invoice_id)
 
