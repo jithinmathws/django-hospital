@@ -253,16 +253,13 @@ class AddBed(models.Model):
 
     def __str__(self):
         return str(self.bed_number)
-    
-class InvoiceDetails(models.Model):
+
+
+
+class InvoiceDetail(models.Model):
     invoice_id = models.BigAutoField(primary_key=True)
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
-    invoice_title = models.CharField(max_length=50, blank=True, null=True)
-    subtotal_amount = models.CharField(max_length=50, blank=True, null=True)
-    invoice_title1 = models.CharField(max_length=50, blank=True, null=True)
-    subtotal_amount1 = models.CharField(max_length=50, blank=True, null=True)
-    invoice_title2 = models.CharField(max_length=50, blank=True, null=True)
-    subtotal_amount2 = models.CharField(max_length=50, blank=True, null=True)
+    
     total_amount = models.CharField(max_length=50, blank=True, null=True)
     discount_amount = models.CharField(max_length=50, blank=True, null=True)
     discount_percentage = models.CharField(max_length=50, blank=True, null=True)
@@ -272,11 +269,19 @@ class InvoiceDetails(models.Model):
     date = models.DateField()
     
     def __str__(self):
+        return str(self.date)
+    
+    # def get_absolute_url(self):
+    #     return reverse('invoice_profile', kwargs={'pk', self.id})
+
+class InvoiceRelation(models.Model):
+    invoice_title = models.CharField(max_length=50, blank=True, null=True)
+    subtotal_amount = models.CharField(max_length=50, blank=True, null=True)
+    invoice_relate = models.ForeignKey(InvoiceDetail, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
         return str(self.invoice_title)
-    
-    def get_absolute_url(self):
-        return reverse('invoice_profile', kwargs={'pk', self.invoice_id})
-    
+
 class IncomeDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
     payment_status = models.CharField(

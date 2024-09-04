@@ -6,10 +6,11 @@ import csv
 import base64
 
 from django.shortcuts import render, redirect, HttpResponse
-from .models import DoctorInfo, CertificateDoctor, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
-from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm, IncomeForm
+from .models import DoctorInfo, CertificateDoctor, DoctorDepartment, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetail, AppointmentDetails, TreatmentDetails, IncomeDetails, InvoiceRelation
+from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm, IncomeForm, InvoiceRelationForm, InvoiceFormSet
 from .resources import doctorResources
 
+from django.forms.models import modelformset_factory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -533,34 +534,51 @@ def invoice_index(request):
     return render(request, "invoice/index.html", {})
 
 @login_required
-def invoice_add(request):
-    context = {}
+def generate_invoice(request):
+    invoice = InvoiceDetail.objects.get(pk=pk)
+    formset = InvoiceFormSet(request.POST or None)
+
+
+
+@login_required
+def invoice_add(request):    
     form = InvoiceForm()
-    invoice = InvoiceDetails.objects.all()
-    context['invoice'] = invoice
-    context['form'] = form
-    if request.method == 'POST':
-        form = InvoiceForm(request.POST)
-        if form.is_valid():
+    
+    #Formset = modelform_factory(Model, form=ModelForm,extra=0)
+    InvoiceRelationFormset = modelformset_factory(InvoiceRelation, form=InvoiceRelationForm, extra=0)
+    
+    #qs = obj.InvoiceRelationForm_set.all()
+    
+    form = InvoiceForm(request.POST or None)
+    formset = InvoiceRelationFormset(request.POST or None)
+
+    if all([form.is_valid(), formset.is_valid()]):
+        parent = form.save(commit=False)
+        parent.save()
+        for form in formset:
+            child = form.save(commit=False)
+            if child.InvoiceDetail is None:
+                child.InvoiceDetail = parent
+            child.save()
             
-            form.save()
-                   
-            return redirect('Invoiceindex')
+           
+            #return redirect('Invoiceindex')
     else:
         form = InvoiceForm()
-    return render(request, "invoice/addInvoice.html", context)
+        formset = InvoiceRelationFormset()
+    return render(request, "invoice/addInvoice.html", {'form': form, 'formset': formset})
 
 @login_required
 def invoice_item(request):
     context = {}
     form = InvoiceForm()
-    invoice = InvoiceDetails.objects.all()
+    invoice = InvoiceDetail.objects.all()
     context['invoice'] = invoice
     return render(request, "partials/invoice.html", context)
 
 class create_invoice(CreateView):
 
-    model = InvoiceDetails
+    model = InvoiceDetail
     #fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
     form_class = InvoiceForm
     template_name = "invoice/addInvoice.html"
@@ -570,12 +588,38 @@ class create_invoice(CreateView):
 
 @login_required
 def invoice_list(request):
-    invoices = InvoiceDetails.objects.all()
-    return render(request, "invoice/invoice_list.html", {'invoices': invoices})
+
+    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page = request.GET.get('page', 1)
+
+    search_query = request.GET.get('search', '')
+
+    invoices = InvoiceDetail.objects.filter(
+        Q(invoice_id__icontains=search_query) |
+        
+        Q(date__icontains=search_query) 
+    )
+
+    invoice_data = []
+    for doctor in invoices:
+        existing_certificates = len(CertificateDoctor.objects.filter(doctor=doctor))
+        remaining_certificates = 10 - existing_certificates
+        doctor_data.append({'doctor': doctor, 'remaining_certificates': remaining_certificates})
+    
+    print("invoices", invoices)
+    paginator = Paginator(invoices, page_size)
+    try:
+        invoice_page = paginator.page(page)
+    except PageNotAnInteger:
+        invoice_page = paginator.page(1)
+    return render(request, "invoice/invoice_list.html", {'invoice_page': invoice_page, 'page_size': page_size, 'search_query': search_query})
+
+    # invoices = InvoiceDetail.objects.select_related(Invoice).all()
+    # return render(request, "invoice/invoice_list.html", {'invoices': invoices})
 
 @login_required
 def invoice_profile(request, invoice_id):
-    invoice = get_object_or_404(InvoiceDetails, pk=invoice_id)
+    invoice = get_object_or_404(InvoiceDetail, pk=invoice_id)
     #patient_invoice = InvoiceDetails.objects.filter(invoice=invoice, invoice_title,  invoice_title1, invoice_title2, subtotal_amount, subtotal_amount1, subtotal_amount2)
     #print(invoice.query)
     #invoice = InvoiceDetails.objects.select_related('patient_name').filter(invoice_id=invoice_id)
@@ -588,7 +632,7 @@ def redirect_me(request):
 
 @login_required
 def invoice_edit(request, invoice_id):
-    role = InvoiceDetails.objects.get(pk=invoice_id)
+    role = InvoiceDetail.objects.get(pk=invoice_id)
     if request.method == 'POST':
         form = InvoiceForm(request.POST, instance=role)
         if form.is_valid():
@@ -600,7 +644,7 @@ def invoice_edit(request, invoice_id):
 
 @login_required
 def invoice_delete(request, invoice_id):
-    member = InvoiceDetails.objects.get(pk=invoice_id)
+    member = InvoiceDetail.objects.get(pk=invoice_id)
     member.delete()
     return redirect('invoice_list')
 

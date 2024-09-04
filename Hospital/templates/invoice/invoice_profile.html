@@ -75,8 +75,9 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{ invoice.invoice_title }}</td>
-                                        <td>{{ invoice.subtotal_amount }}</td>
+                                        
+                                        <td>{{ invoice.invoice_relation.invoice_title }}</td>
+                                        <td>{{ invoice.invoice_relation.subtotal_amount }}</td>
                                         
                                         <td>{{ invoice.discount_amount }}</td>
                                         <td>{{ invoice.tax_amount }}</td>

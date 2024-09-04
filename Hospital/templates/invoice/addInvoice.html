@@ -20,6 +20,7 @@
     <div class="row">
     <div class="col-sm-12">
     <div class="card">
+        <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
     <div class="card-body">
     
     
@@ -42,42 +43,21 @@
                    {{ form.date }}
                </div>
             </div>
+            
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Invoice Title</label>
-                    {{ form.invoice_title }}
+                    {{ formset.invoice_title }}
                 </div>
             </div>
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Subtotal Amount</label>
-                    {{ form.subtotal_amount }}
+                    {{ formset.subtotal_amount }}
                 </div>
             </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Invoice Title</label>
-                    {{ form.invoice_title1 }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Subtotal Amount</label>
-                    {{ form.subtotal_amount1 }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Invoice Title</label>
-                    {{ form.invoice_title2 }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Subtotal Amount</label>
-                    {{ form.subtotal_amount2 }}
-                </div>
-            </div>
+            
+            
             <div class="col-12 col-sm-6"></div>
             <div class="col-12 col-sm-6">
                 <div class="form-group">
@@ -131,7 +111,7 @@
     <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
     </div> -->
     
-    <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
+    
 </div>
 </div>
 </div>
@@ -155,33 +135,13 @@
             $('#id_total_amount').val(sub_total.toFixed(3))
             calc_total()
         })
-        $('#id_subtotal_amount1').on('change', function(){
-            var sub_total = 0
-            var val1 = $('#id_subtotal_amount').val()
-            var val2 = $('#id_subtotal_amount1').val()
-            var val3 = $('#id_subtotal_amount2').val()
-            sub_total = parseFloat(val1)+parseFloat(val2)+parseFloat(val3)
-            
-            $('#id_total_amount').val(sub_total.toFixed(3))
-            calc_total()
-        })
-        $('#id_subtotal_amount2').on('change', function(){
-            var sub_total = 0
-            var val1 = $('#id_subtotal_amount').val()
-            var val2 = $('#id_subtotal_amount1').val()
-            var val3 = $('#id_subtotal_amount2').val()
-            sub_total = parseFloat(val1)+parseFloat(val2)+parseFloat(val3)
-            
-            $('#id_total_amount').val(sub_total.toFixed(3))
-            calc_total()
-        })
 
         // calculating discount amount from percentage
         $('#id_discount_percentage').on('change', function(){
             var perc = $(this).val()
                 perc = perc > 0 ? perc : 0;
             
-            var total = $('#id_total_amount').val()
+            var total = $('#id_subtotal_amount').val()
             
                 
             var disc = parseFloat(perc / 100) * parseFloat(total) ;
@@ -194,7 +154,7 @@
             var perc = $(this).val()
                 perc = perc > 0 ? perc : 0;
     
-            var sub_total =  $('#id_total_amount').val()
+            var sub_total =  $('#id_subtotal_amount').val()
             var disc_amount = $('#id_discount_amount').val()
             var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
                 
@@ -204,7 +164,7 @@
             
         })
         function calc_total(){
-            var sub_total =  $('#id_total_amount').val()
+            var sub_total =  $('#id_subtotal_amount').val()
             var disc =  $('#id_discount_amount').val()
             var tax =  $('#id_tax_amount').val()
     

@@ -1,10 +1,10 @@
 from django import forms
-
+from django.forms.models import inlineformset_factory
 
 import django.forms.utils
 import django.forms.widgets
 
-from .models import DoctorDepartment, DoctorInfo, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetails, AppointmentDetails, TreatmentDetails, IncomeDetails
+from .models import DoctorDepartment, DoctorInfo, PatientDetails, GuardianDetails, NurseDetails, PharmacistDetails, BedCategory, AddBed, PatientStatus, AdmissionDetails, InvoiceDetail, AppointmentDetails, TreatmentDetails, IncomeDetails, InvoiceRelation
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
@@ -241,11 +241,25 @@ class AddBedForm(forms.ModelForm):
                 raise forms.ValidationError('Bed already exist')
         return bed_number
 
+class InvoiceRelationForm(forms.ModelForm):
+        
+    class Meta:
+        model = InvoiceRelation
+        #fields = ['invoice_title', 'subtotal_amount']
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+
 class InvoiceForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     
     class Meta:
-        model = InvoiceDetails
+        model = InvoiceDetail
         #fields = ['patient_name', 'invoice_title', 'subtotal_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount', 'date']
         fields = "__all__"
 
@@ -255,12 +269,7 @@ class InvoiceForm(forms.ModelForm):
             print(field)
         #self.fields["invoice_id"].widget.attrs.update({"class": 'form-control'})
         self.fields["patient_name"].widget.attrs.update({"class": 'form-control'})
-        self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
-        self.fields["invoice_title1"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["subtotal_amount1"].widget.attrs.update({"class": 'form-control', "type": 'number'})
-        self.fields["invoice_title2"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["subtotal_amount2"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        
         self.fields["total_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'totalcalc(this)'})
         self.fields["discount_amount"].widget.attrs.update({"class": 'form-control', "type": 'number', "onkeyup": 'discountcalc(this)', "value": 0 })
         self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0})
@@ -268,6 +277,14 @@ class InvoiceForm(forms.ModelForm):
         self.fields["tax_percentage"].widget.attrs.update({"class": 'form-control', "type": 'number', "value": 0, "onkeyup": 'percentagecalc(this)'})
         self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+
+InvoiceFormSet = inlineformset_factory(
+    InvoiceDetail,
+    InvoiceRelation,
+    InvoiceRelationForm,
+    min_num=1,
+    extra=0
+)
 
 class IncomeForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))

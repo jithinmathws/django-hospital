@@ -44,6 +44,7 @@ EXTERNAL_APPS = [
     "doctor",
 
     #packages
+    'django_htmx',
     'crispy_forms',
     "crispy_bootstrap4",
     'widget_tweaks',
@@ -62,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
 ]
 
 ROOT_URLCONF = 'Hospital.urls'

@@ -3,6 +3,11 @@ from .models import *
 import data_wizard
 from import_export.admin import ImportExportModelAdmin
 
+class InvoiceInLineAdmin(admin.TabularInline):
+    model = InvoiceRelation
+
+class InvoiceRelationAdmin(admin.ModelAdmin):
+    inlines = [InvoiceInLineAdmin]
 # Register your models here.
 
 data_wizard.register(DoctorInfo)
@@ -27,8 +32,12 @@ data_wizard.register(BedCategory)
 admin.site.register(BedCategory, ImportExportModelAdmin)
 data_wizard.register(AddBed)
 admin.site.register(AddBed, ImportExportModelAdmin)
-data_wizard.register(InvoiceDetails)
-admin.site.register(InvoiceDetails, ImportExportModelAdmin)
+
+data_wizard.register(InvoiceDetail, InvoiceRelation)
+admin.site.register(InvoiceDetail, InvoiceRelationAdmin)
+
+
+
 data_wizard.register(IncomeDetails)
 admin.site.register(IncomeDetails, ImportExportModelAdmin)
 data_wizard.register(TreatmentDetails)

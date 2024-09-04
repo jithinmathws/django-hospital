@@ -42,15 +42,15 @@
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for invoice in invoices %}
+                       {% for item in invoice_page %}
                        <tbody>
                           <tr>
-                             <td>{{ invoice.invoice_id }}</td>
+                             <td>{{ item.invoice_id }}</td>
                              
 
                              <td>
                               <h2 class="#">
-                                 <a href="{% url 'invoice_profile' invoice.invoice_id %}">{{ invoice.patient_name }}</a>
+                                 <a href="{% url 'invoice_profile' item.invoice_id %}">{{ item.patient_name }}</a>
                               </h2>
                              </td>
 
@@ -58,25 +58,25 @@
                              
 
                              <td>
-                                {{ invoice.invoice_title }}
+                                {{ item.invoice_relation.invoice_title }}
                              </td>
 
                              <td>
-                                {{ invoice.subtotal_amount }}
+                                {{ item.invoice_relation.subtotal_amount }}
                              </td>
                              
                              <td>
-                                {{ invoice.adjusted_amount }}
+                                {{ item.adjusted_amount }}
                              </td>
                              <td>
-                                {{ invoice.date }}
+                                {{ item.date }}
                              </td>
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'invoice_edit' invoice.invoice_id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'invoice_edit' item.invoice_id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ invoice.invoice_title }}', '{{ invoice.invoice_id }}')">
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ item.patient_name }}', '{{ item.invoice_id }}')">
                                    <i class="fas fa-trash"></i> 
                                    </a>
                                 </div>
