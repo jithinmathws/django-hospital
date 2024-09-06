@@ -50,7 +50,7 @@
 
                              <td>
                               <h2 class="#">
-                                 <a href="{% url 'invoice_profile' item.invoice_id %}">{{ item.patient_name }}</a>
+                                 
                               </h2>
                              </td>
 
@@ -58,11 +58,11 @@
                              
 
                              <td>
-                                {{ item.invoice_relation.invoice_title }}
+                                {{ item.invoice_title }}
                              </td>
 
                              <td>
-                                {{ item.invoice_relation.subtotal_amount }}
+                                {{ item.subtotal_amount }}
                              </td>
                              
                              <td>
@@ -73,10 +73,10 @@
                              </td>
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'invoice_edit' item.invoice_id %}" class="btn btn-sm bg-success-light mr-2">
+                                   
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ item.patient_name }}', '{{ item.invoice_id }}')">
+                                   
                                    <i class="fas fa-trash"></i> 
                                    </a>
                                 </div>
@@ -95,13 +95,7 @@
             </div>
          </div>
       
-   <script>
-            function confirmDelete(roleName, roleId){
-               if(confirm(`Are you sure you want to delete ${name}?`)) {
-                  window.location.href = `{% url 'invoice_delete' invoice_id=0 %}`.replace('0', roleId);
-               }
-            }
-   </script>
+   
   <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
 
   

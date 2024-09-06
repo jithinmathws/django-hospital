@@ -44,21 +44,14 @@
                </div>
             </div>
             
+            {% include 'invoice/partials/invoice_partial.html' %}
+            
             <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Invoice Title</label>
-                    {{ formset.invoice_title }}
-                </div>
+            <div class="my-4">
+                <button type="button" class="btn btn-success me-2" hx-get="{% url 'create-invoice' %}" hx-target="#invoice-partial" hx-swap="beforebegin">Add Invoice</button>
             </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Subtotal Amount</label>
-                    {{ formset.subtotal_amount }}
-                </div>
             </div>
             
-            
-            <div class="col-12 col-sm-6"></div>
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Total Amount</label>

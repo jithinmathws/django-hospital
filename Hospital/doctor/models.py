@@ -269,7 +269,7 @@ class InvoiceDetail(models.Model):
     date = models.DateField()
     
     def __str__(self):
-        return str(self.date)
+        return str(self.invoice_id)
     
     # def get_absolute_url(self):
     #     return reverse('invoice_profile', kwargs={'pk', self.id})

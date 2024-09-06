@@ -10,6 +10,7 @@ from .models import DoctorInfo, CertificateDoctor, DoctorDepartment, PatientDeta
 from .forms import DepartmentForm, DoctorForm, PatientForm, GuardianForm, NurseForm, PharmacistForm, BedCategoryForm, AddBedForm, AdmissionForm, PatientStatusForm, InvoiceForm, AppointmentForm, TreatmentForm, IncomeForm, InvoiceRelationForm, InvoiceFormSet
 from .resources import doctorResources
 
+from django.forms import formset_factory
 from django.forms.models import modelformset_factory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -545,27 +546,27 @@ def invoice_add(request):
     form = InvoiceForm()
     
     #Formset = modelform_factory(Model, form=ModelForm,extra=0)
-    InvoiceRelationFormset = modelformset_factory(InvoiceRelation, form=InvoiceRelationForm, extra=0)
-    
+    #InvoiceRelationFormset = modelformset_factory(InvoiceRelation, form=InvoiceRelationForm, extra=0)
+    InvoiceFormset = formset_factory(InvoiceRelationForm)
     #qs = obj.InvoiceRelationForm_set.all()
     
     form = InvoiceForm(request.POST or None)
-    formset = InvoiceRelationFormset(request.POST or None)
+    formset = InvoiceFormset(request.POST or None)
 
     if all([form.is_valid(), formset.is_valid()]):
         parent = form.save(commit=False)
         parent.save()
-        for form in formset:
-            child = form.save(commit=False)
-            if child.InvoiceDetail is None:
-                child.InvoiceDetail = parent
+        for form1 in formset:
+            child = form1.save(commit=False)
+            if child.invoice_relate is None:
+                child.invoice_relate = parent
             child.save()
             
            
             #return redirect('Invoiceindex')
     else:
         form = InvoiceForm()
-        formset = InvoiceRelationFormset()
+        formset = InvoiceFormset()
     return render(request, "invoice/addInvoice.html", {'form': form, 'formset': formset})
 
 @login_required
@@ -575,6 +576,14 @@ def invoice_item(request):
     invoice = InvoiceDetail.objects.all()
     context['invoice'] = invoice
     return render(request, "partials/invoice.html", context)
+
+def invoice_partial(request):
+    InvoiceFormset = formset_factory(InvoiceRelationForm)
+    formset = InvoiceFormset()
+    if request.method == 'POST':
+        pass
+
+    return render(request, 'invoice/partials/invoice_partial.html', {'formset': formset})
 
 class create_invoice(CreateView):
 
@@ -588,26 +597,23 @@ class create_invoice(CreateView):
 
 @login_required
 def invoice_list(request):
-
     page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
     page = request.GET.get('page', 1)
 
     search_query = request.GET.get('search', '')
 
-    invoices = InvoiceDetail.objects.filter(
-        Q(invoice_id__icontains=search_query) |
-        
-        Q(date__icontains=search_query) 
+    invoice = InvoiceDetail.objects.filter(
+        Q(invoice_id__icontains=search_query) 
+         
     )
 
     invoice_data = []
-    for doctor in invoices:
-        existing_certificates = len(CertificateDoctor.objects.filter(doctor=doctor))
-        remaining_certificates = 10 - existing_certificates
-        doctor_data.append({'doctor': doctor, 'remaining_certificates': remaining_certificates})
-    
-    print("invoices", invoices)
-    paginator = Paginator(invoices, page_size)
+    for invoice_relate in invoice:
+        existing_invoices = len(InvoiceRelation.objects.filter(invoice_relate=invoice_relate))
+        remaining_invoices = 10 - existing_invoices
+        invoice_data.append({'invoice': invoice, 'remaining_invoices': remaining_invoices})
+
+    paginator = Paginator(invoice, page_size)
     try:
         invoice_page = paginator.page(page)
     except PageNotAnInteger:
