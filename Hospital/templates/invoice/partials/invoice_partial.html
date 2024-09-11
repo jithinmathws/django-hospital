@@ -1,15 +1,15 @@
-{{ formset.management_form }}
-            {% for form in formset %}
-            <div class="col-12 col-sm-6" id="invoice-partial">
+        {{ formset.management_form }}
+        {% for data in formset %}
+            <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Invoice Title</label>
-                    {{ form.invoice_title }}
+                    {{ data.invoice_title }}
                 </div>
             </div>
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Subtotal Amount</label>
-                    {{ form.subtotal_amount }}
+                    {{ data.subtotal_amount }}
                 </div>
             </div>
-            {% endfor %}
+        {% endfor %}

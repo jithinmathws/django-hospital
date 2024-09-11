@@ -18,6 +18,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic.edit import CreateView
+from django.db import transaction, IntegrityError
 
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
@@ -542,32 +543,57 @@ def generate_invoice(request):
 
 
 @login_required
-def invoice_add(request):    
-    form = InvoiceForm()
+def invoice_add(request):
+    context = {}
+    InvoiceRelationFormset = modelformset_factory(InvoiceRelation, form=InvoiceRelationForm)
+    form = InvoiceForm(request.POST or None)
+    formset = InvoiceRelationFormset(request.POST or None, queryset=InvoiceRelation.objects.none(), prefix='invoice')
+    if request.method == "POST":
+        if form.is_valid() and formset.is_valid():
+            try:
+                with transaction.atomic():
+                    invoice = form.save(commit=False)
+                    invoice.save()
+
+                    for value in formset:
+                        data = value.save(commit=False)
+                        data.invoice = invoice
+                        data.save()
+            except IntegrityError:
+                print("Error Encountered")
+
+            return redirect('Invoiceindex')
+        
+    context['formset'] = formset
+    context['form'] =form
+    return render(request, "invoice/addInvoice.html", context)
+    #form = InvoiceForm()
     
     #Formset = modelform_factory(Model, form=ModelForm,extra=0)
     #InvoiceRelationFormset = modelformset_factory(InvoiceRelation, form=InvoiceRelationForm, extra=0)
-    InvoiceFormset = formset_factory(InvoiceRelationForm)
+    #InvoiceFormset = formset_factory(InvoiceRelationForm)
     #qs = obj.InvoiceRelationForm_set.all()
     
-    form = InvoiceForm(request.POST or None)
-    formset = InvoiceFormset(request.POST or None)
+    # form = InvoiceForm(request.POST or None)
+    # form1 = InvoiceRelationForm(request.POST or None)
+    # formset = InvoiceFormSet(request.POST or None)
 
-    if all([form.is_valid(), formset.is_valid()]):
-        parent = form.save(commit=False)
-        parent.save()
-        for form1 in formset:
-            child = form1.save(commit=False)
-            if child.invoice_relate is None:
-                child.invoice_relate = parent
-            child.save()
+    # if all([form.is_valid(), formset.is_valid()]):
+    #     parent = form.save(commit=False)
+    #     parent.save()
+    #     for data in formset:
+    #         child = data.save(commit=False)
+    #         if child.invoice_relate is None:
+    #             child.invoice_relate = parent
+    #         child.save()
             
            
-            #return redirect('Invoiceindex')
-    else:
-        form = InvoiceForm()
-        formset = InvoiceFormset()
-    return render(request, "invoice/addInvoice.html", {'form': form, 'formset': formset})
+    #         #return redirect('Invoiceindex')
+    # else:
+    #     form = InvoiceForm()
+    #     form1 = InvoiceRelationForm()
+    #     formset = InvoiceFormSet()
+    # return render(request, "invoice/addInvoice.html", {'form': form, 'formset': formset})
 
 @login_required
 def invoice_item(request):
@@ -578,8 +604,9 @@ def invoice_item(request):
     return render(request, "partials/invoice.html", context)
 
 def invoice_partial(request):
-    InvoiceFormset = formset_factory(InvoiceRelationForm)
-    formset = InvoiceFormset()
+    InvoiceRelationFormset = modelformset_factory(InvoiceRelation, form=InvoiceRelationForm)
+    formset = InvoiceRelationFormset()
+    #form = InvoiceRelationForm()
     if request.method == 'POST':
         pass
 

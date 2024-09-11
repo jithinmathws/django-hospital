@@ -277,10 +277,13 @@ class InvoiceDetail(models.Model):
 class InvoiceRelation(models.Model):
     invoice_title = models.CharField(max_length=50, blank=True, null=True)
     subtotal_amount = models.CharField(max_length=50, blank=True, null=True)
-    invoice_relate = models.ForeignKey(InvoiceDetail, on_delete=models.CASCADE, blank=True, null=True)
+    invoice_relate = models.ForeignKey(InvoiceDetail, related_name="invoice", on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return str(self.invoice_title)
+
+    class Meta:
+        db_table = "invoice"
 
 class IncomeDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)

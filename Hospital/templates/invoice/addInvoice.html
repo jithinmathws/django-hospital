@@ -44,14 +44,33 @@
                </div>
             </div>
             
-            {% include 'invoice/partials/invoice_partial.html' %}
+        {% for data in formset %}
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Invoice Title</label>
+                    {{ data.invoice_title }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Subtotal Amount</label>
+                    {{ data.subtotal_amount }}
+                </div>
+                </div>
+                <div class="col-12 align-self-end">
+                  
+                <button type="button" class="btn btn-danger btn-sm remove-form-row" id="{{ formset.prefix }}"> Delete     </button>
+            </div>
             
+        {% endfor %}
+        
             <div class="col-12 col-sm-6">
             <div class="my-4">
-                <button type="button" class="btn btn-success me-2" hx-get="{% url 'create-invoice' %}" hx-target="#invoice-partial" hx-swap="beforebegin">Add Invoice</button>
+                <button type="button" class="btn btn-success me-2 add-form-row" id="{{ formset.prefix }}">Add Item</button>
+                <!-- <button type="button" class="btn btn-success me-2" hx-get="{% url 'create-invoice' %}" hx-target="#invoice-partial" hx-swap="beforebegin">Add Invoice</button> -->
             </div>
             </div>
-            
+            {{ formset.management_form }}
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Total Amount</label>
@@ -111,30 +130,36 @@
 </div>
 </div>
 </div>
+{% block extra_script %}
+	<script type="text/javascript" src="{% static 'js/formset.js' %}"></script>
+{% endblock%}
 
 <script>// src="{% static 'invoice/invo.js' %}
     document.body.addEventListener('htmx:configRequest', (event) => {
             event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
         })
-    $(document).ready(function(){
-        // Calculating Sub Total
-        $('#id_subtotal_amount').on('change', function(){
+    
+    //Calculating Sub Total
+    function subcalc(){
             var sub_total = 0
-            var val1 = $('#id_subtotal_amount').val()
-            var val2 = $('#id_subtotal_amount1').val()
-            var val3 = $('#id_subtotal_amount2').val()
-            sub_total = parseFloat(val1)+parseFloat(val2)+parseFloat(val3)
             
+            $('[name="invoice-0-subtotal_amount"]').each(function(){
+                sub_total += parseFloat($(this).val())
+            })
             $('#id_total_amount').val(sub_total.toFixed(3))
-            calc_total()
-        })
+            subcalc()
+
+        }
+    
+    $(document).ready(function(){    
+        
 
         // calculating discount amount from percentage
         $('#id_discount_percentage').on('change', function(){
             var perc = $(this).val()
                 perc = perc > 0 ? perc : 0;
             
-            var total = $('#id_subtotal_amount').val()
+            var total = $('#id_total_amount').val()
             
                 
             var disc = parseFloat(perc / 100) * parseFloat(total) ;
@@ -147,7 +172,7 @@
             var perc = $(this).val()
                 perc = perc > 0 ? perc : 0;
     
-            var sub_total =  $('#id_subtotal_amount').val()
+            var sub_total =  $('#id_total_amount').val()
             var disc_amount = $('#id_discount_amount').val()
             var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
                 
@@ -157,7 +182,7 @@
             
         })
         function calc_total(){
-            var sub_total =  $('#id_subtotal_amount').val()
+            var sub_total =  $('#id_total_amount').val()
             var disc =  $('#id_discount_amount').val()
             var tax =  $('#id_tax_amount').val()
     

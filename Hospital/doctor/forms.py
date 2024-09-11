@@ -253,7 +253,7 @@ class InvoiceRelationForm(forms.ModelForm):
         for field in self.fields:
             print(field)
         self.fields["invoice_title"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["subtotal_amount"].widget.attrs.update({"class": 'form-control', "type": 'text', "onkeyup": 'subcalc(this)'})
 
 class InvoiceForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
