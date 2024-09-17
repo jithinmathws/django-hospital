@@ -8,6 +8,13 @@ class InvoiceInLineAdmin(admin.TabularInline):
 
 class InvoiceRelationAdmin(admin.ModelAdmin):
     inlines = [InvoiceInLineAdmin]
+
+class SubInvoiceInLineAdmin(admin.TabularInline):
+    model = SubInvoice
+
+class SubInvoiceAdmin(admin.ModelAdmin):
+    inlines = [SubInvoiceInLineAdmin]
+
 # Register your models here.
 
 data_wizard.register(DoctorInfo)
@@ -32,6 +39,11 @@ data_wizard.register(BedCategory)
 admin.site.register(BedCategory, ImportExportModelAdmin)
 data_wizard.register(AddBed)
 admin.site.register(AddBed, ImportExportModelAdmin)
+
+data_wizard.register(MainInvoice, SubInvoice)
+admin.site.register(MainInvoice, SubInvoiceAdmin)
+data_wizard.register(SubInvoice)
+admin.site.register(SubInvoice, ImportExportModelAdmin)
 
 data_wizard.register(InvoiceDetail, InvoiceRelation)
 admin.site.register(InvoiceDetail, InvoiceRelationAdmin)

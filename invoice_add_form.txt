@@ -1,0 +1,212 @@
+<div class="content container-fluid">
+    
+    <div class="page-header">
+    <div class="row align-items-center">
+    <div class="col">
+    <h3 class="page-title">Add Invoice</h3>
+    
+    </div>
+    </div>
+    </div>
+    
+    <div class="row">
+    <div class="col-sm-12">
+    <div class="card">
+        <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
+    <div class="card-body">
+    
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+               <h5 class="form-title"><span>Invoice Details</span></h5>
+            </div>
+            
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Patient Name</label>
+                    {{ form.patient_name }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                   <label>Date</label>
+                   {{ form.date }}
+               </div>
+            </div>
+
+
+
+            {% with named_formsets.variants as formset %}
+                {{ formset.management_form }}
+                <script type="text/html" id="variants-template">  // id="inlineformsetname-template"
+                    // id='inlineformsetname-__prefix__' 
+                    <tr id="variants-__prefix__" class= hide_all>
+                        {% for fields in formset.empty_form.hidden_fields %}
+                            {{ fields }}
+                        {% endfor %}
+                    
+                        {% for fields in formset.empty_form.visible_fields %}
+                            <td>{{ fields }}</td>
+                        {% endfor %}
+                    </tr>
+                </script>
+                <div class="table-responsive card mt-4">
+                    <div class="card-header card-header-secondary">
+                        <h4 class="card-title">Add Variants</h4>
+                    </div>
+                    <table class="table card-header">
+                        <thead class="text-secondary">
+                            
+                            <th>Invoice Title <span style="color: red;" class="required">*</span></th>
+                            <th>Amount <span style="color: red;" class="required">*</span></th>
+
+                        </thead>
+                        <tbody id="item-variants">  <!-- id="item-inlineformsetname" -->
+                            <!-- formset non forms errors -->
+                            {% for error in formset.non_form_errors %}
+                                <span style="color: red">{{ error }}</span>
+                            {% endfor %}
+                            {% for formss in formset %}
+                                {{ formss.management_form }}
+                                <tr id="variants-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                                    {{ formss.id }}
+                                    {% for field in formss.visible_fields %}
+                                        <td>
+                                            {{ field }}
+                                            
+                                            
+                                        
+                                        </td>
+                                    {% endfor %}
+                                    
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="#" id="add-variant-button" class="btn btn-secondary add-variants">Add More</a> <!-- id="add-inlineformsetname-button" -->
+                </div>
+        
+        {% endwith %}
+
+
+            
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Total Amount</label>
+                    {{ form.total_amount }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Discount Percentage<b>(%)</b></label>
+                    {{ form.discount_percentage }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Discount Amount</label>
+                    {{ form.discount_amount }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                   <label>Tax Percentage<b>(%)</b></label>
+                   {{ form.tax_percentage }}
+                 </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                   <label>Tax Amount</label>
+                   {{ form.tax_amount }}
+                </div>
+                </div>
+       <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label>Grand Total</label>
+                {{ form.adjusted_amount }}
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <button id="btnTab" name="save" type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </div>
+    </form>
+    <!-- <div class="login-or">
+    <span class="or-line"></span>
+    <span class="span-or">or</span>
+    </div>
+    
+    <div class="social-login">
+    <span>Register with</span>
+    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
+    </div> -->
+    
+    
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+	<!-- <script type="text/javascript" src="{% static 'js/formset.js' %}"></script> -->
+
+
+<script>// src="{% static 'invoice/invo.js' %}
+    document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        })
+        
+
+    //Calculating Sub Total
+    function subcalc(){
+            var sub_total = 0
+            
+            $('[name="invoice-0-subtotal_amount"]').each(function(){
+                sub_total += parseFloat($(this).val())
+            })
+            $('#id_total_amount').val(sub_total.toFixed(3))
+            subcalc()
+
+        }
+    
+    // calculating discount amount from percentage
+    $('#id_discount_percentage').on('change', function(){
+        var perc = $(this).val()
+            perc = perc > 0 ? perc : 0;
+            
+        var total = $('#id_total_amount').val()        
+                
+        var disc = parseFloat(perc / 100) * parseFloat(total) ;
+        $('#id_discount_amount').val(disc.toFixed(3))
+        calc_total()
+    })
+        
+    // calculating discount amount from percentage
+    $('#id_tax_percentage').on('change', function(){
+        var perc = $(this).val()
+            perc = perc > 0 ? perc : 0;
+    
+        var sub_total =  $('#id_total_amount').val()
+        var disc_amount = $('#id_discount_amount').val()
+        var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
+                
+        var tax = parseFloat(perc / 100) * parseFloat(total_afterdisc) ;
+        $('#id_tax_amount').val(tax.toFixed(3))
+        calc_total()
+            
+    })
+    function calc_total(){
+        var sub_total =  $('#id_total_amount').val()
+        var disc =  $('#id_discount_amount').val()
+        var tax =  $('#id_tax_amount').val()
+    
+        var total = (parseFloat(sub_total) - parseFloat(disc)) + parseFloat(tax)
+        $('#id_adjusted_amount').val(total.toFixed(3))
+    }
+    })
+        
+    </script>

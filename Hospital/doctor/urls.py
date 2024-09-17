@@ -59,8 +59,11 @@ urlpatterns = [
     path("invoice/", views.invoice_index, name="Invoiceindex"),
     path("invoiceItem/", views.invoice_item, name="invoice_item"),
     path("addInvoice/", views.invoice_add, name="invoice"),
-    path("create-invoice/", views.invoice_partial, name="create-invoice"),
-    path("createInvoice/", views.create_invoice.as_view(), name="create_invoice"),
+
+    path('MainInvoice/', views.InvoiceList.as_view(), name='list_invoice'),
+    path('ClubInvoices/', views.MainInvoiceSub.as_view(), name='create_invoice'),
+    
+    
     path("addIncome/", views.income_add, name="income"),
     path("invoicelist/", views.invoice_list, name="invoice_list"),
     path("incomelist/", views.income_list, name="income_list"),

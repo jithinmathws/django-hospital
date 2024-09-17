@@ -81,6 +81,6 @@ function deleteForm(btn, prefix) {
     deleteForm($(this), String($('.add-form-row').attr('id')));
   });
 
-  $("body").on('click', '.add-form-row',function () {
+  $("button").on('click', '.add-form-row',function () {
       return addForm($(this), String($(this).attr('id')));
   });

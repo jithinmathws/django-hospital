@@ -255,6 +255,28 @@ class AddBed(models.Model):
         return str(self.bed_number)
 
 
+class MainInvoice(models.Model):
+    patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    date = models.DateField()
+    total_amount = models.CharField(max_length=50, blank=True, null=True)
+    discount_amount = models.CharField(max_length=50, blank=True, null=True)
+    discount_percentage = models.CharField(max_length=50, blank=True, null=True)
+    tax_percentage = models.CharField(max_length=50, blank=True, null=True)
+    tax_amount = models.CharField(max_length=50, blank=True, null=True)
+    adjusted_amount = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.total_amount
+
+
+class SubInvoice(models.Model):
+    invoice = models.ForeignKey(MainInvoice, on_delete=models.CASCADE, blank=True, null=True)
+    invoice_title = models.CharField(max_length=50, blank=True, null=True)
+    subtotal_amount = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.invoice_title
+
 
 class InvoiceDetail(models.Model):
     invoice_id = models.BigAutoField(primary_key=True)
@@ -280,7 +302,7 @@ class InvoiceRelation(models.Model):
     invoice_relate = models.ForeignKey(InvoiceDetail, related_name="invoice", on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return str(self.invoice_title)
+        return self.invoice_relate.date
 
     class Meta:
         db_table = "invoice"

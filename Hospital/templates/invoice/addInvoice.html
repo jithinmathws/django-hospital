@@ -5,203 +5,162 @@
 
 {% block content %}
 
-
-    <div class="content container-fluid">
-    
-    <div class="page-header">
+<div class="page-header">
     <div class="row align-items-center">
     <div class="col">
     <h3 class="page-title">Add Invoice</h3>
     
     </div>
     </div>
-    </div>
-    
-    <div class="row">
-    <div class="col-sm-12">
+</div>
+
+<div class="card">
+    <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
+<div class="card-body">
+
+<form class="container" method="post" id="product_form">
+    {% csrf_token %}
+    <!-- main form start --- in our case product form -->
     <div class="card">
-        <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
-    <div class="card-body">
-    
-    
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-12">
-               <h5 class="form-title"><span>Invoice Details</span></h5>
-            </div>
+        <div class="card-header card-header-secondary">
+            <h4 class="card-title">Add Products</h4>
+        </div>
+        {% for field in form %}
+            <div class="form-group card-body">
+                <label>{{field.label}}</label>
+                {% if field.field.required %}
+                    <span style="color: red;" class="required">*</span>
+                {% endif %}
             
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Patient Name</label>
-                    {{ form.patient_name }}
-                </div>
+                {{field}}
+                {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
             </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                   <label>Date</label>
-                   {{ form.date }}
-               </div>
-            </div>
-            
-        {% for data in formset %}
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Invoice Title</label>
-                    {{ data.invoice_title }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Subtotal Amount</label>
-                    {{ data.subtotal_amount }}
-                </div>
-                </div>
-                <div class="col-12 align-self-end">
-                  
-                <button type="button" class="btn btn-danger btn-sm remove-form-row" id="{{ formset.prefix }}"> Delete     </button>
-            </div>
-            
         {% endfor %}
-        
-            <div class="col-12 col-sm-6">
-            <div class="my-4">
-                <button type="button" class="btn btn-success me-2 add-form-row" id="{{ formset.prefix }}">Add Item</button>
-                <!-- <button type="button" class="btn btn-success me-2" hx-get="{% url 'create-invoice' %}" hx-target="#invoice-partial" hx-swap="beforebegin">Add Invoice</button> -->
+    </div>
+    <!-- main form end --- in our case product form -->
+    
+    <!-- inline form for Variant start -->
+    <!-- EXPLAINING with named_formsets.variants as formset -->
+    <!-- Note: named_formsets is used in get_context_data function in views.py -->
+    <!-- Note: here variants is our VariantFormSet name, used in get_named_formsets function in views.py -->
+    {% with named_formsets.variants as formset %}
+        {{ formset.management_form }}
+        <script type="text/html" id="variants-template">  // id="inlineformsetname-template"
+            // id='inlineformsetname-__prefix__' 
+            <tr id="variants-__prefix__" class= hide_all>
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+            
+                {% for fields in formset.empty_form.visible_fields %}
+                    <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
+        </script>
+        <div class="table-responsive card mt-4">
+            <div class="card-header card-header-secondary">
+                <h4 class="card-title">Add Variants</h4>
             </div>
-            </div>
-            {{ formset.management_form }}
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Total Amount</label>
-                    {{ form.total_amount }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Discount Percentage<b>(%)</b></label>
-                    {{ form.discount_percentage }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Discount Amount</label>
-                    {{ form.discount_amount }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                   <label>Tax Percentage<b>(%)</b></label>
-                   {{ form.tax_percentage }}
-                 </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                   <label>Tax Amount</label>
-                   {{ form.tax_amount }}
-                </div>
-                </div>
-       <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Grand Total</label>
-                {{ form.adjusted_amount }}
-            </div>
+            <table class="table card-header">
+                <thead class="text-secondary">
+                    
+                    <th>Invoice Title <span style="color: red;" class="required">*</span></th>
+                    <th>Amount <span style="color: red;" class="required">*</span></th>
+                    <th>Delete?</th>
+                    <th>Custom Delete btn</th>
+                </thead>
+                <tbody id="item-variants">  <!-- id="item-inlineformsetname" -->
+                    <!-- formset non forms errors -->
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="variants-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                <td>
+                                    {{field}}
+                                    {% for error in field.errors %}
+                                        <span style="color: red">{{ error }}</span>
+                                    {% endfor %}
+                                    
+                                    {% comment %} {{ field.DELETE }} {% endcomment %}
+                                </td>
+                            {% endfor %}
+                            {% comment %} for delete {% endcomment %}
+                            {% if formss.instance.pk %}
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                                        Delete
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Are Your Sure You Want To Delete This?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'products:delete_variant' formss.instance.pk %}" type="button" class="btn btn-primary">Yes, Delete</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </td>            
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="#" id="add-variant-button" class="btn btn-secondary add-variants">Add More</a> <!-- id="add-inlineformsetname-button" -->
         </div>
         
-        <div class="col-12">
-            <button id="btnTab" name="save" type="submit" class="btn btn-primary">Submit</button>
-            </div>
-            </div>
-    </form>
-    <!-- <div class="login-or">
-    <span class="or-line"></span>
-    <span class="span-or">or</span>
-    </div>
-    
-    <div class="social-login">
-    <span>Register with</span>
-    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
-    </div> -->
-    
-    
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-{% block extra_script %}
-	<script type="text/javascript" src="{% static 'js/formset.js' %}"></script>
-{% endblock%}
+        {% endwith %}
+        <!-- inline form for Images end -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-secondary btn-block">Submit</button>
+        </div>
+</form>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        // when user clicks add more btn of images
+      $('.add-images').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#item-images').children().length;
+          var tmplMarkup = $('#images-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('#item-images').append(compiledTmpl);
+  
+          // update form count
+          $('#id_images-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+  $(document).ready(function() {
+    // when user clicks add more btn of variants
+      $('.add-variants').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#item-variants').children().length;
+          var tmplMarkup = $('#variants-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('#item-variants').append(compiledTmpl);
+  
+          // update form count
+          $('#id_variants-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+</script>
 
-<script>// src="{% static 'invoice/invo.js' %}
-    document.body.addEventListener('htmx:configRequest', (event) => {
-            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-        })
-    
-    //Calculating Sub Total
-    function subcalc(){
-            var sub_total = 0
-            
-            $('[name="invoice-0-subtotal_amount"]').each(function(){
-                sub_total += parseFloat($(this).val())
-            })
-            $('#id_total_amount').val(sub_total.toFixed(3))
-            subcalc()
 
-        }
     
-    $(document).ready(function(){    
-        
-
-        // calculating discount amount from percentage
-        $('#id_discount_percentage').on('change', function(){
-            var perc = $(this).val()
-                perc = perc > 0 ? perc : 0;
-            
-            var total = $('#id_total_amount').val()
-            
-                
-            var disc = parseFloat(perc / 100) * parseFloat(total) ;
-            $('#id_discount_amount').val(disc.toFixed(3))
-            calc_total()
-        })
-        
-        // calculating discount amount from percentage
-        $('#id_tax_percentage').on('change', function(){
-            var perc = $(this).val()
-                perc = perc > 0 ? perc : 0;
-    
-            var sub_total =  $('#id_total_amount').val()
-            var disc_amount = $('#id_discount_amount').val()
-            var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
-                
-            var tax = parseFloat(perc / 100) * parseFloat(total_afterdisc) ;
-            $('#id_tax_amount').val(tax.toFixed(3))
-            calc_total()
-            
-        })
-        function calc_total(){
-            var sub_total =  $('#id_total_amount').val()
-            var disc =  $('#id_discount_amount').val()
-            var tax =  $('#id_tax_amount').val()
-    
-            var total = (parseFloat(sub_total) - parseFloat(disc)) + parseFloat(tax)
-            $('#id_adjusted_amount').val(total.toFixed(3))
-        }
-    })
-    // document.getElementById('btnTab').addEventListener('click', this.openTab);
-    // function openTab(ev) {
-    //         console.log('open a tab');
-    //         let win = window.open('{% url 'invoice_list' %}', 5000);
-    //         win.onload = (ev) => {
-                
-    //         setTimeout(() => {
-    //             win.close();
-    //             }, 2500);
-    //         };
-    //         };
-        
-    </script>
-
 {% endblock %}
