@@ -303,7 +303,7 @@ class SubInvoiceForm(forms.ModelForm):
                 ),
             'subtotal_amount': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "type": 'text', "onkeyup": 'subcalc(this)'
+                    'class': 'form-control sub_amount', "type": 'text', "onkeyup": 'subcalc(this)'
                     }
                 ),
         }

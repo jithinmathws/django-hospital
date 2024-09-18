@@ -111,32 +111,74 @@
 </form>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function() {
-        // when user clicks add more btn of images
-      $('.add-images').click(function(ev) {
-          ev.preventDefault();
-          var count = $('#item-images').children().length;
-          var tmplMarkup = $('#images-template').html();
-          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-          $('#item-images').append(compiledTmpl);
+    
+$(document).ready(function() {
+// when user clicks add more btn of variants
+    $('.add-variants').click(function(ev) {
+        ev.preventDefault();
+        var count = $('#item-variants').children().length;
+        var tmplMarkup = $('#variants-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('#item-variants').append(compiledTmpl);
   
-          // update form count
-          $('#id_images-TOTAL_FORMS').attr('value', count+1);
-      });
-  });
-  $(document).ready(function() {
-    // when user clicks add more btn of variants
-      $('.add-variants').click(function(ev) {
-          ev.preventDefault();
-          var count = $('#item-variants').children().length;
-          var tmplMarkup = $('#variants-template').html();
-          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-          $('#item-variants').append(compiledTmpl);
-  
-          // update form count
-          $('#id_variants-TOTAL_FORMS').attr('value', count+1);
-      });
-  });
+        // update form count
+        $('#id_variants-TOTAL_FORMS').attr('value', count+1);
+    });
+});
+
+function subcalc(){
+    var sub_total = 0
+            
+    $('.sub_amount').each(function(){
+        sub_total += parseFloat($(this).val())
+    })
+    $('#id_total_amount').val(sub_total.toFixed(3))
+    subcalc()
+
+}
+
+function calc_total(){
+    var sub_total =  $('#id_total_amount').val()
+    var disc =  $('#id_discount_amount').val()
+    var tax =  $('#id_tax_amount').val()
+    
+    var total = (parseFloat(sub_total) - parseFloat(disc)) + parseFloat(tax)
+    $('#id_adjusted_amount').val(total.toFixed(3))
+}
+
+$(document).ready(function(){
+    // calculating discount amount from percentage
+    $('#id_discount_percentage').on('change', function(){
+        var perc = $(this).val()
+            perc = perc > 0 ? perc : 0;
+            
+        var total = $('#id_total_amount').val()
+            
+                
+        var disc = parseFloat(perc / 100) * parseFloat(total) ;
+        $('#id_discount_amount').val(disc.toFixed(3))
+        calc_total()
+    })
+
+    // calculating discount amount from percentage
+    $('#id_tax_percentage').on('change', function(){
+        var perc = $(this).val()
+            perc = perc > 0 ? perc : 0;
+    
+        var sub_total =  $('#id_total_amount').val()
+        var disc_amount = $('#id_discount_amount').val()
+        var total_afterdisc = parseFloat(sub_total) - parseFloat(disc_amount)
+                
+        var tax = parseFloat(perc / 100) * parseFloat(total_afterdisc) ;
+        $('#id_tax_amount').val(tax.toFixed(3))
+        calc_total()
+            
+    })
+
+    
+})
+
+
 </script>
 
 
