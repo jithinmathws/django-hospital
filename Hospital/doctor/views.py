@@ -718,9 +718,9 @@ def redirect_me(request):
 
 @login_required
 def invoice_edit(request, invoice_id):
-    role = InvoiceDetail.objects.get(pk=invoice_id)
+    role = MainInvoice.objects.get(pk=invoice_id)
     if request.method == 'POST':
-        form = InvoiceForm(request.POST, instance=role)
+        form = MainInvoiceForm(request.POST, instance=role)
         if form.is_valid():
             role = form.save()
             return redirect('invoice_list')
@@ -730,7 +730,7 @@ def invoice_edit(request, invoice_id):
 
 @login_required
 def invoice_delete(request, invoice_id):
-    member = InvoiceDetail.objects.get(pk=invoice_id)
+    member = MainInvoice.objects.get(pk=invoice_id)
     member.delete()
     return redirect('invoice_list')
 

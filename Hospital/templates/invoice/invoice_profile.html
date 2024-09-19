@@ -42,11 +42,11 @@
                             <div class = "invoice-head-bottom-left">
                                 <ul>
                                     <li class = 'text-bold'>Invoiced To:</li>
-                                    <li>{{ invoice.patient_name }}</li>
+                                    <li>{{ invoice.patient.patient_name }}</li>
                                     
-                                        <li>{{ invoice.patient_name.address }}</li>
-                                        <li>{{ invoice.patient_name.email }}</li>
-                                        <li>{{ invoice.patient_name.state }}</li>
+                                        <li>{{ invoice.patient.address }}</li>
+                                        <li>{{ invoice.patient.email }}</li>
+                                        <li>{{ invoice.patient.state }}</li>
                                     
                                 </ul>
                             </div>
@@ -66,44 +66,49 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <td class = "text-bold">Title</td>
-                                        <td class = "text-bold">Sub Total Amount</td>
-                                        <td class = "text-bold">Discount Amount</td>
-                                        <td class = "text-bold">Tax Amount</td>
+                                        <td class = "text-bold">Invoice Title</td>
                                         <td class = "text-bold">Amount</td>
+                                        <!-- <td class = "text-bold">Discount Amount</td>
+                                        <td class = "text-bold">Tax Amount</td>
+                                        <td class = "text-bold">Amount</td> -->
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for data in subinvoice %}
                                     <tr>
                                         
-                                        <td>{{ invoice.invoice_relation.invoice_title }}</td>
-                                        <td>{{ invoice.invoice_relation.subtotal_amount }}</td>
+                                        <td>{{ data.invoice_title }}</td>
+                                        <td>{{ data.subtotal_amount }}</td>
                                         
-                                        <td>{{ invoice.discount_amount }}</td>
+                                        <!-- <td>{{ invoice.discount_amount }}</td>
                                         <td>{{ invoice.tax_amount }}</td>
-                                        <td class = "text-end">{{ invoice.adjusted_amount }}</td>
+                                        <td class = "text-end">{{ invoice.adjusted_amount }}</td> -->
                                     </tr>
-                                    
+                                    {% endfor %}                                    
                                     <!-- <tr>
                                         <td colspan="4">10</td>
                                         <td>$500.00</td>
                                     </tr> -->
                                 </tbody>
                             </table>
-                            <!-- <div class = "invoice-body-bottom">
+                            <div class = "invoice-body-bottom">
                                 <div class = "invoice-body-info-item border-bottom">
                                     <div class = "info-item-td text-end text-bold">Sub Total:</div>
-                                    <div class = "info-item-td text-end">$2150.00</div>
+                                    <div class = "info-item-td text-end">{{ invoice.total_amount }}</div>
                                 </div>
                                 <div class = "invoice-body-info-item border-bottom">
-                                    <div class = "info-item-td text-end text-bold">Tax:</div>
-                                    <div class = "info-item-td text-end">$215.00</div>
+                                    <div class = "info-item-td text-end text-bold">Discount:</div>
+                                    <div class = "info-item-td text-end">{{ invoice.discount_amount }}</div>
                                 </div>
                                 <div class = "invoice-body-info-item">
-                                    <div class = "info-item-td text-end text-bold">Total:</div>
-                                    <div class = "info-item-td text-end">$21365.00</div>
+                                    <div class = "info-item-td text-end text-bold">Tax:</div>
+                                    <div class = "info-item-td text-end">{{ invoice.tax_amount }}</div>
                                 </div>
-                            </div> -->
+                                <div class = "invoice-body-info-item">
+                                    <div class = "info-item-td text-end text-bold">Adjusted Amount:</div>
+                                    <div class = "info-item-td text-end">{{ invoice.adjusted_amount }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class = "invoice-foot text-center">
