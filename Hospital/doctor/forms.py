@@ -251,32 +251,32 @@ class MainInvoiceForm(forms.ModelForm):
             
             'total_amount': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "type": 'number', "onkeyup": 'totalcalc(this)'
+                    'class': 'form-control', "type": 'number', "onkeyup": 'totalcalc(this)', "step": '0.01'
                     }
                 ),
             'discount_percentage': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "onkeyup": 'discountcalc(this)', "type": 'number', "value": 0
+                    'class': 'form-control', "onkeyup": 'discountcalc(this)', "type": 'number', "value": 0, "step": '0.01'
                     }
                 ),
             'discount_amount': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "onkeyup": 'discountcalc(this)', "type": 'number', "value": 0
+                    'class': 'form-control', "onkeyup": 'discountcalc(this)', "type": 'number', "value": 0, "step": '0.01'
                     }
                 ),
             'tax_percentage': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0
+                    'class': 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0, "step": '0.01'
                     }
                 ),
             'tax_amount': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0
+                    'class': 'form-control', "onkeyup": 'percentagecalc(this)', "type": 'number', "value": 0, "step": '0.01'
                     }
                 ),
             'adjusted_amount': forms.NumberInput(
                 attrs={
-                    'class': 'form-control', "type": 'number'
+                    'class': 'form-control', "type": 'number', "step": '0.01'
                     }
                 ),    
         }
@@ -303,7 +303,7 @@ class SubInvoiceForm(forms.ModelForm):
                 ),
             'subtotal_amount': forms.NumberInput(
                 attrs={
-                    'class': 'form-control sub_amount', "type": 'text', "onkeyup": 'subcalc(this)'
+                    'class': 'form-control sub_amount', "type": 'number', "step": '0.01', "onkeyup": 'subcalc(this)'
                     }
                 ),
         }
