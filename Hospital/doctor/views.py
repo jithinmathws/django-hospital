@@ -674,7 +674,6 @@ def invoice_partial(request):
     return render(request, 'invoice/partials/invoice_partial.html', {'formset': formset})
 
 
-
 @login_required
 def invoice_list(request):
     page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
@@ -683,14 +682,14 @@ def invoice_list(request):
     search_query = request.GET.get('search', '')
 
     invoice = MainInvoice.objects.filter(
-        Q(id__icontains=search_query) 
+        Q(id__icontains=search_query),
+        Q(date__icontains=search_query)
          
     )
-
     invoice_data = []
     for invoice_relate in invoice:
         existing_invoices = len(SubInvoice.objects.filter(invoice=invoice_relate))
-        remaining_invoices = 10 - existing_invoices
+        remaining_invoices = 1000 - existing_invoices
         invoice_data.append({'invoice': invoice, 'remaining_invoices': remaining_invoices})
 
     paginator = Paginator(invoice, page_size)
@@ -704,13 +703,14 @@ def invoice_list(request):
     # return render(request, "invoice/invoice_list.html", {'invoices': invoices})
 
 @login_required
-def invoice_profile(request, id):
-    invoice = get_object_or_404(MainInvoice, pk=id)
+def invoice_profile(request, invoice_id):
+    invoice = get_object_or_404(MainInvoice, pk=invoice_id)
+    subinvoice = SubInvoice.objects.filter(invoice=invoice)
     #patient_invoice = InvoiceDetails.objects.filter(invoice=invoice, invoice_title,  invoice_title1, invoice_title2, subtotal_amount, subtotal_amount1, subtotal_amount2)
     #print(invoice.query)
     #invoice = InvoiceDetails.objects.select_related('patient_name').filter(invoice_id=invoice_id)
 
-    return render(request, "invoice/invoice_profile.html", {'invoice': invoice})
+    return render(request, "invoice/invoice_profile.html", {'invoice': invoice, 'subinvoice': subinvoice})
 
 @login_required
 def redirect_me(request):
