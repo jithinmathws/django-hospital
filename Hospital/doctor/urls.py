@@ -1,12 +1,12 @@
 from django.conf import settings
-from django.urls import path
+from django.urls import path, re_path, include
 from django.views.static import serve
 from django.conf.urls.static import static
 
 from . import views
 
 urlpatterns = [
-    path("", views.doctor_index, name="Dindex"),
+    path("doctor1/", views.doctor_index, name="Dindex"),
     path("department/", views.doctor_department, name="department"),
     path("departmentlist/", views.department_list, name="department_list"),
     path("department_edit-account/<int:department_id>/", views.department_edit, name="department_edit"),
@@ -58,7 +58,7 @@ urlpatterns = [
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
     path("invoiceItem/", views.invoice_item, name="invoice_item"),
-    path("addInvoice/", views.invoice_add, name="invoice"),
+    
 
     path('MainInvoice/', views.InvoiceList.as_view(), name='list_invoice'),
     path('ClubInvoices/', views.MainInvoiceSub.as_view(), name='create_invoice'),
@@ -83,6 +83,15 @@ urlpatterns = [
     path("treatment_delete-account/<int:treatment_id>/", views.treatment_delete, name="treatment_delete"),
 
     path("pharmacy/", views.pharmacy_index, name="Pharmacyindex"),
-
+    path('list/', views.list_items, name='list'),
+    path('add/', views.add_items, name='add'),
+    path('add_category/', views.add_category, name='add_category'),
+    path('update/<str:id>/', views.update_item, name='update'),
+    path('delete/<str:id>/', views.delete_item, name='delete'),
+    path('detail/<str:id>/', views.stock_detail, name="detail"),
+    path('issue/<str:id>/', views.issue_item, name="issue"),
+    path('receive/<str:id>/', views.receive_item, name="receive"),
+    path('reorder/<str:id>/', views.reorder_level, name="reorder"),
+    path('history/', views.history, name='history'),
     
 ]

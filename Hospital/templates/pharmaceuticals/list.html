@@ -1,0 +1,78 @@
+{% extends 'home/base-login.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="row align-items-center">
+    <div class="col">
+    
+    <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
+    </div>
+    </div>
+    </div>
+
+	{% if messages %}
+		{% for message in messages %}
+		 	<div class="text-center mt-3">{{ message }}</div>
+		{% endfor %}
+	{% endif %}
+
+	
+	<div class="container mt-5">
+		<h1 class="title mb-5">{{ title }}</h1>
+		<form class="mt-5" method="post" action="">
+			{% csrf_token %}
+			<div class="row">
+                
+				{% for field in form %}
+				<div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                    </div>
+                </div>
+				{% endfor %}
+				<div class="col-12">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                </div>
+		</form>
+
+		<div class="card card-table">
+            <div class="card-body">
+               <div class="table-responsive">
+                  <table class="table table-hover table-center mb-0 datatable">
+			<thead>
+				<th>#</th>
+				<th>Item</th>
+				<th>Category</th>
+				<th>Quantity</th>
+				<th>Reoder Level</th>
+				<th>Timestamp</th>
+				<th>Last Updated</th>
+				<th>Delete</th>
+			</thead>
+			<tbody>
+				{% for instance in queryset %}
+				<tr>
+					<td>{{forloop.counter}}</td>
+					<td><a href="{% url 'update' id=instance.id %}">{{instance.item_name}}</a></td>
+					<td>{{instance.category}}</td>
+					<td><a href="{% url 'detail' id=instance.id %}">
+						{% if instance.quantity <= instance.reorder_level %}
+						<div style="background-color: tomato;">{{instance.quantity}}</div>
+						{% else %}{{instance.quantity}}
+						{% endif %}
+					</a></td>
+					<td><a href="{% url 'reorder' instance.id %}">{{instance.reorder_level}}</a></td>
+					<td>{{instance.timestamp}}</td>
+					<td>{{instance.last_updated}}</td>
+					<td><a href="{% url 'delete' id=instance.id %}"><i class="fas fa-trash" style="color: red;"></i></a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div></div></div></div>
+	
+
+{% endblock %}

@@ -44,6 +44,7 @@ EXTERNAL_APPS = [
     "doctor",
 
     #packages
+    'django_bootstrap5',
     'django_htmx',
     'crispy_forms',
     "crispy_bootstrap4",

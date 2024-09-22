@@ -1,0 +1,40 @@
+{% extends 'home/base-login.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="title mb-5">{{ title }}</h1>
+        <div class="card card-table">
+            <div class="card-body">
+               <div class="table-responsive">
+                  <table class="table table-hover table-center mb-0 datatable">
+            <thead>
+                <th>#</th>
+				<th>Item</th>
+				<th>Category</th>
+				<th>Quantity</th>
+				<th>Reoder Level</th>
+                <th>Issue Quantity</th>
+                <th>Receive Quantity</th>
+				<th>Timestamp</th>
+				<th>Last Updated</th>
+            </thead>
+            <tbody>
+                {% for instance in queryset %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ instance.item_name }}</td>
+                    <td>{{ instance.category }}</td>
+                    <td>{{ instance.quantity }}</td>
+                    <td>{{ instance.reorder_level }}</td>
+                    <td>{{ instance.issue_quantity }}</td>
+                    <td>{{ instance.receive_quantity }}</td>
+                    <td>{{ instance.timestamp }}</td>
+                    <td>{{ instance.last_updated }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+    
+        </table>
+    </div></div></div></div>
+
+{% endblock %}

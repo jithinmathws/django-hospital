@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 from django.views.static import serve
 from django.conf.urls.static import static
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path("datawizard/", include("data_wizard.urls")),
     path("", include("home.urls")),
     path("app/", include("doctor.urls")),
+    re_path(r'^accounts/', include('django.contrib.auth.urls')),
     path('/<path:path>/', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 if settings.DEBUG:

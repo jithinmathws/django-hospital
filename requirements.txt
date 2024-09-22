@@ -11,6 +11,7 @@ data-wizard==2.0.0
 diff-match-patch==20230430
 distlib==0.3.8
 Django==5.0.4
+django-bootstrap5==24.3
 django-crispy-forms==2.3
 django-htmx==1.19.0
 django-import-export==4.0.6
