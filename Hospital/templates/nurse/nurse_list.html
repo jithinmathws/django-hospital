@@ -1,5 +1,5 @@
 {% extends 'home/base-login.html' %}
-{% load static %}
+{% load compress static %}
 {% block title %} Nurse list {% endblock %}
 
 {% block content %}
@@ -146,8 +146,9 @@
       }
    }
   </script>
+{% compress js %}
   <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
-
+{% endcompress %}
   
   {% endblock %}
  

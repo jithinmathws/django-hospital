@@ -44,6 +44,7 @@ EXTERNAL_APPS = [
     "doctor",
 
     #packages
+    'compressor',
     'django_bootstrap5',
     'django_htmx',
     'crispy_forms',
@@ -55,6 +56,13 @@ EXTERNAL_APPS = [
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,6 +144,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+COMPRESS_ENABLED = True
 
 MEDIA_URL = "/media/"
 
