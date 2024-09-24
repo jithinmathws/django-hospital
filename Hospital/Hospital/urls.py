@@ -26,7 +26,7 @@ urlpatterns = [
     path("datawizard/", include("data_wizard.urls")),
     path("", include("home.urls")),
     path("app/", include("doctor.urls")),
-    re_path(r'^accounts/', include('django.contrib.auth.urls')),
+    
     path('/<path:path>/', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 if settings.DEBUG:
