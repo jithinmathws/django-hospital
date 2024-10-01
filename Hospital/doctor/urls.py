@@ -83,15 +83,6 @@ urlpatterns = [
     path("treatment_delete-account/<int:treatment_id>/", views.treatment_delete, name="treatment_delete"),
 
     path("pharmacy/", views.pharmacy_index, name="Pharmacyindex"),
-    path('list/', views.list_items, name='list'),
-    path('add/', views.add_items, name='add'),
-    path('add_category/', views.add_category, name='add_category'),
-    path('update/<str:id>/', views.update_item, name='update'),
-    path('delete/<str:id>/', views.delete_item, name='delete'),
-    path('detail/<str:id>/', views.stock_detail, name="detail"),
-    path('issue/<str:id>/', views.issue_item, name="issue"),
-    path('receive/<str:id>/', views.receive_item, name="receive"),
-    path('reorder/<str:id>/', views.reorder_level, name="reorder"),
-    path('history/', views.history, name='history'),
-    
+    path("inventory/", views.inventory_index, name="Inventoryindex"),
+    path("addCategory/", views.add_category, name="category"),
 ]

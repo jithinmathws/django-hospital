@@ -15,6 +15,8 @@ class SubInvoiceInLineAdmin(admin.TabularInline):
 class SubInvoiceAdmin(admin.ModelAdmin):
     inlines = [SubInvoiceInLineAdmin]
 
+class StockAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('item_name',)}
 # Register your models here.
 
 data_wizard.register(DoctorInfo)
@@ -52,5 +54,12 @@ admin.site.register(InvoiceDetail, InvoiceRelationAdmin)
 
 data_wizard.register(IncomeDetails)
 admin.site.register(IncomeDetails, ImportExportModelAdmin)
+
 data_wizard.register(TreatmentDetails)
 admin.site.register(TreatmentDetails, ImportExportModelAdmin)
+
+data_wizard.register(Category)
+admin.site.register(Category, ImportExportModelAdmin)
+
+data_wizard.register(Stock)
+admin.site.register(Stock, StockAdmin)
