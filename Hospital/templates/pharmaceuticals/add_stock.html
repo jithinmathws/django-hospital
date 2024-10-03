@@ -8,7 +8,7 @@
     <div class="row align-items-center">
     <div class="col">
     <h3 class="page-title">Add Item</h3>
-    <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
+    <div class="text-center dont-have"><a href="{% url 'Inventoryindex' %}">Back</a></div>
     </div>
     </div>
     </div>
@@ -17,7 +17,7 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-12">
-               <h5 class="form-title"><span>Medicine Information</span></h5>
+               <h5 class="form-title"><span>Medicine Stock Information</span></h5>
             </div>
             {% for field in form %}
             <div class="col-12 col-sm-6">
@@ -34,20 +34,4 @@
         </div>
     </form>
 </div>
-<script>
-$(document).ready(function(){
-
-    // Calculating Item Total Price
-    $('[name="quantity"], [name="per_unit_price"]').on('input, change', function(){
-        var qty = $('#id_quantity').val()
-        var price = $('#id_per_unit_price').val()
-        qty = qty > 0 ? qty : 0 ;
-        price = price > 0 ? price : 0 ;
-        var total = qty * price;
-        $('#id_total_price').val(total.toFixed(3))
-        
-    })
-    
-})
-</script>
 {% endblock%}

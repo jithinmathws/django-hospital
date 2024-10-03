@@ -412,3 +412,40 @@ class CategoryForm(forms.ModelForm):
             print(field)
         self.fields["name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
 
+class StockForm(forms.ModelForm):
+    is_available = forms.CheckboxInput()
+    class Meta:
+        model = Stock
+        fields = ['item_name',  'description', 'category', 'price', 'stock']
+        #fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["item_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["description"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["category"].widget.attrs.update({"class": 'form-control'})
+        self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["stock"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        
+
+class CustomerForm(forms.ModelForm):
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    class Meta:
+        model = Customer
+        fields = ['name',  'gender', 'address', 'state', 'country', 'pin_code', 'date_of_birth', 'phone_number']
+        #fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["gender"].widget.attrs.update({"class": 'form-control'})
+        self.fields["address"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["state"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["country"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["pin_code"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})

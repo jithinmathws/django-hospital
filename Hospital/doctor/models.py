@@ -337,14 +337,15 @@ class TreatmentDetails(models.Model):
 #inventory_pharmacy
 class Category(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
-
+    slug = models.SlugField(max_length=200, blank=True, null=True, unique=True)
+    
     def __str__(self):
         return self.name
 
 class Stock(models.Model):
     item_name = models.CharField(max_length=200, unique=True, blank=True, null=True,)
     slug = models.SlugField(max_length=200, blank=True, null=True, unique=True)
-    description = models.TextField(max_length=500, blank=True)
+    description = models.CharField(max_length=500, blank=True)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     price = models.FloatField(blank=True, null=True, validators=[MinValueValidator(0.0)])
     stock = models.IntegerField(default='0')
@@ -354,3 +355,22 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.item_name
+    
+class Customer(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=200, blank=True, null=True, unique=True)
+    gender = models.CharField(
+         max_length=20,
+         choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
+     )
+    address = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    pin_code = models.BigIntegerField(blank=True, null=True)
+    date_of_birth = models.DateField()
+    phone_number = models.CharField(default="", blank=True, null=True, max_length=20)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.name)

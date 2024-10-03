@@ -694,7 +694,7 @@ def income_add(request):
             form.save()
             return redirect('Incomeindex')
     else:
-        form = InvoiceForm()
+        form = IncomeForm()
     return render(request, "invoice/addIncome.html", {'form': form})
 
 @login_required
@@ -779,3 +779,38 @@ def add_category(request):
     else:
         form = CategoryForm()
     return render(request, "pharmaceuticals/category.html", {'form': form})
+
+@login_required
+def add_stock(request):
+    if request.method == 'POST':
+        form = StockForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Inventoryindex')
+    else:
+        form = StockForm()
+    return render(request, "pharmaceuticals/add_stock.html", {'form': form})
+
+@login_required
+def stock_list(request):
+    stocks = Stock.objects.all()
+    return render(request, "pharmaceuticals/stock_list.html", {'stocks': stocks})
+
+@login_required
+def stock_edit(request, stock_id):
+    role = Stock.objects.get(pk=stock_id)
+    if request.method == 'POST':
+        form = StockForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('stock_list')
+
+    else:
+        form = TreatmentForm(instance=role)
+    return render(request, 'pharmaceuticals/stock_edit.html', {'form': form, 'role': role})
+
+@login_required
+def stock_delete(request, stock_id):
+    member = Stock.objects.get(pk=stock_id)
+    member.delete()
+    return redirect('stock_list')
