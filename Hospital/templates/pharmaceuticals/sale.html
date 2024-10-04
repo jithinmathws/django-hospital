@@ -1,7 +1,7 @@
-{% extends 'home/base-login.html' %}
+{% extends 'pharmaceuticals/base-login.html' %}
 {% load static %}
 {% load widget_tweaks %}
-{% block title %} Add new Nurse {% endblock %}
+{% block title %} Sale of Items {% endblock %}
 
 {% block content %}
 
@@ -11,7 +11,7 @@
     <div class="page-header">
     <div class="row align-items-center">
     <div class="col">
-    <h3 class="page-title">Add Nurse</h3>
+    <h3 class="page-title">Pharmacy Sale</h3>
     <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
     </div>
     </div>
@@ -19,28 +19,28 @@
 
     
     
-    <form method="post">
+    <form method="post" class="modal-content">
         {% csrf_token %}
         <div class="row">
-            <div class="col-12">
-               <h5 class="form-title"><span>Medicine Stock Information</span></h5>
+            <div class="modal-header col-12">
+               <h5 class="form-title"><span>Medicine Sale</span></h5>
             </div>
             {% for field in form %}
-            <div class="col-12 col-sm-6">
+            <div class="modal-body col-sm-6">
                 <div class="form-group">
                     <label>{{field.label}}</label>
                     {{field}}
                 </div>
             </div>
             {% endfor %}
-            <br><br>
+            
             <div class="col-12">
                 
-                <button type="" class="btn btn-secondary">Select Medicine</button>
+                <button type="button" hx-get="{% url 'stock_list' %}" hx-target="#dialog" class="btn btn-secondary">Select Medicine</button>
                 </div>
-                <br><br><br>
+                
 
-            <div class="col-12">
+            <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
             </div>
@@ -51,12 +51,6 @@
     <span class="or-line"></span>
     <span class="span-or">or</span>
     </div> -->
-    
-    
-    
-    
-
-
-
+  
 
 {% endblock %}

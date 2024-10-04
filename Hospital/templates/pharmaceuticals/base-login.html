@@ -42,6 +42,12 @@
 
     {% endblock %}
 
+    <div id="modal" class="modal fade" tabindex="-1">
+        <div id="dialog" class="modal-dialog">
+
+        </div>
+    </div>
+
     {% block extra_script %}
     <script>
         document.body.addEventListener('htmx:configRequest', (event) => {

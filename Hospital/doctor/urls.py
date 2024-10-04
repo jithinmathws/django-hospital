@@ -86,6 +86,7 @@ urlpatterns = [
     path("inventory/", views.inventory_index, name="Inventoryindex"),
     path("addCategory/", views.add_category, name="category"),
     path("addStock/", views.add_stock, name="stock"),
+    path("stockList/", views.stock_list, name="stock_list"),
     path("stock_edit-account/<int:stock_id>/", views.stock_edit, name="stock_edit"),
     path("stock_delete-account/<int:stock_id>/", views.stock_delete, name="stock_delete"),
     path("stockSale/", views.stock_sale, name="stock_sale"),
