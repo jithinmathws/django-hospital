@@ -1,0 +1,57 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} Add new Nurse {% endblock %}
+
+{% block content %}
+
+
+    <div class="content container-fluid">
+    
+    <div class="page-header">
+    <div class="row align-items-center">
+    <div class="col">
+    <h3 class="page-title">Add Nurse</h3>
+    <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
+    </div>
+    </div>
+    </div>
+
+    
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+               <h5 class="form-title"><span>Medicine Stock Information</span></h5>
+            </div>
+            {% for field in form %}
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>{{field.label}}</label>
+                    {{field}}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </div>
+        </form>
+    </div>
+    <!-- <div class="login-or">
+    <span class="or-line"></span>
+    <span class="span-or">or</span>
+    </div> -->
+    
+    <div class="social-login">
+    <span>Register with</span>
+    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
+    </div>
+    
+    
+
+
+
+
+{% endblock %}

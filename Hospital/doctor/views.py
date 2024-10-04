@@ -814,3 +814,15 @@ def stock_delete(request, stock_id):
     member = Stock.objects.get(pk=stock_id)
     member.delete()
     return redirect('stock_list')
+
+@login_required
+def stock_sale(request):
+    stocks = Stock.objects.all()
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Pharmacyindex')
+    else:
+        form = CustomerForm()
+    return render(request, "pharmaceuticals/sale.html", {'form': form, 'stocks': stocks})
