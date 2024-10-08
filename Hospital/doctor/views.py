@@ -825,4 +825,4 @@ def stock_sale(request):
             return redirect('Pharmacyindex')
     else:
         form = CustomerForm()
-    return render(request, "pharmaceuticals/sale.html", {'form': form, 'stocks': stocks})
+    return render(request, "pharmaceuticals/base.html", {'form': form, 'stocks': stocks})

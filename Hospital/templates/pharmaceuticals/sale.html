@@ -5,16 +5,15 @@
 
 {% block content %}
 
-
-    <div class="content container-fluid">
+<div class="content container-fluid">
     
     <div class="page-header">
-    <div class="row align-items-center">
-    <div class="col">
-    <h3 class="page-title">Pharmacy Sale</h3>
-    <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
-    </div>
-    </div>
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Pharmacy Sale</h3>
+                <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
+            </div>
+        </div>
     </div>
 
     
@@ -26,12 +25,12 @@
                <h5 class="form-title"><span>Medicine Sale</span></h5>
             </div>
             {% for field in form %}
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>{{field.label}}</label>
-                    {{field}}
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>{{field.label}}</label>
+                        {{field}}
+                    </div>
                 </div>
-            </div>
             {% endfor %}
             <br><br>
             <div class="col-12">
