@@ -90,4 +90,5 @@ urlpatterns = [
     path("stock_edit-account/<int:stock_id>/", views.stock_edit, name="stock_edit"),
     path("stock_delete-account/<int:stock_id>/", views.stock_delete, name="stock_delete"),
     path("stockSale/", views.stock_sale, name="stock_sale"),
+    path('search/', views.pharmacy_search, name="search"),
 ]

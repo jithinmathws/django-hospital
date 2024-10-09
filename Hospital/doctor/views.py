@@ -826,3 +826,17 @@ def stock_sale(request):
     else:
         form = CustomerForm()
     return render(request, "pharmaceuticals/base.html", {'form': form, 'stocks': stocks})
+
+@login_required
+def pharmacy_search(request):
+    q = request.GET.get('q')
+
+    print(q)
+
+    if q:
+        results = Stock.objects.filter(Q(item_name__icontains=q) | Q(description__icontains=q)) \
+        .order_by("stock", "-last_updated")[0:100]
+    else:
+        results = []
+
+    return render(request, "partials/results.html", {"results": results})

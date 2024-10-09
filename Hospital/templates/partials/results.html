@@ -1,0 +1,13 @@
+{% for result in results %}
+<tr>
+    
+    <td>{{ result.item_name }}</td>
+    <td>{{ result.category.name }}</td>
+    <td>{{ result.price }}</td>
+    <td class="text-right">
+        <div class="actions">
+            <a href="#" class="btn btn-sm bg-success-light mr-2">Add to cart</a>
+        </div>
+    </td>
+</tr>
+{% endfor %}

@@ -11,19 +11,18 @@
       
          <div class="columns">
            <div class="column is-one-third is-offset-one-third">
-             <input type="text" class="input" placeholder="Search" name="q" hx-get="/search/" hx-trigger="keyup changed delay:500ms" hx-target="#results">
+             <input type="text" class="input" placeholder="Search" name="q" hx-get="/app/search/" hx-trigger="keyup changed delay:500ms" hx-target="#results">
            </div>
          </div>
          <table class="table is-fullwidth">
            <thead>
              <tr>
-               <th>ID</th>
+               
                <th>Title</th>
                <th>Category</th>
                <th>Price</th>
-               <th>Remaining stock</th>
-               <th>Last Modified</th>
                
+               <th class="text-right">Action</th>
              </tr>
            </thead>
            <tbody id="results">
