@@ -72,3 +72,9 @@ admin.site.register(Stock, StockAdmin)
 
 data_wizard.register(Customer)
 admin.site.register(Customer, CustomerAdmin)
+
+data_wizard.register(Cart)
+admin.site.register(Cart, ImportExportModelAdmin)
+
+data_wizard.register(CartItem)
+admin.site.register(CartItem, ImportExportModelAdmin)

@@ -49,41 +49,29 @@
         </div>
     
         
-        <form method="post">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-12">
-                   <h5 class="form-title"><span>Medicine Sale</span></h5>
-                </div>
-                {% for field in form %}
-                <div class="col-12 col-sm-6">
-                    <div class="form-group">
-                        <label>{{field.label}}</label>
-                        {{field}}
-                    </div>
-                </div>
-                {% endfor %}
-                <br><br>
-                <div class="col-12">
-                    
-                    <button type="button" hx-get="{% url 'stock_list' %}" hx-target="#dialog" class="btn btn-secondary">Select Medicine</button>
-                    </div>
-                    <br><br><br>
-    
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                </div>
+        <div class="columns">
+            <div class="column is-one-third is-offset-one-third">
+              <input type="text" class="input" placeholder="Search" name="q" hx-get="/app/search/" hx-trigger="keyup changed delay:500ms" hx-target="#results">
+            </div>
+          </div>
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
                 
-            </form>
-        </div>
-
-    <div id="modal" class="modal fade" tabindex="-1">
-        <div id="dialog" class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" hx-target="this">
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                
+                <th class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="results">
       
-
+            </tbody>
+          </table>
         </div>
-    </div>
+
+    
 
     {% block extra_script %}
     <script>
