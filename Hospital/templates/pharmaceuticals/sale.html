@@ -1,22 +1,17 @@
-{% extends 'pharmaceuticals/base-login.html' %}
-{% load static %}
-{% load widget_tweaks %}
-{% block title %} Sale of items {% endblock %}
-
+{% extends 'pharmaceuticals/base.html' %}
 {% block content %}
 
 <div class="content container-fluid">
     
     <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Pharmacy Sale</h3>
-                <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
-            </div>
-        </div>
+    <div class="row align-items-center">
+    <div class="col">
+    <h3 class="page-title">Pharmacy Sale</h3>
+    <div class="text-center dont-have"><a href="{% url 'Pharmacyindex' %}">Back</a></div>
+    </div>
+    </div>
     </div>
 
-    
     
     <form method="post">
         {% csrf_token %}
@@ -25,19 +20,14 @@
                <h5 class="form-title"><span>Medicine Sale</span></h5>
             </div>
             {% for field in form %}
-                <div class="col-12 col-sm-6">
-                    <div class="form-group">
-                        <label>{{field.label}}</label>
-                        {{field}}
-                    </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>{{field.label}}</label>
+                    {{field}}
                 </div>
+            </div>
             {% endfor %}
-            <br><br>
-            <div class="col-12">
-                
-                <button type="button" hx-get="{% url 'stock_list' %}" hx-target="#dialog" class="btn btn-secondary">Select Medicine</button>
-                </div>
-                <br><br><br>
+            
 
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -46,16 +36,17 @@
             
         </form>
     </div>
-    <!-- <div class="login-or">
-    <span class="or-line"></span>
-    <span class="span-or">or</span>
-    </div> -->
-    
-    
-    
-    
+
+<div id="modal" class="modal fade" tabindex="-1">
+    <div id="dialog" class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" hx-target="this">
+  
+
+    </div>
+</div>    
+<script>
+    $("#id_products").select2();
+</script>
+{% endblock%}
 
 
-
-
-{% endblock %}
+    

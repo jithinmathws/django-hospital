@@ -434,7 +434,7 @@ class CustomerForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     class Meta:
         model = Customer
-        fields = ['name',  'gender', 'address', 'state', 'country', 'pin_code', 'date_of_birth', 'phone_number']
+        fields = ['name',  'gender', 'address', 'state', 'country', 'pin_code', 'date_of_birth', 'phone_number', 'products']
         #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -449,3 +449,4 @@ class CustomerForm(forms.ModelForm):
         self.fields["pin_code"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["products"].widget.attrs.update({"class": 'form-control'})

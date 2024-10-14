@@ -1,6 +1,7 @@
 
-{% load compress static %}
-{% block title %} Invoice list {% endblock %}
+
+   {% load compress static %}
+
 
 <div class="modal-content">
    <div class="modal-header">
@@ -11,18 +12,17 @@
       
          <div class="columns">
            <div class="column is-one-third is-offset-one-third">
-             <input type="text" class="input" placeholder="Search" name="q" hx-get="/app/search/" hx-trigger="keyup changed delay:500ms" hx-target="#results">
+             <input type="text" class="input" placeholder="Search" name="q" hx-get="/search/" hx-trigger="keyup changed delay:500ms" hx-target="#results">
            </div>
          </div>
          <table class="table is-fullwidth">
            <thead>
              <tr>
-               
-               <th>Title</th>
+               <th>Product</th>
                <th>Category</th>
                <th>Price</th>
                
-               <th class="text-right">Action</th>
+               
              </tr>
            </thead>
            <tbody id="results">
@@ -33,10 +33,10 @@
    </div>
    <div class="modal-footer">
      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-     <button type="submit" class="btn btn-primary">Save</button>
+     
    </div>
  </div>
-
+   
 
 
 <!-- 
@@ -121,7 +121,7 @@
               </div>
    </div><div class="modal-footer"></div>
 </div> -->
-      
+
       
 {% compress js %}   
    <script src="{% static 'prescol/js/script.js' %}"></script>
