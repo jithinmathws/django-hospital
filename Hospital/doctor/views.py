@@ -817,60 +817,52 @@ def stock_delete(request, stock_id):
 
 @login_required
 def stock_sale(request):
-    stocks = Stock.objects.all()
-    if request.method == 'POST':
-        form = CustomerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('stock_list')
-    else:
-        form = CustomerForm()
-    return render(request, "pharmaceuticals/sale.html", {'form': form, 'stocks': stocks})
-
-@login_required
-def pharmacy_search(request):
-    q = request.GET.get('q')
-
-    print(q)
-
-    if q:
-        results = Stock.objects.filter(Q(item_name__icontains=q) | Q(description__icontains=q)) \
-        .order_by("stock", "-last_updated")[0:100]
-    else:
-        results = []
+    form = CustomerForm(request.POST or None)
+    context = { 'form': form }
+    if form.is_valid():
+        customer_object = form.save()
+        context['form'] = CustomerForm()
+        return redirect('add_cart', slug=customer_object.slug)
     
-    return render(request, "pharmaceuticals/partials/results.html", {"results": results})
+    return render(request, "pharmaceuticals/sale.html", {'form': form})
+
+
+def _cart_id(request):
+    cart = request.session.session_key
+    if not cart:
+        cart = request.session.create()
+    return cart
 
 @login_required
-def add_cart(request, stock_id, customer_id):
-    product = Stock.objects.get(pk=stock_id)
+def add_cart(request, slug):
+    customer = Customer.objects.get(slug=slug)
     try:
-        customer = Customer.objects.get(pk=customer_id(request))
-    except Customer.DoesNotExist:
-        customer = Customer.objects.create(
-            pk = customer_id(request) 
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+    except Cart.DoesNotExist:
+        cart = Cart.objects.create(
+            cart_id = _cart_id(request) 
         )
-    customer.save()
+        cart.save()
 
     try:
-        cart_item = CartItem.objects.get(product=product, customer=customer)
+        cart_item = CartItem.objects.get(customer=customer)
         cart_item.quantity += 1
         cart_item.save()
     except CartItem.DoesNotExist:
         cart_item = CartItem.objects.create(
-            product = product,
-            quantity = 1,
             customer = customer,
+            quantity = 1,
+            cart = cart
         )
-    cart_item.save()
-    return HttpResponse(cart_item.product)
+        cart_item.save()
+    return redirect('cart')
 
 @login_required
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         cart_items = CartItem.objects.filter(is_active=True)
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
+            total += (cart_item.customer.products.price * cart_item.quantity)
             quantity += cart_item.quantity
     except ObjectNotExist:
         pass
@@ -879,4 +871,4 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'quantity': quantity,
         'cart_items': cart_items
     }
-    return render(request , "pharmaceuticals/base.html", context)
+    return render(request , "pharmaceuticals/cart.html", context)

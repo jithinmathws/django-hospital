@@ -348,7 +348,7 @@ class Stock(models.Model):
     description = models.CharField(max_length=500, blank=True)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     price = models.FloatField(blank=True, null=True, validators=[MinValueValidator(0.0)])
-    stock = models.IntegerField(default='0')
+    stock = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_updated = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -358,7 +358,7 @@ class Stock(models.Model):
     
 class Customer(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=200, blank=True, null=True, unique=True)
+    slug = models.SlugField(max_length=200, blank=True, null=True)
     gender = models.CharField(
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
@@ -376,12 +376,22 @@ class Customer(models.Model):
     def __str__(self):
         return str(self.name)
     
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+class Cart(models.Model):
+    cart_id = models.CharField(max_length=250, blank=True)
+    date_added = models.DateField(auto_now_add=True)    
     
+    def __str__(self):
+        return str(self.cart_id)
+
 class CartItem(models.Model):
-    product = models.ForeignKey(Stock, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.product)
+        return str(self.customer)
