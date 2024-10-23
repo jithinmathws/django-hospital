@@ -855,17 +855,20 @@ def add_cart(request, slug):
             cart = cart
         )
         cart_item.save()
-    return redirect('cart')
+    return redirect('cart', slug=customer.slug)
 
 @login_required
-def cart(request, total=0, quantity=0, cart_items=None):
+def cart(request, slug, total=0, quantity=0, cart_items=None):
     try:
-        cart_items = CartItem.objects.filter(is_active=True)
+        customer = Customer.objects.get(slug=slug)
+        cart_items = CartItem.objects.filter(customer=customer, is_active=True)
+        for product in customer.products.all():
+            price = product.price
         for cart_item in cart_items:
-            total += (cart_item.customer.products.price * cart_item.quantity)
+            total += (price * cart_item.quantity)
             quantity += cart_item.quantity
-    except ObjectNotExist:
-        pass
+    except CartItem.DoesNotExist:
+        total = quantity = cart_items = None
     context = {
         'total': total,
         'quantity': quantity,

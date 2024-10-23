@@ -92,5 +92,5 @@ urlpatterns = [
     path("stockSale/", views.stock_sale, name="stock_sale"),
     
     path('add_cart/<slug:slug>/', views.add_cart, name="add_cart"),
-    path("cart/", views.cart, name="cart"),
+    path("cart/<slug:slug>/", views.cart, name="cart"),
 ]
