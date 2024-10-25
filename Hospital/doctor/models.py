@@ -240,14 +240,21 @@ class PharmacistDetails(models.Model):
     
 class BedCategory(models.Model):
     bedCategory_name = models.CharField(max_length=200, unique=True)
-    #slug = models.SlugField(blank=True)
+    slug = models.SlugField(blank=True)
+    quantity = models.IntegerField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.bedCategory_name)
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
 class AddBed(models.Model):
+    patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE, null=True)
     bedCategory_name = models.ForeignKey(BedCategory, on_delete=models.CASCADE)
     bed_number = models.CharField(max_length=50)
     charges = models.CharField(max_length=50)
@@ -380,16 +387,9 @@ class Customer(models.Model):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-class Cart(models.Model):
-    cart_id = models.CharField(max_length=250, blank=True)
-    date_added = models.DateField(auto_now_add=True)    
-    
-    def __str__(self):
-        return str(self.cart_id)
 
 class CartItem(models.Model):
     customer = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
 

@@ -827,51 +827,33 @@ def stock_sale(request):
     return render(request, "pharmaceuticals/sale.html", {'form': form})
 
 
-def _cart_id(request):
-    cart = request.session.session_key
-    if not cart:
-        cart = request.session.create()
-    return cart
-
 @login_required
 def add_cart(request, slug):
-    customer = Customer.objects.get(slug=slug)
     try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            cart_id = _cart_id(request) 
-        )
-        cart.save()
+        customer = Customer.objects.get(slug=slug)
+        customer.quantity += 1
+        customer.save()
+    except Customer.DoesNotExist:
+        pass
 
-    try:
-        cart_item = CartItem.objects.get(customer=customer)
-        cart_item.quantity += 1
-        cart_item.save()
-    except CartItem.DoesNotExist:
-        cart_item = CartItem.objects.create(
-            customer = customer,
-            quantity = 1,
-            cart = cart
-        )
-        cart_item.save()
     return redirect('cart', slug=customer.slug)
 
 @login_required
-def cart(request, slug, total=0, quantity=0, cart_items=None):
+def cart(request, slug, total=0, quantity=0):
     try:
         customer = Customer.objects.get(slug=slug)
-        cart_items = CartItem.objects.filter(customer=customer, is_active=True)
+        
+        products = customer.products.all()
+        
         for product in customer.products.all():
-            price = product.price
-        for cart_item in cart_items:
-            total += (price * cart_item.quantity)
-            quantity += cart_item.quantity
-    except CartItem.DoesNotExist:
-        total = quantity = cart_items = None
+            total += (product.price * customer.quantity)
+            quantity += customer.quantity
+    except ObjectNotExist:
+        pass
     context = {
         'total': total,
         'quantity': quantity,
-        'cart_items': cart_items
+        'products': products,
+        'customer': customer
     }
     return render(request , "pharmaceuticals/cart.html", context)
