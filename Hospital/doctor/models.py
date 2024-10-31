@@ -112,6 +112,11 @@ class DoctorCertificate(models.Model):
         return str(self.doctor)
     
 class PatientDetails(models.Model):
+    patient_number = models.GeneratedField(
+        expression=models.F("id"),
+        output_field=models.IntegerField(),
+        db_persist=True
+    )
     patient_name = models.CharField(max_length=50)
     gender = models.CharField(
          max_length=20,
@@ -268,6 +273,7 @@ class AddBed(models.Model):
 
 
 class MainInvoice(models.Model):
+    #invoice_id = models.AutoField(primary_key=True)
     patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
     date = models.DateField()
     total_amount = models.CharField(max_length=50, blank=True, null=True)

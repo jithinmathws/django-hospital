@@ -61,18 +61,20 @@ class DoctorForm(forms.ModelForm):
             
 
 class PatientForm(forms.ModelForm):
+    patient_number = forms.IntegerField()
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
     patient_image = forms.ImageField(required=False)
     class Meta:
         model = PatientDetails
-        #fields = ['patient_name',  'gender', 'email', 'date_of_birth', 'phone_number']
+        #fields = ['patient_number', 'patient_name', 'gender', 'blood_group', 'address', 'state', 'country', 'pin_code', 'email', 'date_of_birth', 'phone_number', 'patient_image']
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
-            print(field)
+            print(field)   
+        #self.fields["patient_number"].widget.attrs.update({"class": 'form-control', "type": 'number', "readonly": 'readonly'})
         self.fields["patient_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["gender"].widget.attrs.update({"class": 'form-control'})
         self.fields["blood_group"].widget.attrs.update({"class": 'form-control'})
@@ -84,6 +86,12 @@ class PatientForm(forms.ModelForm):
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["patient_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
+
+    def save(self, commit=True):
+        instance = super(PatientForm, self).save(commit=False)
+        if commit:
+            instance.save()
+        return instance
 
 class PatientStatusForm(forms.ModelForm):
     class Meta:

@@ -27,9 +27,10 @@ from django.views.generic.edit import (
 )
 from django.db import transaction, IntegrityError
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, Max
 from functools import wraps
 from tablib import Dataset
 
@@ -242,6 +243,57 @@ def patient_add(request):
     else:
         form = PatientForm()
     return render(request, "patient/addPatient.html", {'form': form})
+
+@login_required
+def old_patient_add(request):
+    number = 1001
+    if PatientDetails.objects.count() == 0:
+        number
+    else:
+        number = PatientDetails.objects.aggregate(max=Max('patient_number'))["max"]+1
+
+    form = PatientForm(request.POST or None)
+    context = { 'form': form }
+    if form.is_valid():
+        #form.save()
+        patient = form.save(commit=False)
+        image_blob = request.FILES.get('patient_image')
+        #image = patient.patient_image
+        if image_blob:
+            patient.patient_image = image_blob.read()
+        '''fields = ['patient_number', 'patient_name', 'gender', 'blood_group', 'address', 'state', 'country', 'pin_code', 'email', 'date_of_birth', 'phone_number', 'patient_image']
+        
+        patient_name = request.POST['patient_name']
+        gender = request.POST['gender']
+        blood_group = request.POST['blood_group']
+        address = request.POST['address']
+        state = request.POST['state']
+        country = request.POST['country']
+        pin_code = request.POST['pin_code']
+        email = request.POST['email']
+        date_of_birth = request.POST['date_of_birth']
+        phone_number = request.POST['phone_number']'''
+        try:
+            data = PatientDetails.objects.create(patient_number=number)
+            data.save()
+        except ObjectDoesNotExist:
+            pass
+        patient.save()
+        return redirect('Pindex')
+    
+    return render(request, "patient/addPatient.html", context)
+
+'''
+def stock_sale(request):
+    form = CustomerForm(request.POST or None)
+    context = { 'form': form }
+    if form.is_valid():
+        customer_object = form.save()
+        context['form'] = CustomerForm()
+        return redirect('add_cart', slug=customer_object.slug)
+    
+    return render(request, "pharmaceuticals/sale.html", {'form': form})
+'''
 
 @login_required
 def patient_status(request):

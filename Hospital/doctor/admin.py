@@ -30,6 +30,7 @@ admin.site.register(DoctorInfo, ImportExportModelAdmin)
 data_wizard.register(CertificateDoctor)
 admin.site.register(CertificateDoctor, ImportExportModelAdmin)
 admin.site.register(DoctorDepartment)
+
 data_wizard.register(PatientDetails)
 admin.site.register(PatientDetails, ImportExportModelAdmin)
 data_wizard.register(GuardianDetails)
