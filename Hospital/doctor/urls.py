@@ -93,4 +93,9 @@ urlpatterns = [
     
     path('add_cart/<slug:slug>/', views.add_cart, name="add_cart"),
     path("cart/<slug:slug>/", views.cart, name="cart"),
+    path('cart_quantity/<slug:slug>/<int:product_id>/', views.cart_quantity, name="cart_quantity"),
+    path('remove_cart/<slug:slug>/<int:product_id>/', views.remove_cart, name="remove_cart"),
+    path('delete_cart/<slug:slug>/<int:product_id>/', views.delete_cart, name="delete_cart"),
+    
+    path("checkout/<slug:slug>/", views.checkout, name="checkout"),
 ]

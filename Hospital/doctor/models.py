@@ -356,6 +356,7 @@ class Stock(models.Model):
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     price = models.FloatField(blank=True, null=True, validators=[MinValueValidator(0.0)])
     stock = models.PositiveIntegerField(default=0)
+    
     is_available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_updated = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -363,6 +364,12 @@ class Stock(models.Model):
     def __str__(self):
         return self.item_name
     
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.item_name)
+        super().save(*args, **kwargs)
+
+
+
 class Customer(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=200, blank=True, null=True)
@@ -376,7 +383,7 @@ class Customer(models.Model):
     pin_code = models.BigIntegerField(blank=True, null=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(default="", blank=True, null=True, max_length=20)
-    products = models.ManyToManyField(Stock)
+    products = models.ManyToManyField(Stock, through='CartItem')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -387,11 +394,14 @@ class Customer(models.Model):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-
 class CartItem(models.Model):
-    customer = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True)
+    product = models.ForeignKey(Stock, on_delete=models.CASCADE, blank=True, null=True)
+    quantity = models.IntegerField(default=0, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
+    def sub_total(self):
+        return self.product.price * self.quantity
+
     def __str__(self):
-        return str(self.customer)
+        return str(self.quantity)

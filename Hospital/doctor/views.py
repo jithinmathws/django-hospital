@@ -829,31 +829,108 @@ def stock_sale(request):
 
 @login_required
 def add_cart(request, slug):
-    try:
-        customer = Customer.objects.get(slug=slug)
-        customer.quantity += 1
-        customer.save()
-    except Customer.DoesNotExist:
-        pass
-
+    customer = Customer.objects.get(slug=slug)
+    products = customer.products.all()
+    
+    for product in products:
+        cart_items = CartItem.objects.get(customer=customer, product=product)
+        cart_id = cart_items.id
+        try:
+            cart_item = CartItem.objects.get(id=cart_id)
+            cart_item.quantity += 1
+            cart_item.save()
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+                customer = customer,
+                product = product,
+                quantity = 1,
+            )
+            cart_item.save()
+           
     return redirect('cart', slug=customer.slug)
 
 @login_required
-def cart(request, slug, total=0, quantity=0):
+def cart_quantity(request, slug, product_id):
+    customer = Customer.objects.get(slug=slug)
+    product = Stock.objects.get(pk=product_id)
+    cart_item = CartItem.objects.get(customer=customer, product=product)
+    cart_id = cart_item.id
     try:
-        customer = Customer.objects.get(slug=slug)
-        
-        products = customer.products.all()
-        
-        for product in customer.products.all():
-            total += (product.price * customer.quantity)
-            quantity += customer.quantity
-    except ObjectNotExist:
-        pass
+        cart = CartItem.objects.get(id=cart_id)
+        cart.quantity += 1
+        cart.save()
+    except CartItem.DoesNotExist:
+        cart = CartItem.objects.create(
+            customer = customer,
+            product = product,
+            quantity = 1,
+        )
+        cart.save()
+    return redirect('cart', slug=customer.slug)
+
+@login_required
+def remove_cart(request, slug, product_id):
+    customer = Customer.objects.get(slug=slug)
+    product = Stock.objects.get(pk=product_id)
+    cart_item = CartItem.objects.get(customer=customer, product=product)
+    cart_id = cart_item.id
+    cart = CartItem.objects.get(id=cart_id)
+    if cart.quantity > 1:
+        cart.quantity -= 1
+        cart.save()
+    else:
+        cart.delete()
+    return redirect('cart', slug=customer.slug)
+
+@login_required
+def delete_cart(request, slug, product_id):
+    customer = Customer.objects.get(slug=slug)
+    product = Stock.objects.get(pk=product_id)
+    cart_item = CartItem.objects.get(customer=customer, product=product)
+    cart_id = cart_item.id
+    cart = CartItem.objects.get(id=cart_id)
+    cart.delete()
+    return redirect('cart', slug=customer.slug)
+
+@login_required
+def cart(request, slug, total=0, quantity=0, cart_item=None):
+    
+    customer = Customer.objects.get(slug=slug)
+    products = customer.products.all()
+    for product in products:
+        cart_items = CartItem.objects.get(customer=customer, product=product, is_active=True)
+        cart_id = cart_items.id
+        try:
+            cart_item = CartItem.objects.get(id=cart_id)
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+        except CartItem.DoesNotExist:
+                total = quantity = cart_items = None
+    entire_cart = CartItem.objects.filter(customer=customer)
     context = {
         'total': total,
         'quantity': quantity,
+        'entire_cart': entire_cart,
         'products': products,
-        'customer': customer
+        'customer': customer,
     }
     return render(request , "pharmaceuticals/cart.html", context)
+
+@login_required
+def checkout(request, slug, total=0, quantity=0):
+    customer = Customer.objects.get(slug=slug)
+    products = customer.products.all()
+    for product in products:
+        cart_items = CartItem.objects.get(customer=customer, product=product, is_active=True)
+        cart_id = cart_items.id
+        cart_item = CartItem.objects.get(id=cart_id)
+        total += (cart_item.product.price * cart_item.quantity)
+        quantity += cart_item.quantity
+    entire_cart = CartItem.objects.filter(customer=customer)
+    context = {
+        'total': total,
+        'quantity': quantity,
+        'cart_item': entire_cart,
+        'customer': customer,
+        }
+    return render(request , "pharmaceuticals/checkout.html", context)

@@ -450,3 +450,14 @@ class CustomerForm(forms.ModelForm):
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})
         self.fields["phone_number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["products"].widget.attrs.update({"class": 'form-control'})
+'''
+    def save(self, commit=True):
+
+        customer = super(CustomerForm, self).save() # Save the child so we have an ID for the m2m
+
+        customer_slug = self.cleaned_data.get('customer_slug')
+        product = customer.products.all()
+        quantity = self.cleaned_data.get('quantity')
+        CartItem.objects.create(customer=customer, product=product, quantity=quantity)
+
+        return customer'''

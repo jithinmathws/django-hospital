@@ -15,6 +15,13 @@
     
     <!-- ============================ COMPONENT 1 ================================= -->
     
+    {% if not entire_cart %}
+        <h2 class="text-center">Cart is empyt</h2><br>
+        <div class="text-center">
+            <a href="{% url 'stock_sale' %}" class="btn btn-primary">Contine Purchase</a>
+        </div>
+    {% else %}
+
     <div class="row">
         <aside class="col-lg-9">
     <div class="card">
@@ -29,14 +36,16 @@
     </thead>
     <tbody>
     
-    {% for items in products %}  
+     
+
+    {% for items in entire_cart %}  
     
     <tr>
         <td>
             <figure class="itemside align-items-center">
                 
                 <figcaption class="info">
-                    <a href="#" class="title text-dark">{{ items.item_name }}</a>
+                    <a href="#" class="title text-dark">{{ items.product.item_name }}</a>
                     <p class="text-muted small">Properties: .5 mg <br> Brand: Canon</p>
                 </figcaption>
             </figure>
@@ -46,12 +55,12 @@
                         <div class="col"> 
                             <div class="input-group input-spinner">
                                 <div class="input-group-prepend">
-                                <button class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </button>
+                                    <a href="{% url 'remove_cart' items.customer.slug items.product.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
                                 </div>
-                                <input type="text" class="form-control"  value="{{ quantity }}">
+                                <input type="text" class="form-control"  value="{{ items.quantity }}">
                                 
                                 <div class="input-group-append">
-                                <a href="{% url 'add_cart' customer.slug %}" class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </a>
+                                <a href="{% url 'cart_quantity' items.customer.slug items.product.id %}" class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </a>
                                 </div>
                                 
                             </div> <!-- input-group.// -->
@@ -59,12 +68,12 @@
         </td>
         <td> 
             <div class="price-wrap"> 
-                <var class="price">{{ sub_total }}</var> 
-                <small class="text-muted"> {{ items.price }}each </small> 
+                <var class="price">{{ items.sub_total }}</var> 
+                <small class="text-muted"> {{ items.product.price }}each </small> 
             </div> <!-- price-wrap .// -->
         </td>
         <td class="text-right"> 
-        <a href="" class="btn btn-danger"> Remove</a>
+        <a href="{% url 'delete_cart' items.customer.slug items.product.id %}" class="btn btn-danger"> Remove</a>
         </td>
     </tr>
     
@@ -81,20 +90,20 @@
             <div class="card-body">
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
-                  <dd class="text-right">$69.97</dd>
+                  <dd class="text-right">{{ total }}</dd>
                 </dl>
-                <dl class="dlist-align">
+                <!-- <dl class="dlist-align">
                   <dt>Tax:</dt>
                   <dd class="text-right"> $10.00</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Total:</dt>
                   <dd class="text-right text-dark b"><strong>$59.97</strong></dd>
-                </dl>
+                </dl> -->
                 <hr>
                 
-                <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
-                <a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a>
+                <a href="{% url 'checkout' customer.slug %}" class="btn btn-primary btn-block"> Continue </a>
+                <!-- <a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a> -->
             </div> <!-- card-body.// -->
             </div> <!-- card.// -->
     
@@ -102,6 +111,7 @@
     
     
     </div> <!-- row.// -->
+    {% endif %}
     <!-- ============================ COMPONENT 1 END .// ================================= -->
     
     </div> <!-- container .//  -->
