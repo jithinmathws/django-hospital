@@ -110,13 +110,15 @@ class DoctorCertificate(models.Model):
 
     def __str__(self):
         return str(self.doctor)
-    
+'''
+class PatientNumber(models.Model):
+    number = models.IntegerField(null=True)
+
+    def __str__(self):
+        return str(self.number)
+'''
 class PatientDetails(models.Model):
-    patient_number = models.GeneratedField(
-        expression=models.F("id"),
-        output_field=models.IntegerField(),
-        db_persist=True
-    )
+    patient_number = models.IntegerField(null=True)
     patient_name = models.CharField(max_length=50)
     gender = models.CharField(
          max_length=20,

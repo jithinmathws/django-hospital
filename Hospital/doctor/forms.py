@@ -61,7 +61,6 @@ class DoctorForm(forms.ModelForm):
             
 
 class PatientForm(forms.ModelForm):
-    patient_number = forms.IntegerField()
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"type": 'email'}))
     patient_image = forms.ImageField(required=False)

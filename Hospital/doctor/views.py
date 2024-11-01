@@ -227,30 +227,56 @@ def ExportToCsv(request):
 def patient_index(request):
     return render(request, "patient/index.html", {})
 
+'''
+@login_required
+def patient_example(request):
+    number = 1001 if PatientNumber.objects.count() == 0 else PatientNumber.objects.aggregate(max=Max('patient_number'))["max"] + 1
+    if request.method == 'POST':
+        
+        try:
+            data = PatientDetails.objects.create(patient_number=number)
+            data.save()
+        except ObjectDoesNotExist:
+            pass
+    return render(request, "patient/example.html", locals())
+'''
+
 @login_required
 def patient_add(request):
-    if request.method == 'POST':
-        form = PatientForm(request.POST, request.FILES)
-        if form.is_valid():
-            #form.save()
-            patient = form.save(commit=False)
-            image_blob = request.FILES.get('patient_image')
-            if image_blob:
-                patient.patient_image = image_blob.read()
-
-            patient.save()
-            return redirect('Pindex')
-    else:
-        form = PatientForm()
-    return render(request, "patient/addPatient.html", {'form': form})
+    patient_number = 1001 if PatientDetails.objects.count() == 0 else PatientDetails.objects.aggregate(max=Max('patient_number'))["max"] + 1
+    form = PatientForm(request.POST or None)
+    context = {'form': form, 'patient_number': patient_number}
+    if form.is_valid():
+        #form.save()
+        patient = form.save(commit=False)
+        image_blob = request.FILES.get('patient_image')
+        image = patient.patient_image
+        if image_blob:
+            image = image_blob.read()
+        patient_name = request.POST['patient_name']
+        gender = request.POST['gender']
+        blood_group = request.POST['blood_group']
+        address = request.POST['address']
+        state = request.POST['state']
+        country = request.POST['country']
+        pin_code = request.POST['pin_code']
+        email = request.POST['email']
+        date_of_birth = request.POST['date_of_birth']
+        phone_number = request.POST['phone_number']
+        try:
+            data = PatientDetails.objects.create(patient_number=patient_number, patient_name=patient_name, gender=gender, blood_group=blood_group, address=address, state=state, country=country, pin_code=pin_code, email=email, date_of_birth=date_of_birth, phone_number=phone_number, patient_image=image)
+            data.save()
+        except ObjectDoesNotExist:
+            pass
+        #patient.save()
+        return redirect('Pindex')
+    
+    
+    return render(request, "patient/addPatient.html", context)
 
 @login_required
 def old_patient_add(request):
-    number = 1001
-    if PatientDetails.objects.count() == 0:
-        number
-    else:
-        number = PatientDetails.objects.aggregate(max=Max('patient_number'))["max"]+1
+    number = 1001 if PatientDetails.objects.count() == 0 else PatientDetails.objects.aggregate(max=Max('patient_number'))["max"]+1
 
     form = PatientForm(request.POST or None)
     context = { 'form': form }
@@ -261,6 +287,8 @@ def old_patient_add(request):
         #image = patient.patient_image
         if image_blob:
             patient.patient_image = image_blob.read()
+
+
         '''fields = ['patient_number', 'patient_name', 'gender', 'blood_group', 'address', 'state', 'country', 'pin_code', 'email', 'date_of_birth', 'phone_number', 'patient_image']
         
         patient_name = request.POST['patient_name']
@@ -272,12 +300,14 @@ def old_patient_add(request):
         pin_code = request.POST['pin_code']
         email = request.POST['email']
         date_of_birth = request.POST['date_of_birth']
-        phone_number = request.POST['phone_number']'''
+        phone_number = request.POST['phone_number']
         try:
             data = PatientDetails.objects.create(patient_number=number)
             data.save()
         except ObjectDoesNotExist:
-            pass
+            pass'''
+        
+
         patient.save()
         return redirect('Pindex')
     
