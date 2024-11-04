@@ -1,0 +1,82 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% block title %} Stock details {% endblock %}
+
+{% block content %}
+
+<div class="main-wrapper">
+
+    
+    <div class="content container-fluid">
+    <div class="page-header">
+    <div class="row">
+    <div class="col-sm-12">
+    <h3 class="page-title">Stocks</h3>
+    <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'stock_list' %}">Doctor</a></li>
+    <li class="breadcrumb-item active">Stock Details</li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    <div class="card">
+    <div class="card-body">
+    <div class="row">
+    <div class="col-md-12">
+    <div class="about-info">
+    <h4>Product details</h4>
+    
+            
+            <div class="media-body">
+
+            <ul>
+            <li>
+            <span class="title-span">Product Name : </span>
+            <span class="info-span">{{ stock.item_name }}</span>
+            </li>
+            <li>
+            <span class="title-span">Description : </span>
+            <span class="info-span">{{ stock.description }}</span>
+            </li>
+            <li>
+            <span class="title-span">Category : </span>
+            <span class="info-span">{{ stock.category.name }}</span>
+            </li>
+            <li>
+            <span class="title-span">Price : </span>
+            <span class="info-span">{{ stock.price }}</span>
+            </li>
+            <li>
+            <span class="title-span">Stpck Remaining : </span>
+            <span class="info-span">{{ stock.stock }}</span>
+            </li>
+            
+            </ul>
+                
+    </div>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    <div class="row mt-2">
+    <div class="col-md-12">
+    <div class="skill-info">
+    <a href="{% url 'recieve_stock' stock.id %}">
+        <div class="btn btn-danger">Add more stock</div>
+    </a>
+    
+    </div>
+    </div>
+    </div>
+    
+    
+    </div>
+    </div>
+    </div>
+    
+    
+    
+    
+
+{% endblock %}

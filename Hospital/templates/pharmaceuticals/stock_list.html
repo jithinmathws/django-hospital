@@ -1,110 +1,114 @@
+{% extends 'home/base-login.html' %}
+{% load compress static %}
+{% block title %} Stock list {% endblock %}
 
-
-   {% load compress static %}
-
-
-<div class="modal-content">
-   <div class="modal-header">
-     <h5 class="modal-title">Medicine list</h5>
-     <button type="button" class="btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-   </div>
-   <div class="modal-body">
+{% block content %}
+  
       
-         <div class="columns">
-           <div class="column is-one-third is-offset-one-third">
-             <input type="text" class="input" placeholder="Search" name="q" hx-get="/search/" hx-trigger="keyup changed delay:500ms" hx-target="#results">
-           </div>
-         </div>
-         <table class="table is-fullwidth">
-           <thead>
-             <tr>
-               <th>Product</th>
-               <th>Category</th>
-               <th>Price</th>
-               
-               
-             </tr>
-           </thead>
-           <tbody id="results">
-     
-           </tbody>
-         </table>
-      
-   </div>
-   <div class="modal-footer">
-     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-     
-   </div>
- </div>
-   
-
-
-<!-- 
-
-<div class="container-fluid">
+      <div class="content container-fluid">
          
-   <div class="modal-header">
+         <div class="page-header">
 
-      <div class="row align-items-center">
-         <div class="col">
-            <h3 class="page-title">Stock Information</h3>
-               <ul class="breadcrumb">
+        <div class="row align-items-center">
+           <div class="col">
+              <h3 class="page-title">Doctors</h3>
+              <ul class="breadcrumb">
                  <li class="breadcrumb-item"><a href="{% url 'Inventoryindex' %}">Dashboard</a></li>
-                 <li class="breadcrumb-item active">List of items</li>
-               </ul>
-         </div>
-         <div class="col-auto text-right float-right ml-auto">
-            <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
-            <a href="add-student.html" class="btn btn-primary"><i class="fas fa-plus"></i></a>
-         </div>
-      </div>
-   </div>
-     
-   <div class="row">
-      <div class="col-sm-12">
-         <div class="card card-table">
-            <div class="modal-body">
-               <div class="table-responsive">
-                  <table class="table table-hover table-center mb-0 datatable">
-                     <thead>
-                        <tr>
-                           <th>ID</th>
-                           <th>Item name</th>
-                           <th>Category</th>
-                           <th>Price</th>
-                           <th>Remaining stock</th>
-                           <th>Last Modified</th>
-                           <th class="text-right">Action</th>
-                        </tr>
-                     </thead>
-                     {% for stock in stocks %}
-                     <tbody>
-                        <tr>
-                           <td>{{ stock.id }}</td>
-                             
-                           <td>{{ stock.item_name }}</td>
-                           <td>
-                                {{ stock.category.name }}
-                             </td>
+                 <li class="breadcrumb-item active">List of Doctors</li>
+              </ul>
+           </div>
 
-                             <td>
-                                {{ stock.price }}
-                             </td>
+           <div class="top-nav-search">
+            <form method="get" action="">
+               <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
+               <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+
+           <div class="col-auto text-right float-right ml-auto">
+
+            <ul class="nav user-menu">
+            
+               <a href="#" class="btn btn-outline-primary dropdown-toggle nav-link mr-2" data-toggle="dropdown"><i class="fas fa-download"></i> Download</a>
+
+            <div class="dropdown-menu">
+               
+               <a class="dropdown-item" href="{% url 'stockExportCsv' %}" download>CSV file</a>
+               
+            </div>          
+            
+              <a href="{% url 'stockExcel' %}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+            </ul>
+           </div>
+           
+        </div>
+     </div>
+     
+     <div class="row">
+        <div class="col-sm-12">
+
+         <form id="page-size-form" method="get" action="">
+            <label for="page_size">Items per page:</label>
+            <select id="page_size" name="page_size" onchange="updatePageSize()">
+               <option value="5" {% if page_size == 5 %}selected{% endif %}>5</option>
+               <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+               <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+               <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
+            </select>
+         </form>
+
+           <div class="card card-table">
+              <div class="card-body">
+                 <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0 datatable">
+                       <thead>
+                          <tr>
+                             <th>ID</th>
+                             <th>Product name</th>
+                             <th>Category</th>
+                             <th>Price</th>
+                             <th>Stock Remaining</th>
+                             <th>Created</th>
+                             <th>Last Updated</th>
                              
+                             
+                             <th class="text-right">Action</th>
+                          </tr>
+                       </thead>
+                       {% for data in stock_page %}
+                       <tbody>
+                          <tr>
+                             <td>{{ data.id }}</td>
                              <td>
-                                {{ stock.stock }}
+                              <h2 class="#">
+                              <a href="{% url 'stock_profile' data.id %}">{{ data.item_name }}</a>
+                              </h2>
                              </td>
                              <td>
-                                {{ stock.last_updated }}
+                                {{ data.category.category_name }}
                              </td>
+                             <td>
+                              {{ data.price }}
+                           </td>
+                             <td>
+                                {{ data.stock }}
+                             </td>
+                             <td>
+                                {{ data.created }}
+                             </td>
+                             <td>
+                              {{ data.last_updated }}
+                           </td>
+                             
+
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'stock_edit' stock.id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'stock_edit' data.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ stock.item_name }}', '{{ stock.id }}')">
-                                   <i class="fas fa-trash"></i> 
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.item_name }}', '{{ data.id }}')">
+                                   <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
                              </td>
@@ -117,14 +121,35 @@
                     
 
                  </div>
-                 
-              </div>
-   </div><div class="modal-footer"></div>
-</div> -->
+                 <nav>
+                  <ul class="pagination">
 
+                     {% for page_num in doctors_page.paginator.page_range %}
+                        <li class="page-item{% if page_num == stock_page.number %} active{% endif %}"> -->
+                           <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
+                        </li> 
+                     {% endfor %}
+                  </ul>
+                 </nav>
+              </div>
+            </div>
+         </div>
       
-{% compress js %}   
-   <script src="{% static 'prescol/js/script.js' %}"></script>
+   <script>
+      function updatePageSize(){
+         document.getElementById("page-size-form").submit();
+      }
+   </script>         
+  <script>
+   function confirmDelete(roleName, roleId){
+      if(confirm(`Are you sure you want to delete ${name}?`)) {
+         window.location.href = `{% url 'stock_delete' stock_id=0 %}`.replace('0', roleId);
+      }
+   }
+  </script>
+{% compress js %}  
   <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
 {% endcompress %}
   
+  {% endblock %}
+ 

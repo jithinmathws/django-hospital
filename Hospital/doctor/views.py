@@ -275,57 +275,6 @@ def patient_add(request):
     return render(request, "patient/addPatient.html", context)
 
 @login_required
-def old_patient_add(request):
-    number = 1001 if PatientDetails.objects.count() == 0 else PatientDetails.objects.aggregate(max=Max('patient_number'))["max"]+1
-
-    form = PatientForm(request.POST or None)
-    context = { 'form': form }
-    if form.is_valid():
-        #form.save()
-        patient = form.save(commit=False)
-        image_blob = request.FILES.get('patient_image')
-        #image = patient.patient_image
-        if image_blob:
-            patient.patient_image = image_blob.read()
-
-
-        '''fields = ['patient_number', 'patient_name', 'gender', 'blood_group', 'address', 'state', 'country', 'pin_code', 'email', 'date_of_birth', 'phone_number', 'patient_image']
-        
-        patient_name = request.POST['patient_name']
-        gender = request.POST['gender']
-        blood_group = request.POST['blood_group']
-        address = request.POST['address']
-        state = request.POST['state']
-        country = request.POST['country']
-        pin_code = request.POST['pin_code']
-        email = request.POST['email']
-        date_of_birth = request.POST['date_of_birth']
-        phone_number = request.POST['phone_number']
-        try:
-            data = PatientDetails.objects.create(patient_number=number)
-            data.save()
-        except ObjectDoesNotExist:
-            pass'''
-        
-
-        patient.save()
-        return redirect('Pindex')
-    
-    return render(request, "patient/addPatient.html", context)
-
-'''
-def stock_sale(request):
-    form = CustomerForm(request.POST or None)
-    context = { 'form': form }
-    if form.is_valid():
-        customer_object = form.save()
-        context['form'] = CustomerForm()
-        return redirect('add_cart', slug=customer_object.slug)
-    
-    return render(request, "pharmaceuticals/sale.html", {'form': form})
-'''
-
-@login_required
 def patient_status(request):
     if request.method == 'POST':
         form = PatientStatusForm(request.POST)
@@ -874,21 +823,99 @@ def add_stock(request):
     return render(request, "pharmaceuticals/add_stock.html", {'form': form})
 
 @login_required
+
+@login_required
 def stock_list(request):
+    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page = request.GET.get('page', 1)
+
+    search_query = request.GET.get('search', '')
+
+    stock = Stock.objects.filter(
+        Q(id__icontains=search_query),
+        Q(item_name__icontains=search_query)
+         
+    )
+    paginator = Paginator(stock, page_size)
+    try:
+        stock_page = paginator.page(page)
+    except PageNotAnInteger:
+        stock_page = paginator.page(1)
+    return render(request, "pharmaceuticals/stock_list.html", {'stock_page': stock_page, 'page_size': page_size, 'search_query': search_query})
+
+@login_required
+def importStockExcel(request):
+    if request.method == 'POST':
+        stock_resource = stockResources()
+        dataset = Dataset()
+        new_stock = request.FILES['my_file']
+        imported_data = dataset.load(new_stock.read(), format='xlsx')
+        for data in imported_data:
+            value = Stock(
+                data[0],
+                data[1],
+                data[2],
+                data[3],
+                data[4],
+                data[5],
+                data[6],
+                data[7],
+                data[8],
+                data[9],
+                data[10]
+            )
+            value.save()
+
+    return render(request, 'pharmaceuticals/import.html')
+
+@login_required
+def StockToCsv(request):
     stocks = Stock.objects.all()
-    return render(request, "pharmaceuticals/stock_list.html", {'stocks': stocks})
+    file_name = f"stock_data.csv"
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+    writer = csv.writer(response)
+    writer.writerow(['stock_id', 'item_name', 'description', 'category', 'price', 'stock'])
+    for stock in stocks:
+        writer.writerow([stock.id, stock.item_name, stock.description, stock.category, stock.price, stock.stock])
+    
+    return response
+
+@login_required
+def stock_profile(request, stock_id):
+    stock = get_object_or_404(Stock, pk=stock_id)
+
+    return render(request, "pharmaceuticals/stock_profile.html", {'stock': stock})
+
+@login_required
+def recieve_stock(request, stock_id):
+    queryset = Stock.objects.get(id=stock_id)
+    form = StockRecieveForm(request.POST or None, instance=queryset)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.stock += instance.reorder_stock
+        instance.save()
+
+        return redirect('stock_list')
+
+    context = {
+        'title' : 'Recieved' + str(queryset.item_name),
+        'instance' : queryset,
+        'form' : form,
+    }
+    return render(request, 'pharmaceuticals/stock_quantity.html', context)
 
 @login_required
 def stock_edit(request, stock_id):
     role = Stock.objects.get(pk=stock_id)
     if request.method == 'POST':
-        form = StockForm(request.POST, instance=role)
+        form = StockUpdateForm(request.POST, instance=role)
         if form.is_valid():
             role = form.save()
             return redirect('stock_list')
 
     else:
-        form = TreatmentForm(instance=role)
+        form = StockUpdateForm(instance=role)
     return render(request, 'pharmaceuticals/stock_edit.html', {'form': form, 'role': role})
 
 @login_required

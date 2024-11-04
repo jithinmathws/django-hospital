@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from django.utils.text import slugify
+from .utils import generate_slug
 
 # Create your models here.
 class DoctorDepartment(models.Model):
@@ -257,8 +258,8 @@ class BedCategory(models.Model):
         return str(self.bedCategory_name)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+        self.slug = generate_slug(self.bedCategory_name)
+        super(BedCategory, self).save(*args, **kwargs)
 
 class AddBed(models.Model):
     patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE, null=True)
@@ -273,7 +274,38 @@ class AddBed(models.Model):
     def __str__(self):
         return str(self.bed_number)
 
+#New Invoice
+class HospitalService(models.Model):
+    service_name = models.CharField(max_length=100, blank=False)
+    slug = models.SlugField(unique=True)
+    price = models.CharField(max_length=50, blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        self.slug = generate_slug(self.service_name)
+        super(HospitalService, self).save(*args, **kwargs)
+
+class InvoiceData(models.Model):
+    patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    service = models.ForeignKey(HospitalService, on_delete=models.CASCADE)
+    date = models.DateField()
+    total_amount = models.CharField(max_length=50, blank=True, null=True)
+    discount_amount = models.CharField(max_length=50, blank=True, null=True)
+    discount_percentage = models.CharField(max_length=50, blank=True, null=True)
+    tax_percentage = models.CharField(max_length=50, blank=True, null=True)
+    tax_amount = models.CharField(max_length=50, blank=True, null=True)
+    adjusted_amount = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.service.service_name
+
+class InvoiceItem(models.Model):
+    invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE)
+    service = models.ForeignKey(HospitalService, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.service.service_name
+
+#Old Invoice
 class MainInvoice(models.Model):
     #invoice_id = models.AutoField(primary_key=True)
     patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
@@ -326,6 +358,8 @@ class InvoiceRelation(models.Model):
 
     class Meta:
         db_table = "invoice"
+#Old invoice model ends
+
 
 class IncomeDetails(models.Model):
     patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
@@ -340,6 +374,9 @@ class IncomeDetails(models.Model):
     payment_details = models.CharField(max_length=50)
     date = models.DateField()
     payment_amount = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.patient_satus
 
 class TreatmentDetails(models.Model):
     treatment_name = models.CharField(max_length=50)
@@ -364,7 +401,7 @@ class Stock(models.Model):
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     price = models.FloatField(blank=True, null=True, validators=[MinValueValidator(0.0)])
     stock = models.PositiveIntegerField(default=0)
-    
+    reorder_stock = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_updated = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -373,14 +410,13 @@ class Stock(models.Model):
         return self.item_name
     
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.item_name)
-        super().save(*args, **kwargs)
-
+        self.slug = generate_slug(self.item_name)
+        super(Stock, self).save(*args, **kwargs)
 
 
 class Customer(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=200, blank=True, null=True)
+    slug = models.SlugField(max_length=200, blank=True, null=True, unique=True)
     gender = models.CharField(
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
@@ -399,8 +435,8 @@ class Customer(models.Model):
         return str(self.name)
     
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+        self.slug = generate_slug(self.item_name)
+        super(Customer, self).save(*args, **kwargs)
 
 class CartItem(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True)
