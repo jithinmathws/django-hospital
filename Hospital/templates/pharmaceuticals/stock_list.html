@@ -11,7 +11,7 @@
 
         <div class="row align-items-center">
            <div class="col">
-              <h3 class="page-title">Doctors</h3>
+              <h3 class="page-title">Stocks</h3>
               <ul class="breadcrumb">
                  <li class="breadcrumb-item"><a href="{% url 'Inventoryindex' %}">Dashboard</a></li>
                  <li class="breadcrumb-item active">List of Doctors</li>
@@ -56,11 +56,13 @@
                <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
             </select>
          </form>
-
+         <section id="messages">
+            {% include 'pharmaceuticals/partials/toast.html' %}
+        </section>
            <div class="card card-table">
               <div class="card-body">
-                 <div class="table-responsive">
-                    <table class="table table-hover table-center mb-0 datatable">
+                 <div class="table">
+                    <table class="table table-hover table-center mb-0 sortable">
                        <thead>
                           <tr>
                              <th>ID</th>
@@ -85,13 +87,17 @@
                               </h2>
                              </td>
                              <td>
-                                {{ data.category.category_name }}
+                                {{ data.category.name }}
                              </td>
                              <td>
                               {{ data.price }}
                            </td>
-                             <td>
-                                {{ data.stock }}
+                             <td  align="center">
+                                 {% if data.stock <= data.stock_reorder_level %}
+                                    <div style="background-color: orange;"> {{ data.stock }} </div>
+                                 {% else %} 
+                                    {{ data.stock }}
+                                 {% endif %}
                              </td>
                              <td>
                                 {{ data.created }}
@@ -115,11 +121,13 @@
                           </tr>
                           
                        </tbody>
+                        <section id="messages">
+                           {% include 'pharmaceuticals/partials/toast.html' %}
+                        </section>
+            
                        {% endfor %}
                     </table>
-
                     
-
                  </div>
                  <nav>
                   <ul class="pagination">
@@ -133,8 +141,9 @@
                  </nav>
               </div>
             </div>
+            
          </div>
-      
+       
    <script>
       function updatePageSize(){
          document.getElementById("page-size-form").submit();
@@ -147,9 +156,16 @@
       }
    }
   </script>
+
+   <link href="https://cdn.jsdelivr.net/gh/tofsjonas/sortable@latest/sortable.min.css" rel="stylesheet" />
+   <script src="https://cdn.jsdelivr.net/gh/tofsjonas/sortable@latest/sortable.min.js"></script>
 {% compress js %}  
-  <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
+   <!-- <script type="text/javascript" src="{% static 'tableManager.js' %}"></script> -->
+  <!-- <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script> -->
 {% endcompress %}
-  
+
+
+
+
   {% endblock %}
  

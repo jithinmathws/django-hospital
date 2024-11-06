@@ -57,22 +57,28 @@ urlpatterns = [
     path("addBed/", views.bed_add, name="addBed"),
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
+    path("addService/", views.add_service, name="add_service"),
+    path("addInvoice/", views.invoice_data, name="invoice_data"),
+
+    #old invoice url path
     path("invoiceItem/", views.invoice_item, name="invoice_item"),
     
 
     path('MainInvoice/', views.InvoiceList.as_view(), name='list_invoice'),
     path('ClubInvoices/', views.MainInvoiceSub.as_view(), name='create_invoice'),
-    
-    
-    path("addIncome/", views.income_add, name="income"),
     path("invoicelist/", views.invoice_list, name="invoice_list"),
+    path("invoiceProfile/<int:invoice_id>/", views.invoice_profile, name="invoice_profile"),
+    path("invoice_edit-account/<int:invoice_id>/", views.invoice_edit, name="invoice_edit"),
+    path("invoice_delete-account/<int:invoice_id>/", views.invoice_delete, name="invoice_delete"),
+    #old invoice url end
+
+    path("addIncome/", views.income_add, name="income"),
+    
     path("incomelist/", views.income_list, name="income_list"),
 
     path("redirect_me/", views.redirect_me, name="redirect"),
 
-    path("invoiceProfile/<int:invoice_id>/", views.invoice_profile, name="invoice_profile"),
-    path("invoice_edit-account/<int:invoice_id>/", views.invoice_edit, name="invoice_edit"),
-    path("invoice_delete-account/<int:invoice_id>/", views.invoice_delete, name="invoice_delete"),
+    
     path("income_edit-account/<int:income_id>/", views.income_edit, name="income_edit"),
     path("income_delete-account/<int:income_id>/", views.income_delete, name="income_delete"),
 
@@ -91,6 +97,7 @@ urlpatterns = [
     path("exportStock/", views.StockToCsv, name="stockExportCsv"),
     path("stockProfile/<int:stock_id>/", views.stock_profile, name="stock_profile"),
     path("recieveStock/<int:stock_id>/", views.recieve_stock, name="recieve_stock"),
+    #path("stockLevel/<int:stock_id>/", views.stock_level, name="stock_level"),
 
     path("stock_edit-account/<int:stock_id>/", views.stock_edit, name="stock_edit"),
     path("stock_delete-account/<int:stock_id>/", views.stock_delete, name="stock_delete"),

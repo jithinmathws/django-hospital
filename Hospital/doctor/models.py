@@ -285,6 +285,7 @@ class HospitalService(models.Model):
         super(HospitalService, self).save(*args, **kwargs)
 
 class InvoiceData(models.Model):
+    invoice_number = models.IntegerField(null=True)
     patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
     service = models.ForeignKey(HospitalService, on_delete=models.CASCADE)
     date = models.DateField()
@@ -296,7 +297,11 @@ class InvoiceData(models.Model):
     adjusted_amount = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.service.service_name
+        return self.patient.patient_name
+    
+    def save(self, *args, **kwargs):
+        self.slug = generate_slug(self.invoice_number)
+        super(InvoiceData, self).save(*args, **kwargs)
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE)
@@ -402,6 +407,7 @@ class Stock(models.Model):
     price = models.FloatField(blank=True, null=True, validators=[MinValueValidator(0.0)])
     stock = models.PositiveIntegerField(default=0)
     reorder_stock = models.PositiveIntegerField(default=0)
+    stock_reorder_level = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_updated = models.DateTimeField(auto_now_add=False, auto_now=True)

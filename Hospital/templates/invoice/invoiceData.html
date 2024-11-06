@@ -1,0 +1,121 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} Add Patient invoice {% endblock %}
+
+{% block content %}
+
+
+    <div class="content container-fluid">
+    
+    <div class="page-header">
+    <div class="row align-items-center">
+    <div class="col">
+    <h3 class="page-title">Add Invoice</h3>
+    <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
+    </div>
+    </div>
+    </div>
+    
+    <div class="row">
+    <div class="col-sm-12">
+    <div class="card">
+    <div class="card-body">
+    
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+               <h5 class="form-title"><span>Invoice Data</span></h5>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Patient Number</label>
+                    <input type="text" id="id_invoice_number" name="invoice_number" class="form-control" value="{{ patient_number }}" readonly>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Patient Name</label>
+                    {{ form.patient }}
+                </div>
+            </div>
+            
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Services used</label>
+                    {{ form.service }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Date</label>
+                    {{ form.date }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Total Amount</label>
+                    {{ form.total_amount }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Discount Amount</label>
+                    {{ form.discount_amount }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Discount Percentage</label>
+                    {{ form.discount_percentage }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Tax Percentage</label>
+                    {{ form.tax_percentage }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Tax Amount</label>
+                    {{ form.tax_amount }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <label>Adjusted Amount</label>
+                    {{ form.adjusted_amount }}
+                </div>
+            </div>
+            
+   
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Continue</button>
+            </div>
+            </div>
+        </form>
+    </div>
+    <!-- <div class="login-or">
+    <span class="or-line"></span>
+    <span class="span-or">or</span>
+    </div>
+    
+    <div class="social-login">
+    <span>Register with</span>
+    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
+    </div> -->
+    
+    
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+{% endblock %}

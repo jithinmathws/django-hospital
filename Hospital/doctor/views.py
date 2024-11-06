@@ -573,6 +573,49 @@ def bed_add(request):
 def invoice_index(request):
     return render(request, "invoice/index.html", {})
 
+#new invoice
+@login_required
+def add_service(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Invoiceindex')
+    else:
+        form = ServiceForm()
+    return render(request, "invoice/addservice.html", {'form': form})
+
+@login_required
+def invoice_data(request):
+    invoice_number = 1001 if InvoiceData.objects.count() == 0 else InvoiceData.objects.aggregate(max=Max('invoice_number'))["max"] + 1
+    form = InvoiceDataForm(request.POST or None)
+    context = { 'form': form, 'invoice_number': invoice_number }
+    if form.is_valid():
+        invoice_object = form.save(commit=False)
+        context['form'] = InvoiceDataForm()
+        patient = request.POST['patient']
+        service = request.POST['service']
+        date = request.POST['date']
+        total_amount = request.POST['total_amount']
+        discount_amount = request.POST['discount_amount']
+        discount_percentage = request.POST['discount_percentage']
+        tax_percentage = request.POST['tax_percentage']
+        tax_amount = request.POST['tax_amount']
+        adjusted_amount = request.POST['adjusted_amount']
+        try:
+            data = InvoiceData.objects.create(invoice_number=invoice_number, patient=patient, service=service, date=date, total_amount=total_amount, discount_amount=discount_amount, discount_percentage=discount_percentage, tax_percentage=tax_percentage, tax_amount=tax_amount, adjusted_amount=adjusted_amount)
+            data.save()
+        except ObjectDoesNotExist:
+            pass
+        return redirect('Invoiceindex')
+        #return redirect('add_cart', slug=invoice_object.slug)
+    
+    return render(request, "invoice/invoiceData.html", context)
+
+#end new invoice
+
+
+#old invoice system
 @login_required
 def generate_invoice(request):
     invoice = InvoiceDetail.objects.get(pk=pk)
@@ -716,7 +759,12 @@ def invoice_delete(request, invoice_id):
     member = MainInvoice.objects.get(pk=invoice_id)
     member.delete()
     return redirect('invoice_list')
+#end old invoice
 
+
+
+
+#income
 @login_required
 def income_add(request):
     if request.method == 'POST':
@@ -830,18 +878,40 @@ def stock_list(request):
     page = request.GET.get('page', 1)
 
     search_query = request.GET.get('search', '')
+    
+    sort_by = request.GET.get('sort_by', 'id')
+    sort_order = request.GET.get('sort_order', 'asc')
 
-    stock = Stock.objects.filter(
+    valid_sort_fields = ['id', 'item_name', 'category', 'price', 'stock', 'created', 'last_updated']
+    if sort_by not in valid_sort_fields:
+        sort_by = 'id'
+    
+    items = Stock.objects.filter(
         Q(id__icontains=search_query),
         Q(item_name__icontains=search_query)
          
     )
-    paginator = Paginator(stock, page_size)
+
+
+    if sort_order == 'desc':
+        items = items.order_by(f'-{sort_by}')
+    else:
+        items = items.order_by(sort_by)
+    
+    paginator = Paginator(items, page_size)
     try:
         stock_page = paginator.page(page)
     except PageNotAnInteger:
         stock_page = paginator.page(1)
-    return render(request, "pharmaceuticals/stock_list.html", {'stock_page': stock_page, 'page_size': page_size, 'search_query': search_query})
+    
+    context = {
+        'stock_page': stock_page,
+        'page_size': page_size,
+        'search_query': search_query,
+        'sort_by': sort_by,
+        'sort_order': sort_order,
+        }
+    return render(request, "pharmaceuticals/stock_list.html", context)
 
 @login_required
 def importStockExcel(request):
@@ -919,6 +989,19 @@ def stock_edit(request, stock_id):
     return render(request, 'pharmaceuticals/stock_edit.html', {'form': form, 'role': role})
 
 @login_required
+def stock_level(request, stock_id):
+    stock = Stock.objects.get(pk=stock_id)
+    if request.method == 'POST':
+        form = StockLevelForm(request.POST, instance=stock)
+        if form.is_valid():
+            role = form.save()
+            return redirect('stock_list')
+
+    else:
+        form = StockLevelForm(instance=stock)
+    return render(request, 'pharmaceuticals/stock_edit.html', {'form': form, 'stock': stock})
+
+@login_required
 def stock_delete(request, stock_id):
     member = Stock.objects.get(pk=stock_id)
     member.delete()
@@ -934,7 +1017,6 @@ def stock_sale(request):
         return redirect('add_cart', slug=customer_object.slug)
     
     return render(request, "pharmaceuticals/sale.html", {'form': form})
-
 
 @login_required
 def add_cart(request, slug):

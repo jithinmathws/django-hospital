@@ -375,6 +375,43 @@ InvoiceFormSet = inlineformset_factory(
     can_delete_extra = True
 )
 
+#New invoice
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = HospitalService
+        fields = ['service_name', 'price']
+        #fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["service_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+
+class InvoiceDataForm(forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    
+    class Meta:
+        model = InvoiceData
+        #fields = ['patient_name', 'invoice_title'
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["patient"].widget.attrs.update({"class": 'form-control'})
+        self.fields["service"].widget.attrs.update({"class": 'form-control'})
+        self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["total_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["discount_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["tax_percentage"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["tax_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+
+#Income form
 class IncomeForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     
@@ -406,7 +443,6 @@ class TreatmentForm(forms.ModelForm):
         self.fields["treatment_price"].widget.attrs.update({"class": 'form-control', "type": 'text'}) 
         self.fields["tax"].widget.attrs.update({"class": 'form-control'})
 
-
 #pharmacy form
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -423,7 +459,7 @@ class StockForm(forms.ModelForm):
     is_available = forms.CheckboxInput()
     class Meta:
         model = Stock
-        fields = ['item_name',  'description', 'category', 'price', 'stock']
+        fields = ['item_name',  'description', 'category', 'price', 'stock', 'stock_reorder_level']
         #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -435,12 +471,13 @@ class StockForm(forms.ModelForm):
         self.fields["category"].widget.attrs.update({"class": 'form-control'})
         self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'number'})
         self.fields["stock"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["stock_reorder_level"].widget.attrs.update({"class": 'form-control', "type": 'number'})
 
 class StockUpdateForm(forms.ModelForm):
     #is_available = forms.CheckboxInput()
     class Meta:
         model = Stock
-        fields = ['item_name',  'description', 'category', 'price']
+        fields = ['item_name',  'description', 'category', 'price', 'stock_reorder_level']
         #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -451,7 +488,7 @@ class StockUpdateForm(forms.ModelForm):
         self.fields["description"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["category"].widget.attrs.update({"class": 'form-control'})
         self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'number'})
-        #self.fields["stock"].widget.attrs.update({"class": 'form-control', "type": 'number'})        
+        self.fields["stock_reorder_level"].widget.attrs.update({"class": 'form-control', "type": 'number'})        
 
 class StockRecieveForm(forms.ModelForm):
     #is_available = forms.CheckboxInput()
@@ -465,6 +502,19 @@ class StockRecieveForm(forms.ModelForm):
         for field in self.fields:
             print(field)
         self.fields["reorder_stock"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+
+class StockLevelForm(forms.ModelForm):
+    #is_available = forms.CheckboxInput()
+    class Meta:
+        model = Stock
+        fields = ['stock_reorder_level']
+        #fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["stock_reorder_level"].widget.attrs.update({"class": 'form-control', "type": 'number'})
 
 class CustomerForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))

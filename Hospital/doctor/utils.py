@@ -41,3 +41,13 @@ def generate_slug(name:str) -> str:
         name = f'{slugify(name)} - {str(uuid.uuid4())[0:4]}'
 
     return name
+
+#Unique slug for Invoice
+def generate_slug(invoice_number:str) -> str:
+    from .models import InvoiceData
+    invoice_number = slugify(invoice_number)
+    
+    while(InvoiceData.objects.filter(slug = invoice_number).exists()):
+        invoice_number = f'{slugify(invoice_number)} - {str(uuid.uuid4())[0:4]}'
+
+    return invoice_number
