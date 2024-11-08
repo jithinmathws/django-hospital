@@ -394,8 +394,8 @@ class InvoiceDataForm(forms.ModelForm):
     
     class Meta:
         model = InvoiceData
-        #fields = ['patient_name', 'invoice_title'
-        fields = '__all__'
+        fields = ['patient', 'service', 'date']
+        #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -404,6 +404,17 @@ class InvoiceDataForm(forms.ModelForm):
         self.fields["patient"].widget.attrs.update({"class": 'form-control'})
         self.fields["service"].widget.attrs.update({"class": 'form-control'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+
+class AddDataForm(forms.ModelForm):
+    class Meta:
+        model = InvoiceData
+        #fields = ['total_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount']
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
         self.fields["total_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
         self.fields["discount_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
         self.fields["discount_percentage"].widget.attrs.update({"class": 'form-control', "type": 'text'})

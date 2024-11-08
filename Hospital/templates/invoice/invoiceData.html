@@ -1,4 +1,4 @@
-{% extends 'home/base-login.html' %}
+{% extends 'pharmaceuticals/base.html' %}
 {% load static %}
 {% load widget_tweaks %}
 {% block title %} Add Patient invoice {% endblock %}
@@ -32,64 +32,19 @@
             <div class="col-12 col-sm-6">
                 <div class="form-group">
                     <label>Patient Number</label>
-                    <input type="text" id="id_invoice_number" name="invoice_number" class="form-control" value="{{ patient_number }}" readonly>
+                    <input type="text" id="id_invoice_number" name="invoice_number" class="form-control" value="{{ invoice_number }}" readonly>
                 </div>
             </div>
+
+            {% for field in form %}
             <div class="col-12 col-sm-6">
                 <div class="form-group">
-                    <label>Patient Name</label>
-                    {{ form.patient }}
+                    <label>{{field.label}}</label>
+                    {{field}}
                 </div>
             </div>
+        {% endfor %}
             
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Services used</label>
-                    {{ form.service }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Date</label>
-                    {{ form.date }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Total Amount</label>
-                    {{ form.total_amount }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Discount Amount</label>
-                    {{ form.discount_amount }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Discount Percentage</label>
-                    {{ form.discount_percentage }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Tax Percentage</label>
-                    {{ form.tax_percentage }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Tax Amount</label>
-                    {{ form.tax_amount }}
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>Adjusted Amount</label>
-                    {{ form.adjusted_amount }}
-                </div>
-            </div>
             
    
         <div class="col-12">
@@ -116,6 +71,8 @@
 </div>
 </div>
 
-
+<script>
+    $("#id_service").select2();
+</script>
 
 {% endblock %}

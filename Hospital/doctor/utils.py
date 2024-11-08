@@ -3,7 +3,7 @@ from django.utils.text import slugify
 import uuid
 
 #Unique slug for Bed Category
-def generate_slug(bedCategory_name:str) -> str:
+def generate_bed_slug(bedCategory_name:str) -> str:
     from .models import BedCategory
     bedCategory_name = slugify(bedCategory_name)
    
@@ -13,7 +13,7 @@ def generate_slug(bedCategory_name:str) -> str:
     return bedCategory_name
 
 #Unique slug for Hospital Service
-def generate_slug(service_name:str) -> str:
+def generate_service_slug(service_name:str) -> str:
     from .models import HospitalService
     service_name = slugify(service_name)
     
@@ -23,7 +23,7 @@ def generate_slug(service_name:str) -> str:
     return service_name
 
 #Unique slug for Stock
-def generate_slug(item_name:str) -> str:
+def generate_stock_slug(item_name:str) -> str:
     from .models import Stock
     item_name = slugify(item_name)
     
@@ -33,7 +33,7 @@ def generate_slug(item_name:str) -> str:
     return item_name
 
 #Unique slug for Customer
-def generate_slug(name:str) -> str:
+def generate_customer_slug(name:str) -> str:
     from .models import Customer
     name = slugify(name)
     
@@ -43,7 +43,7 @@ def generate_slug(name:str) -> str:
     return name
 
 #Unique slug for Invoice
-def generate_slug(invoice_number:str) -> str:
+def generate_invoice_slug(invoice_number:str) -> str:
     from .models import InvoiceData
     invoice_number = slugify(invoice_number)
     

@@ -576,14 +576,13 @@ def invoice_index(request):
 #new invoice
 @login_required
 def add_service(request):
-    if request.method == 'POST':
-        form = ServiceForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('Invoiceindex')
-    else:
-        form = ServiceForm()
-    return render(request, "invoice/addservice.html", {'form': form})
+    form = ServiceForm(request.POST or None)
+    context = { 'form': form }
+    if form.is_valid():
+        form.save()
+        return redirect('Invoiceindex')
+    
+    return render(request, "invoice/addservice.html", context)
 
 @login_required
 def invoice_data(request):
@@ -596,14 +595,9 @@ def invoice_data(request):
         patient = request.POST['patient']
         service = request.POST['service']
         date = request.POST['date']
-        total_amount = request.POST['total_amount']
-        discount_amount = request.POST['discount_amount']
-        discount_percentage = request.POST['discount_percentage']
-        tax_percentage = request.POST['tax_percentage']
-        tax_amount = request.POST['tax_amount']
-        adjusted_amount = request.POST['adjusted_amount']
+        
         try:
-            data = InvoiceData.objects.create(invoice_number=invoice_number, patient=patient, service=service, date=date, total_amount=total_amount, discount_amount=discount_amount, discount_percentage=discount_percentage, tax_percentage=tax_percentage, tax_amount=tax_amount, adjusted_amount=adjusted_amount)
+            data = InvoiceData.objects.create(invoice_number=invoice_number, patient=patient, service=service, date=date)
             data.save()
         except ObjectDoesNotExist:
             pass

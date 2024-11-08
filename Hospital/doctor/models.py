@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from django.utils.text import slugify
-from .utils import generate_slug
+from .utils import *
 
 # Create your models here.
 class DoctorDepartment(models.Model):
@@ -258,7 +258,7 @@ class BedCategory(models.Model):
         return str(self.bedCategory_name)
 
     def save(self, *args, **kwargs):
-        self.slug = generate_slug(self.bedCategory_name)
+        self.slug = generate_bed_slug(self.bedCategory_name)
         super(BedCategory, self).save(*args, **kwargs)
 
 class AddBed(models.Model):
@@ -280,32 +280,38 @@ class HospitalService(models.Model):
     slug = models.SlugField(unique=True)
     price = models.CharField(max_length=50, blank=True, null=True)
 
+    def __str__(self):
+        return self.service_name
+    
     def save(self, *args, **kwargs):
-        self.slug = generate_slug(self.service_name)
+        self.slug = generate_service_slug(self.service_name)
         super(HospitalService, self).save(*args, **kwargs)
 
 class InvoiceData(models.Model):
     invoice_number = models.IntegerField(null=True)
     patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
-    service = models.ForeignKey(HospitalService, on_delete=models.CASCADE)
+    service = models.ManyToManyField(HospitalService, through='InvoiceItem')
     date = models.DateField()
-    total_amount = models.CharField(max_length=50, blank=True, null=True)
-    discount_amount = models.CharField(max_length=50, blank=True, null=True)
-    discount_percentage = models.CharField(max_length=50, blank=True, null=True)
-    tax_percentage = models.CharField(max_length=50, blank=True, null=True)
-    tax_amount = models.CharField(max_length=50, blank=True, null=True)
-    adjusted_amount = models.CharField(max_length=50)
+    total_amount = models.IntegerField(default=0)
+    discount_amount = models.IntegerField(default=0)
+    discount_percentage = models.IntegerField(default=0)
+    tax_percentage = models.IntegerField(default=0)
+    tax_amount = models.IntegerField(default=0)
+    adjusted_amount = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    last_updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
         return self.patient.patient_name
     
     def save(self, *args, **kwargs):
-        self.slug = generate_slug(self.invoice_number)
+        self.slug = generate_invoice_slug(self.invoice_number)
         super(InvoiceData, self).save(*args, **kwargs)
 
 class InvoiceItem(models.Model):
-    invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE, null=True)
     service = models.ForeignKey(HospitalService, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.service.service_name
@@ -416,7 +422,7 @@ class Stock(models.Model):
         return self.item_name
     
     def save(self, *args, **kwargs):
-        self.slug = generate_slug(self.item_name)
+        self.slug = generate_stock_slug(self.item_name)
         super(Stock, self).save(*args, **kwargs)
 
 
@@ -441,13 +447,13 @@ class Customer(models.Model):
         return str(self.name)
     
     def save(self, *args, **kwargs):
-        self.slug = generate_slug(self.item_name)
+        self.slug = generate_customer_slug(self.item_name)
         super(Customer, self).save(*args, **kwargs)
 
 class CartItem(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True)
     product = models.ForeignKey(Stock, on_delete=models.CASCADE, blank=True, null=True)
-    quantity = models.IntegerField(default=0, blank=True, null=True)
+    quantity = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     def sub_total(self):
