@@ -58,7 +58,12 @@ urlpatterns = [
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
     path("addService/", views.add_service, name="add_service"),
+    path("Servicelist/", views.service_list, name="service_list"),
+    path("service_edit-account/<int:service_id>/", views.service_edit, name="service_edit"),
+    path("service_delete-account/<int:service_id>/", views.service_delete, name="service_delete"),
+
     path("addInvoice/", views.invoice_data, name="invoice_data"),
+    path("invoiceAddition/<slug:slug>/", views.invoice_additional_data, name="addition_data"),
 
     #old invoice url path
     path("invoiceItem/", views.invoice_item, name="invoice_item"),

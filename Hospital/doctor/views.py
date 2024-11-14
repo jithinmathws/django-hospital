@@ -585,26 +585,74 @@ def add_service(request):
     return render(request, "invoice/addservice.html", context)
 
 @login_required
+def service_list(request):
+    services = HospitalService.objects.all()
+    return render(request, "invoice/service_list.html", {'services': services})
+
+@login_required
+def service_edit(request, service_id):
+    role = HospitalService.objects.get(pk=service_id)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('service_list')
+    else:
+        form = ServiceForm(instance=role)
+    return render(request, 'invoice/service_edit.html', {'form': form, 'role': role})
+
+@login_required
+def service_delete(request, service_id):
+    member = HospitalService.objects.get(pk=service_id)
+    member.delete()
+    return redirect('service_list')
+
+
+@login_required
 def invoice_data(request):
-    invoice_number = 1001 if InvoiceData.objects.count() == 0 else InvoiceData.objects.aggregate(max=Max('invoice_number'))["max"] + 1
+    #invoice_number = 1001 if InvoiceData.objects.count() == 0 else InvoiceData.objects.aggregate(max=Max('invoice_number'))["max"]+1
     form = InvoiceDataForm(request.POST or None)
-    context = { 'form': form, 'invoice_number': invoice_number }
+    context = { 'form': form }
     if form.is_valid():
-        invoice_object = form.save(commit=False)
+        invoice_object = form.save()
         context['form'] = InvoiceDataForm()
-        patient = request.POST['patient']
-        service = request.POST['service']
-        date = request.POST['date']
         
-        try:
-            data = InvoiceData.objects.create(invoice_number=invoice_number, patient=patient, service=service, date=date)
-            data.save()
-        except ObjectDoesNotExist:
-            pass
+        return redirect('addition_data', slug=invoice_object.slug)
+    
+    return render(request, "invoice/invoiceData.html", context)
+
+@login_required
+def invoice_additional_data(request, slug):
+    invoice = InvoiceData.objects.get(slug=slug)
+    form = AddDataForm(request.POST or None)
+    context = { 'form': form, 'invoice': invoice }
+    if form.is_valid():
+        invoice_object = form.save()
+        context['form'] = AddDataForm()
         return redirect('Invoiceindex')
         #return redirect('add_cart', slug=invoice_object.slug)
     
-    return render(request, "invoice/invoiceData.html", context)
+    return render(request, "invoice/invoiceAddData.html", context)
+
+#manytomany objects.create
+'''
+        patient = request.POST['patient']
+        services = request.POST['service']
+        date = request.POST['date']
+
+        service = HospitalService.objects.filter(pk__in=services)
+
+        try:
+            #item = InvoiceData.objects.create(invoice_number=invoice_number, patient=PatientDetails.objects.get(pk=patient), date=date)
+            item = InvoiceData.objects.create(patient=PatientDetails.objects.get(pk=patient), date=date)
+            for data in service:
+                item.service.add(data)
+
+            item.save()
+        except ObjectDoesNotExist:
+            pass
+        #return redirect('Invoiceindex')
+        '''
 
 #end new invoice
 

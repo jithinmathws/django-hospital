@@ -21,7 +21,7 @@ def generate_service_slug(service_name:str) -> str:
         service_name = f'{slugify(service_name)} - {str(uuid.uuid4())[0:4]}'
 
     return service_name
-
+    
 #Unique slug for Stock
 def generate_stock_slug(item_name:str) -> str:
     from .models import Stock
@@ -43,11 +43,11 @@ def generate_customer_slug(name:str) -> str:
     return name
 
 #Unique slug for Invoice
-def generate_invoice_slug(invoice_number:str) -> str:
+def generate_invoice_slug(patient_name:str) -> str:
     from .models import InvoiceData
-    invoice_number = slugify(invoice_number)
+    patient_name = slugify(patient_name)
     
-    while(InvoiceData.objects.filter(slug = invoice_number).exists()):
-        invoice_number = f'{slugify(invoice_number)} - {str(uuid.uuid4())[0:4]}'
+    while(InvoiceData.objects.filter(slug = patient_name).exists()):
+        patient_name = f'{slugify(patient_name)} - {str(uuid.uuid4())[0:4]}'
 
-    return invoice_number
+    return patient_name

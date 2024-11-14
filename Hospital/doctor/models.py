@@ -1,11 +1,13 @@
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.db.models import Case, When
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from django.db.models import Max, Value
 from django.utils.text import slugify
 from .utils import *
 
@@ -278,7 +280,8 @@ class AddBed(models.Model):
 class HospitalService(models.Model):
     service_name = models.CharField(max_length=100, blank=False)
     slug = models.SlugField(unique=True)
-    price = models.CharField(max_length=50, blank=True, null=True)
+    price = models.FloatField(default=0)
+    tax_percentage = models.FloatField(default=0)
 
     def __str__(self):
         return self.service_name
@@ -286,11 +289,22 @@ class HospitalService(models.Model):
     def save(self, *args, **kwargs):
         self.slug = generate_service_slug(self.service_name)
         super(HospitalService, self).save(*args, **kwargs)
+        
+    @property
+    def tax_amount(self):
+        amount = self.price * (self.tax_percentage/100)
+        return amount
+    
+    @property
+    def total_price(self):
+        amount = self.price + self.tax_amount
+        return amount
 
 class InvoiceData(models.Model):
-    invoice_number = models.IntegerField(null=True)
+    #invoice_number = models.IntegerField(null=True)
     patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
     service = models.ManyToManyField(HospitalService, through='InvoiceItem')
+    slug = models.SlugField(unique=True)
     date = models.DateField()
     total_amount = models.IntegerField(default=0)
     discount_amount = models.IntegerField(default=0)
@@ -303,10 +317,19 @@ class InvoiceData(models.Model):
 
     def __str__(self):
         return self.patient.patient_name
-    
+
     def save(self, *args, **kwargs):
-        self.slug = generate_invoice_slug(self.invoice_number)
+        self.slug = generate_invoice_slug(self.patient.patient_name)
         super(InvoiceData, self).save(*args, **kwargs)
+
+    @property
+    def invoice_number(self):
+        default = 1001
+        if self.id == 1:
+            default
+        elif self.id > 1:
+            default += 1
+        return default
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE, null=True)
@@ -315,7 +338,7 @@ class InvoiceItem(models.Model):
 
     def __str__(self):
         return self.service.service_name
-
+        
 #Old Invoice
 class MainInvoice(models.Model):
     #invoice_id = models.AutoField(primary_key=True)
@@ -447,7 +470,7 @@ class Customer(models.Model):
         return str(self.name)
     
     def save(self, *args, **kwargs):
-        self.slug = generate_customer_slug(self.item_name)
+        self.slug = generate_customer_slug(self.name)
         super(Customer, self).save(*args, **kwargs)
 
 class CartItem(models.Model):

@@ -250,7 +250,7 @@ class AddBedForm(forms.ModelForm):
                 raise forms.ValidationError('Bed already exist')
         return bed_number
 
-
+#old invoice
 class MainInvoiceForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     class Meta:
@@ -379,7 +379,7 @@ InvoiceFormSet = inlineformset_factory(
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = HospitalService
-        fields = ['service_name', 'price']
+        fields = ['service_name', 'price', 'tax_percentage']
         #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -388,10 +388,11 @@ class ServiceForm(forms.ModelForm):
             print(field)
         self.fields["service_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'number'})
+        self.fields["tax_percentage"].widget.attrs.update({"class": 'form-control'})
 
 class InvoiceDataForm(forms.ModelForm):
+    #invoice_number = forms.CharField(widget=forms.TextInput(attrs={"name": 'invoice_number', "readonly": 'readonly'}))
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
-    
     class Meta:
         model = InvoiceData
         fields = ['patient', 'service', 'date']
@@ -401,6 +402,7 @@ class InvoiceDataForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             print(field)
+        #self.fields["invoice_number"].widget.attrs.update({"class": 'form-control', "type": 'text', "value": '{{ invoice_number }}'})
         self.fields["patient"].widget.attrs.update({"class": 'form-control'})
         self.fields["service"].widget.attrs.update({"class": 'form-control'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
@@ -408,8 +410,8 @@ class InvoiceDataForm(forms.ModelForm):
 class AddDataForm(forms.ModelForm):
     class Meta:
         model = InvoiceData
-        #fields = ['total_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount']
-        fields = '__all__'
+        fields = ['total_amount', 'discount_amount', 'discount_percentage', 'tax_percentage', 'tax_amount', 'adjusted_amount']
+        #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
