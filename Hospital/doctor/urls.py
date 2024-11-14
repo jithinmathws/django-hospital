@@ -64,6 +64,9 @@ urlpatterns = [
 
     path("addInvoice/", views.invoice_data, name="invoice_data"),
     path("invoiceAddition/<slug:slug>/", views.invoice_additional_data, name="addition_data"),
+    path("invoiceAddlist/", views.invoice_data_list, name="invoice_data_list"),
+    path("invoice_edit-account/<int:invoice_id>/", views.invoice_data_edit, name="invoice_data_edit"),
+    path("data_delete-account/<int:invoice_id>/", views.invoice_data_delete, name="invoice_data_delete"),
 
     #old invoice url path
     path("invoiceItem/", views.invoice_item, name="invoice_item"),

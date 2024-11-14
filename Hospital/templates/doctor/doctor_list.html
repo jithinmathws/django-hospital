@@ -139,7 +139,7 @@
                   <ul class="pagination">
 
                      {% for page_num in doctors_page.paginator.page_range %}
-                        <li class="page-item{% if page_num == doctors_page.number %} active{% endif %}"> -->
+                        <li class="page-item{% if page_num == doctors_page.number %} active{% endif %}"> 
                            <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
                         </li> 
                      {% endfor %}
@@ -163,7 +163,7 @@
   </script>
 {% compress js %}  
   <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
-{% compress js %}
+{% endcompress %}
   
-  {% endblock %}
+{% endblock %}
  

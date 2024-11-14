@@ -407,6 +407,7 @@ class InvoiceDataForm(forms.ModelForm):
         self.fields["service"].widget.attrs.update({"class": 'form-control'})
         self.fields["date"].widget.attrs.update({"class": 'form-control', "type": 'date'})
 
+'''
 class AddDataForm(forms.ModelForm):
     class Meta:
         model = InvoiceData
@@ -423,7 +424,8 @@ class AddDataForm(forms.ModelForm):
         self.fields["tax_percentage"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["tax_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
         self.fields["adjusted_amount"].widget.attrs.update({"class": 'form-control', "type": 'number'})
-
+'''
+        
 #Income form
 class IncomeForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))

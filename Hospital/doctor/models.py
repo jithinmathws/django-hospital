@@ -306,12 +306,6 @@ class InvoiceData(models.Model):
     service = models.ManyToManyField(HospitalService, through='InvoiceItem')
     slug = models.SlugField(unique=True)
     date = models.DateField()
-    total_amount = models.IntegerField(default=0)
-    discount_amount = models.IntegerField(default=0)
-    discount_percentage = models.IntegerField(default=0)
-    tax_percentage = models.IntegerField(default=0)
-    tax_amount = models.IntegerField(default=0)
-    adjusted_amount = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
@@ -330,6 +324,20 @@ class InvoiceData(models.Model):
         elif self.id > 1:
             default += 1
         return default
+    
+    @property
+    def total_tax(self):
+        amount=0
+        for tax in self.service.all():
+            amount += tax.tax_amount
+        return amount
+    
+    @property
+    def final_amount(self):
+        amount=0
+        for price in self.service.all():
+            amount += price.total_price
+        return amount
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE, null=True)

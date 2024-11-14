@@ -55,6 +55,9 @@ admin.site.register(HospitalService, ImportExportModelAdmin)
 data_wizard.register(InvoiceData)
 admin.site.register(InvoiceData, ImportExportModelAdmin)
 
+data_wizard.register(InvoiceItem)
+admin.site.register(InvoiceItem, ImportExportModelAdmin)
+
 data_wizard.register(MainInvoice, SubInvoice)
 admin.site.register(MainInvoice, SubInvoiceAdmin)
 data_wizard.register(SubInvoice)

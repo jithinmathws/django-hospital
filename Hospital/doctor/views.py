@@ -624,6 +624,37 @@ def invoice_data(request):
 @login_required
 def invoice_additional_data(request, slug):
     invoice = InvoiceData.objects.get(slug=slug)
+    context = { 'invoice': invoice }
+
+    return render(request, "invoice/invoiceAddData.html", context)
+
+@login_required
+def invoice_data_list(request):
+    invoice = InvoiceData.objects.all()
+    return render(request, "invoice/invoice_data_list.html", {'invoice': invoice})
+
+@login_required
+def invoice_data_edit(request, invoice_id):
+    role = InvoiceData.objects.get(pk=invoice_id)
+    if request.method == 'POST':
+        form = InvoiceDataForm(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('invoice_data_list')
+    else:
+        form = InvoiceDataForm(instance=role)
+    return render(request, 'invoice/invoice_data_edit.html', {'form': form, 'role': role})
+
+@login_required
+def invoice_data_delete(request, invoice_id):
+    member = InvoiceData.objects.get(pk=invoice_id)
+    member.delete()
+    return redirect('invoice_data_list')
+
+'''
+@login_required
+def invoice_additional_data(request, slug):
+    invoice = InvoiceData.objects.get(slug=slug)
     form = AddDataForm(request.POST or None)
     context = { 'form': form, 'invoice': invoice }
     if form.is_valid():
@@ -633,7 +664,8 @@ def invoice_additional_data(request, slug):
         #return redirect('add_cart', slug=invoice_object.slug)
     
     return render(request, "invoice/invoiceAddData.html", context)
-
+'''
+    
 #manytomany objects.create
 '''
         patient = request.POST['patient']
@@ -813,7 +845,7 @@ def income_add(request):
         form = IncomeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('Incomeindex')
+            return redirect('Invoiceindex')
     else:
         form = IncomeForm()
     return render(request, "invoice/addIncome.html", {'form': form})
@@ -825,7 +857,7 @@ def income_list(request):
 
 @login_required
 def income_edit(request, income_id):
-    role = InvoiceDetails.objects.get(pk=income_id)
+    role = IncomeDetails.objects.get(pk=income_id)
     if request.method == 'POST':
         form = IncomeForm(request.POST, instance=role)
         if form.is_valid():
@@ -837,7 +869,7 @@ def income_edit(request, income_id):
 
 @login_required
 def income_delete(request, income_id):
-    member = InvoiceDetails.objects.get(pk=income_id)
+    member = IncomeDetails.objects.get(pk=income_id)
     member.delete()
     return redirect('income_list')
 
