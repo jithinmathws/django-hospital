@@ -199,8 +199,90 @@ class PharmacistForm(forms.ModelForm):
         self.fields["charges"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["charges_tax"].widget.attrs.update({"class": 'form-control'})
         self.fields["pharmacist_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
-        
 
+#new bed form
+class RoomForm(forms.ModelForm):
+    statusStartDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    statusEndDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    class Meta:
+        model = Room
+        #fields = ['number',  'capacity', 'numberOfBeds', 'roomType', 'price']
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["capacity"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["numberOfBeds"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["roomType"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["statusStartDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["statusEndDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+
+class editRoom(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = ["capacity", "numberOfBeds", "roomType", "price"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["capacity"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["numberOfBeds"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["roomType"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+
+class BookingForm(forms.ModelForm):
+    dateOfReservation = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    startDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    endDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    class Meta:
+        model = Booking
+        #fields = ['number',  'capacity', 'numberOfBeds', 'roomType', 'price']
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["roomNumber"].widget.attrs.update({"class": 'form-control'})
+        self.fields["guest"].widget.attrs.update({"class": 'form-control'})
+        self.fields["dateOfReservation"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["startDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["endDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+
+class editBooking(forms.ModelForm):
+    startDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    endDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    class Meta:
+        model = Booking
+        fields = ["startDate", "endDate"]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["startDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        self.fields["endDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+
+class DependeesForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        #fields = ["startDate", "endDate"]
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            print(field)
+        self.fields["booking"].widget.attrs.update({"class": 'form-control'})
+        self.fields["name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+
+#old bed
 class BedCategoryForm(forms.ModelForm):
     class Meta:
         model = BedCategory
@@ -249,8 +331,7 @@ class AddBedForm(forms.ModelForm):
             if instance.bed_number == bed_number:
                 raise forms.ValidationError('Bed already exist')
         return bed_number
-
-#old invoice
+#old bed ends
 
 #New invoice
 class ServiceForm(forms.ModelForm):

@@ -518,10 +518,7 @@ def pharmacist_delete(request, pharmacist_id):
     member.delete()
     return redirect('pharmacist_list')
 
-#Assign Bed
-@login_required
-def bed_index(request):
-    return render(request, "assignBed/index.html", {})
+#Assign old Bed view
 
 @login_required
 def bed_category(request):
@@ -567,6 +564,28 @@ def bed_add(request):
     else:
         form = AddBedForm()
     return render(request, "assignBed/addBed.html", {'form': form})
+#ends old bed
+
+#new room/bed views
+@login_required
+def bed_index(request):
+    return render(request, "assignBed/index.html", {})
+
+@login_required
+def add_room(request):
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Bindex')
+    else:
+        form = RoomForm()
+    return render(request, "assignBed/addRoom.html", {'form': form})
+
+@login_required
+def room_list(request):
+    room = Room.objects.all()
+    return render(request, "assignBed/room_list.html", {'room': room})
 
 #invoice
 @login_required
@@ -668,6 +687,7 @@ def invoice_additional_data(request, slug):
     
 #manytomany objects.create
 '''
+    invoice_number = 1001 if InvoiceData.objects.count() == 0 else InvoiceData.objects.aggregate(max=Max('invoice_number'))["max"] + 1
         patient = request.POST['patient']
         services = request.POST['service']
         date = request.POST['date']

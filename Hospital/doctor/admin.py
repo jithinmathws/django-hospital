@@ -26,16 +26,24 @@ admin.site.register(GuardianDetails, ImportExportModelAdmin)
 
 data_wizard.register(NurseDetails)
 admin.site.register(NurseDetails, ImportExportModelAdmin)
+
 data_wizard.register(AdmissionDetails)
 admin.site.register(AdmissionDetails, ImportExportModelAdmin)
 data_wizard.register(AppointmentDetails)
 admin.site.register(AppointmentDetails, ImportExportModelAdmin)
+
 data_wizard.register(PharmacistDetails)
 admin.site.register(PharmacistDetails, ImportExportModelAdmin)
+
+data_wizard.register(Room)
+admin.site.register(Room, ImportExportModelAdmin)
+
+#old bed models
 data_wizard.register(BedCategory)
 admin.site.register(BedCategory, ImportExportModelAdmin)
 data_wizard.register(AddBed)
 admin.site.register(AddBed, ImportExportModelAdmin)
+#old bed model ends
 
 data_wizard.register(HospitalService)
 admin.site.register(HospitalService, ImportExportModelAdmin)

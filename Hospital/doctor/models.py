@@ -247,7 +247,57 @@ class PharmacistDetails(models.Model):
 
     def __str__(self):
         return str(self.pharmacist_name)
-    
+
+#Hospital new Bed
+class Room(models.Model):
+    ROOM_TYPES = (
+        ('King', 'King'),
+        ('Luxury', 'Luxury'),
+        ('Normal', 'Normal'),
+        ('Economic', 'Economic'),
+        ('General Ward', 'General Ward'),
+
+    )
+    number = models.IntegerField(default=0)
+    capacity = models.SmallIntegerField(default=0)
+    numberOfBeds = models.SmallIntegerField(default=0)
+    roomType = models.CharField(max_length=20, choices=ROOM_TYPES)
+    price = models.FloatField(default=0)
+    statusStartDate = models.DateField(null=True)
+    statusEndDate = models.DateField(null=True)
+
+    def __str__(self):
+        return str(self.number)
+
+class Booking(models.Model):
+    roomNumber = models.ForeignKey(Room, on_delete=models.CASCADE)
+    guest = models.ForeignKey(PatientDetails, null=True, on_delete=models.CASCADE)
+    dateOfReservation = models.DateField(default=timezone.now)
+    startDate = models.DateField()
+    endDate = models.DateField()
+
+    def numOfDep(self):
+        return Dependees.objects.filter(booking=self).count()
+
+    def __str__(self):
+        return str(self.roomNumber) + " " + str(self.guest)
+
+class Dependees(models.Model):
+    booking = models.ForeignKey(Booking,   null=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def str(self):
+        return str(self.booking) + " " + str(self.name)
+
+class Refund(models.Model):
+    guest = models.ForeignKey(PatientDetails,   null=True, on_delete=models.CASCADE)
+    reservation = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    reason = models.TextField()
+
+    def __str__(self):
+        return str(self.guest)
+
+#Hospital old Bed   
 class BedCategory(models.Model):
     bedCategory_name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(blank=True)
@@ -275,8 +325,9 @@ class AddBed(models.Model):
 
     def __str__(self):
         return str(self.bed_number)
+#old bed ends
 
-#New Invoice
+#Invoice
 class HospitalService(models.Model):
     service_name = models.CharField(max_length=100, blank=False)
     slug = models.SlugField(unique=True)
@@ -319,9 +370,7 @@ class InvoiceData(models.Model):
     @property
     def invoice_number(self):
         default = 1001
-        if self.id == 1:
-            default
-        elif self.id > 1:
+        for add in range(self.id):
             default += 1
         return default
     

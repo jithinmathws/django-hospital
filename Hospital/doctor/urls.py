@@ -50,11 +50,16 @@ urlpatterns = [
     path("pharmacist_delete-account/<int:pharmacist_id>/", views.pharmacist_delete, name="pharmacist_delete"),
 
     path("bed/", views.bed_index, name="Bindex"),
+    path("addRoom/", views.add_room, name="addRoom"),
+    path("roomList/", views.room_list, name="room_list"),
+
+    #old bed path
     path("bedCategory/", views.bed_category, name="bedCategory"),
     path("categorylist/", views.category_list, name="category_list"),
     path("bedCategory_edit-account/<int:category_id>/", views.category_edit, name="category_edit"),
     path("bedCategory_delete-account/<int:category_id>/", views.category_delete, name="category_delete"),
     path("addBed/", views.bed_add, name="addBed"),
+    #old bed path ends
 
     path("invoice/", views.invoice_index, name="Invoiceindex"),
     path("addService/", views.add_service, name="add_service"),

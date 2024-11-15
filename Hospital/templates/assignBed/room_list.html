@@ -1,31 +1,27 @@
 {% extends 'home/base-login.html' %}
 {% load compress static %}
-{% block title %} Invoice list {% endblock %}
+{% block title %} Room detail list {% endblock %}
 
 {% block content %}
 
+
+
+   
       
       <div class="content container-fluid">
          
          <div class="page-header">
 
+            
 
         <div class="row align-items-center">
            <div class="col">
-              <h3 class="page-title">Invoices</h3>
+              <h3 class="page-title">Room details</h3>
               <ul class="breadcrumb">
-                 <li class="breadcrumb-item"><a href="{% url 'Invoiceindex' %}">Dashboard</a></li>
-                 <li class="breadcrumb-item active">List invoice</li>
+                 <li class="breadcrumb-item"><a href="{% url 'Bindex' %}">Dashboard</a></li>
+                 <li class="breadcrumb-item active">List room details</li>
               </ul>
            </div>
-
-           <div class="top-nav-search">
-            <form method="get" action="">
-               <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
-               <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-               </form>
-            </div>
-
            <div class="col-auto text-right float-right ml-auto">
               <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
               <a href="add-student.html" class="btn btn-primary"><i class="fas fa-plus"></i></a>
@@ -42,38 +38,34 @@
                        <thead>
                           <tr>
                              <th>ID</th>
-                             <th>Patient name</th>
-                             <th>Created</th>
-                             <th>Last Updated</th>
+                             <th>Number</th>
+                             <th>Room type</th>
+                             <th>Room price</th>
+                             
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for item in invoice %}
+                       {% for data in room %}
                        <tbody>
                           <tr>
-                             <td>{{ item.id }}</td>
+                             <td>{{ data.id }}</td>
                              
-
                              <td>
-                              <h2 class="#">
-                                 <a href="{% url 'addition_data' item.slug %}">{{ item.patient.patient_name }}</a>
-                              </h2>
+                                {{ data.number }}
                              </td>
-
+                             <td>{{ data.roomType }}</td>
+                             
                              <td>
-                                {{ item.created }}
-                             </td>
-                             <td>
-                                {{ item.updated }}
+                                {{ data.price }}
                              </td>
                              
                              <td class="text-right">
                                 <div class="actions">
-                                 <a href="{% url 'invoice_data_edit' item.id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'category_edit' data.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ item.patient.patient_name }}', '{{ item.id }}')">
-                                   <i class="fas fa-trash"></i> 
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.bedCategory_name }}', '{{ data.id }}')">
+                                   <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
                              </td>
@@ -90,14 +82,15 @@
               </div>
             </div>
          </div>
-      <script>
-         function confirmDelete(roleName, roleId){
-            if(confirm(`Are you sure you want to delete ${name}?`)) {
-               window.location.href = `{% url 'invoice_data_delete' invoice_id=0 %}`.replace('0', roleId);
+      
+   <script>
+            function confirmDelete(roleName, roleId){
+               if(confirm(`Are you sure you want to delete ${name}?`)) {
+                  window.location.href = `{% url 'category_delete' category_id=0 %}`.replace('0', roleId);
+               }
             }
-         }
-      </script>
-{% compress js %}   
+   </script>
+{% compress js %}
   <script src="{% static 'prescol/plugins/datatables/datatables.min.js' %}"></script>
 {% endcompress %}
   
