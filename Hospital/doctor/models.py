@@ -348,58 +348,7 @@ class InvoiceItem(models.Model):
         return self.service.service_name
         
 #Old Invoice
-class MainInvoice(models.Model):
-    #invoice_id = models.AutoField(primary_key=True)
-    patient = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
-    date = models.DateField()
-    total_amount = models.CharField(max_length=50, blank=True, null=True)
-    discount_amount = models.CharField(max_length=50, blank=True, null=True)
-    discount_percentage = models.CharField(max_length=50, blank=True, null=True)
-    tax_percentage = models.CharField(max_length=50, blank=True, null=True)
-    tax_amount = models.CharField(max_length=50, blank=True, null=True)
-    adjusted_amount = models.CharField(max_length=50)
-    
-    def __str__(self):
-        return self.total_amount
 
-
-class SubInvoice(models.Model):
-    invoice = models.ForeignKey(MainInvoice, on_delete=models.CASCADE, blank=True, null=True)
-    invoice_title = models.CharField(max_length=50, blank=True, null=True)
-    subtotal_amount = models.CharField(max_length=50, blank=True, null=True)
-
-    def __str__(self):
-        return self.invoice_title
-
-
-class InvoiceDetail(models.Model):
-    invoice_id = models.BigAutoField(primary_key=True)
-    patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
-    
-    total_amount = models.CharField(max_length=50, blank=True, null=True)
-    discount_amount = models.CharField(max_length=50, blank=True, null=True)
-    discount_percentage = models.CharField(max_length=50, blank=True, null=True)
-    tax_percentage = models.CharField(max_length=50, blank=True, null=True)
-    tax_amount = models.CharField(max_length=50, blank=True, null=True)
-    adjusted_amount = models.CharField(max_length=50)
-    date = models.DateField()
-    
-    def __str__(self):
-        return str(self.invoice_id)
-    
-    # def get_absolute_url(self):
-    #     return reverse('invoice_profile', kwargs={'pk', self.id})
-
-class InvoiceRelation(models.Model):
-    invoice_title = models.CharField(max_length=50, blank=True, null=True)
-    subtotal_amount = models.CharField(max_length=50, blank=True, null=True)
-    invoice_relate = models.ForeignKey(InvoiceDetail, related_name="invoice", on_delete=models.CASCADE, blank=True, null=True)
-
-    def __str__(self):
-        return self.invoice_relate.date
-
-    class Meta:
-        db_table = "invoice"
 #Old invoice model ends
 
 

@@ -3,18 +3,6 @@ from .models import *
 import data_wizard
 from import_export.admin import ImportExportModelAdmin
 
-class InvoiceInLineAdmin(admin.TabularInline):
-    model = InvoiceRelation
-
-class InvoiceRelationAdmin(admin.ModelAdmin):
-    inlines = [InvoiceInLineAdmin]
-
-class SubInvoiceInLineAdmin(admin.TabularInline):
-    model = SubInvoice
-
-class SubInvoiceAdmin(admin.ModelAdmin):
-    inlines = [SubInvoiceInLineAdmin]
-
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
@@ -57,16 +45,6 @@ admin.site.register(InvoiceData, ImportExportModelAdmin)
 
 data_wizard.register(InvoiceItem)
 admin.site.register(InvoiceItem, ImportExportModelAdmin)
-
-data_wizard.register(MainInvoice, SubInvoice)
-admin.site.register(MainInvoice, SubInvoiceAdmin)
-data_wizard.register(SubInvoice)
-admin.site.register(SubInvoice, ImportExportModelAdmin)
-
-data_wizard.register(InvoiceDetail, InvoiceRelation)
-admin.site.register(InvoiceDetail, InvoiceRelationAdmin)
-
-
 
 data_wizard.register(IncomeDetails)
 admin.site.register(IncomeDetails, ImportExportModelAdmin)
