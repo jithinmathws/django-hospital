@@ -52,6 +52,8 @@ urlpatterns = [
     path("bed/", views.bed_index, name="Bindex"),
     path("addRoom/", views.add_room, name="addRoom"),
     path("roomList/", views.room_list, name="room_list"),
+    path("room_edit-account/<int:room_id>/", views.room_edit, name="room_edit"),
+    path("room_delete-account/<int:room_id>/", views.room_delete, name="room_delete"),
 
     #old bed path
     path("bedCategory/", views.bed_category, name="bedCategory"),

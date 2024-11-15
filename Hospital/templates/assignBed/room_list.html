@@ -61,10 +61,10 @@
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'category_edit' data.id %}" class="btn btn-sm bg-success-light mr-2">
+                                   <a href="{% url 'room_edit' data.id %}" class="btn btn-sm bg-success-light mr-2">
                                    <i class="fas fa-pen"></i>
                                    </a>
-                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.bedCategory_name }}', '{{ data.id }}')">
+                                   <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.number }}', '{{ data.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
                                 </div>
@@ -86,7 +86,7 @@
    <script>
             function confirmDelete(roleName, roleId){
                if(confirm(`Are you sure you want to delete ${name}?`)) {
-                  window.location.href = `{% url 'category_delete' category_id=0 %}`.replace('0', roleId);
+                  window.location.href = `{% url 'room_delete' room_id=0 %}`.replace('0', roleId);
                }
             }
    </script>

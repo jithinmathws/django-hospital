@@ -37,6 +37,12 @@ admin.site.register(PharmacistDetails, ImportExportModelAdmin)
 
 data_wizard.register(Room)
 admin.site.register(Room, ImportExportModelAdmin)
+data_wizard.register(Booking)
+admin.site.register(Booking, ImportExportModelAdmin)
+data_wizard.register(Dependees)
+admin.site.register(Dependees, ImportExportModelAdmin)
+data_wizard.register(Refund)
+admin.site.register(Refund, ImportExportModelAdmin)
 
 #old bed models
 data_wizard.register(BedCategory)

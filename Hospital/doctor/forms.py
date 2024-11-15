@@ -230,7 +230,6 @@ class editRoom(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             print(field)
-        self.fields["number"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["capacity"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["numberOfBeds"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["roomType"].widget.attrs.update({"class": 'form-control', "type": 'text'})

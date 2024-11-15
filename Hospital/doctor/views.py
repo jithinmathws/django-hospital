@@ -587,6 +587,24 @@ def room_list(request):
     room = Room.objects.all()
     return render(request, "assignBed/room_list.html", {'room': room})
 
+@login_required
+def room_edit(request, room_id):
+    role = Room.objects.get(pk=room_id)
+    if request.method == 'POST':
+        form = editRoom(request.POST, instance=role)
+        if form.is_valid():
+            role = form.save()
+            return redirect('room_list')
+    else:
+        form = editRoom(instance=role)
+    return render(request, 'assignBed/room_edit.html', {'form': form, 'role': role})
+
+@login_required
+def room_delete(request, room_id):
+    member = Room.objects.get(pk=room_id)
+    member.delete()
+    return redirect('room_list')
+
 #invoice
 @login_required
 def invoice_index(request):
