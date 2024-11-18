@@ -202,12 +202,12 @@ class PharmacistForm(forms.ModelForm):
 
 #new bed form
 class RoomForm(forms.ModelForm):
-    statusStartDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
-    statusEndDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    #statusStartDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
+    #statusEndDate = forms.DateField(widget=forms.DateInput(attrs={"type": 'date'}))
     class Meta:
         model = Room
-        #fields = ['number',  'capacity', 'numberOfBeds', 'roomType', 'price']
-        fields = '__all__'
+        fields = ['number',  'capacity', 'numberOfBeds', 'roomType', 'price']
+        #fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -218,8 +218,8 @@ class RoomForm(forms.ModelForm):
         self.fields["numberOfBeds"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["roomType"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["price"].widget.attrs.update({"class": 'form-control', "type": 'text'})
-        self.fields["statusStartDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
-        self.fields["statusEndDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        #self.fields["statusStartDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
+        #self.fields["statusEndDate"].widget.attrs.update({"class": 'form-control', "type": 'date'})
 
 class editRoom(forms.ModelForm):
     class Meta:

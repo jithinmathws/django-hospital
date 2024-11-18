@@ -605,6 +605,132 @@ def room_delete(request, room_id):
     member.delete()
     return redirect('room_list')
 
+@login_required
+def rooms(request):
+    rooms = Room.objects.all()
+    firstDayStr = None
+    lastDateStr = None
+
+    def chech_availability(fd, ed):
+        availableRooms = []
+        for room in rooms:
+            availList = []
+            bookingList = Booking.objects.filter(roomNumber=room)
+            if room.statusStartDate == None:
+                for booking in bookingList:
+                    if booking.startDate > ed.date() or booking.endDate < fd.date():
+                        availList.append(True)
+                    else:
+                        availList.append(False)
+                if all(availList):
+                    availableRooms.append(room)
+            else:
+                if room.statusStartDate > ed.date() or room.statusEndDate < fd.date():
+                    for booking in bookingList:
+                        if booking.startDate > ed.date() or booking.endDate < fd.date():
+                            availList.append(True)
+                        else:
+                            availList.append(False)
+                        if all(availList):
+                            availableRooms.append(room)
+
+        return availableRooms
+
+    if request.method == "POST":
+        if "dateFilter" in request.POST:
+            firstDayStr = request.POST.get("fd", "")
+            lastDateStr = request.POST.get("ld", "")
+
+            firstDay = datetime.strptime(firstDayStr, '%Y-%m-%d')
+            lastDate = datetime.strptime(lastDateStr, '%Y-%m-%d')
+
+            rooms = chech_availability(firstDay, lastDate)
+
+        if "filter" in request.POST:
+            if (request.POST.get("number") != ""):
+                rooms = rooms.filter(
+                    number__contains=request.POST.get("number"))
+
+            if (request.POST.get("capacity") != ""):
+                rooms = rooms.filter(
+                    capacity__gte=request.POST.get("capacity"))
+
+            if (request.POST.get("nob") != ""):
+                rooms = rooms.filter(
+                    numberOfBeds__gte=request.POST.get("nob"))
+
+            if (request.POST.get("type") != ""):
+                rooms = rooms.filter(
+                    roomType__contains=request.POST.get("type"))
+
+            if (request.POST.get("price") != ""):
+                rooms = rooms.filter(
+                    price__lte=request.POST.get("price"))
+
+            context = {
+                "rooms": rooms,
+                "number": request.POST.get("number"),
+                "capacity": request.POST.get("capacity"),
+                "nob": request.POST.get("nob"),
+                "price": request.POST.get("price"),
+                "type": request.POST.get("type")
+            }
+            return render(request, "assignBed/rooms.html", context)
+
+    context = {
+        'rooms': rooms,
+        'fd': firstDayStr,
+        'ld': lastDateStr
+    }
+    return render(request, "assignBed/rooms.html", context)
+
+def room_profile(request, id):
+    tempRoom = Room.objects.get(pk=id)
+    bookings = Booking.objects.filter(roomNumber=tempRoom)
+    guests = PatientDetails.objects.all()
+    bookings2 = Booking.objects.all()
+    context = {
+        "bookings": bookings,
+        "room": tempRoom,
+        "guests": guests,
+        "bookings2": bookings2
+    }
+
+    if request.method == "POST":
+        if "lockRoom" in request.POST:
+            fd = request.POST.get("bsd")
+            ed = request.POST.get("bed")
+            fd = datetime.strptime(fd, '%Y-%m-%d')
+            ed = datetime.strptime(ed, '%Y-%m-%d')
+            check = True
+            for b in bookings:
+                if b.endDate >= fd.date() and b.startDate <= ed.date():
+                    check = False
+                    break
+            if check:
+                tempRoom.statusStartDate = fd
+                tempRoom.statusEndDate = ed
+                tempRoom.save()
+            else:
+                messages.error(request, "There is a booking in the interval!")
+        if "unlockRoom" in request.POST:
+            tempRoom.statusStartDate = None
+            tempRoom.statusEndDate = None
+            tempRoom.save()
+        if "deleteRoom" in request.POST:
+            check = True
+            for b in bookings:
+                if b.startDate <= datetime.now().date() or b.endDate >= datetime.now().date():
+                    check = False
+            if check:
+                tempRoom.delete()
+                return redirect("rooms")
+            else:
+                messages.error(request, "There is a booking in the interval!")
+
+    return render(request, "room_profile.html", context)
+
+
 #invoice
 @login_required
 def invoice_index(request):

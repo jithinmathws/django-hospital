@@ -55,6 +55,9 @@ urlpatterns = [
     path("room_edit-account/<int:room_id>/", views.room_edit, name="room_edit"),
     path("room_delete-account/<int:room_id>/", views.room_delete, name="room_delete"),
 
+    path("rooms/", views.rooms, name="bookRoom"),
+    path("room_profile/<int:id>/", views.room_profile, name="room_profile"),
+
     #old bed path
     path("bedCategory/", views.bed_category, name="bedCategory"),
     path("categorylist/", views.category_list, name="category_list"),
