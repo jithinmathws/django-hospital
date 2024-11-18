@@ -84,13 +84,12 @@
                 <td>{{ room.roomType }}</td>
                 <td>{{ room.price }}</td>
 
-                {% if role != "guest" %}
+                
                 <td> <a href="{% url 'room_profile' room.id  %}" class="btn btn-info btn-sm w-100">View</a>
                 </td>
-                {% if role == 'manager' or role == 'admin' %}<td> <a href="{% url 'room_list'  %}"
-                        class="btn btn-sm btn-primary w-100">Edit&nbsp;Room</a></td> {% endif %}
-                {% endif %}
-                {% if role == "guest" or role == "receptionist" %}
+                <td> <a href="{% url 'room_edit' room.id %}"
+                        class="btn btn-sm btn-primary w-100">Edit&nbsp;Room</a></td> 
+                
                 <td>
                     <form action="{% url 'room_list' %}" method="POST">
                         {% csrf_token %}
@@ -100,7 +99,7 @@
                         <button type="submit" name="book" id="book" class="btn btn-sm btn-primary px-3">Book</button>
                     </form>
                 </td>
-                {% endif %}
+                
             </tr>
             {% endfor %}
         </tbody>

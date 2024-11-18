@@ -728,7 +728,7 @@ def room_profile(request, id):
             else:
                 messages.error(request, "There is a booking in the interval!")
 
-    return render(request, "room_profile.html", context)
+    return render(request, "assignBed/room_profile.html", context)
 
 
 #invoice
