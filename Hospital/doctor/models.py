@@ -258,7 +258,8 @@ class Room(models.Model):
         ('General Ward', 'General Ward'),
 
     )
-    number = models.IntegerField(default=0)
+    number = models.IntegerField(default=0, unique=True)
+    slug = models.SlugField(blank=True)
     capacity = models.SmallIntegerField(default=0)
     numberOfBeds = models.SmallIntegerField(default=0)
     roomType = models.CharField(max_length=20, choices=ROOM_TYPES)
@@ -268,6 +269,10 @@ class Room(models.Model):
 
     def __str__(self):
         return str(self.number)
+    
+    def save(self, *args, **kwargs):
+        self.slug = generate_bed_slug(self.roomType)
+        super(Room, self).save(*args, **kwargs)
 
 class Booking(models.Model):
     roomNumber = models.ForeignKey(Room, on_delete=models.CASCADE)

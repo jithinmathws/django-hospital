@@ -91,7 +91,7 @@
                         class="btn btn-sm btn-primary w-100">Edit&nbsp;Room</a></td> 
                 
                 <td>
-                    <form action="{% url 'booking_make' %}" method="POST">
+                    <form action="{% url 'booking_make' room.slug %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" value="{{ room }}" name="roomid">
                         <input type="date" value="{{fd}}" name="fd" class="d-none">
@@ -101,11 +101,13 @@
                 </td>
                 
             </tr>
+
             {% endfor %}
         </tbody>
 
     </table>
 
+    
 </div>
 
 {% endblock%}

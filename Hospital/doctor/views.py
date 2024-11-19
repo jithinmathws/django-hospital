@@ -665,6 +665,7 @@ def rooms(request):
             context = {
                 "rooms": rooms,
                 "number": request.POST.get("number"),
+                "slug": request.POST.get("slug"),
                 "capacity": request.POST.get("capacity"),
                 "nob": request.POST.get("nob"),
                 "price": request.POST.get("price"),
@@ -789,9 +790,9 @@ def bookings(request):
     return render(request, "assignBed/bookings.html", context)
 
 @login_required
-def booking_make(request):
+def booking_make(request, slug):
 
-    room = Room.objects.get(number=request.POST.get("number"))
+    room = Room.objects.get(slug=slug)
     guests = PatientDetails.objects.all()  # we pass this to context
     names = []
     if request.method == 'POST':

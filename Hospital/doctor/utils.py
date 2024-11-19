@@ -12,6 +12,16 @@ def generate_bed_slug(bedCategory_name:str) -> str:
 
     return bedCategory_name
 
+#Unique slug for Bed Category
+def generate_room_slug(roomType:str) -> str:
+    from .models import Room
+    roomType = slugify(roomType)
+   
+    while(Room.objects.filter(slug = roomType).exists()):
+        roomType = f'{slugify(roomType)} - {str(uuid.uuid4())[0:4]}'
+
+    return roomType
+
 #Unique slug for Hospital Service
 def generate_service_slug(service_name:str) -> str:
     from .models import HospitalService
