@@ -400,28 +400,35 @@ class InvoiceItem(models.Model):
 
     def __str__(self):
         return self.service.service_name
-        
-#Old Invoice
-
-#Old invoice model ends
 
 
 class IncomeDetails(models.Model):
-    patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    #patient_name = models.ForeignKey(PatientDetails, on_delete=models.CASCADE)
+    patient_name = models.ForeignKey(InvoiceData, on_delete=models.CASCADE, null=True, blank=True)
     payment_status = models.CharField(
          max_length=20, blank=True, null=True,
-         choices=(("PD", "Paid"), ("PNDG", "PENDING"), ("NPD", "Not Paid")),
+         choices=(("PAID", "Paid"), ("PARTIAL", "Partial Payment"), ("NOTPAID", "Not Paid")),
      )
     payment_method = models.CharField(
          max_length=20, blank=True, null=True,
-         choices=(("CSH", "Cash"), ("CRD", "Card"), ("UPI", "Upi")),
+         choices=(("CASH", "Cash"), ("CARD", "Card"), ("UPI", "Upi")),
      )
     payment_details = models.CharField(max_length=50)
     date = models.DateField()
-    payment_amount = models.CharField(max_length=50)
+    payment_amount = models.IntegerField(default=0)
 
     def __str__(self):
         return self.patient_satus
+    
+    @property
+    def balance_amount(self):
+        amount=0
+        amount = self.patient_name.final_amount - self.payment_amount
+        return amount
+
+class PaymentDetails(models.Model):
+    income = models.ForeignKey(IncomeDetails, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(InvoiceData, on_delete=models.CASCADE, null=True)
 
 class TreatmentDetails(models.Model):
     treatment_name = models.CharField(max_length=50)

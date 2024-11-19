@@ -1001,7 +1001,7 @@ def income_edit(request, income_id):
             role = form.save()
             return redirect('income_list')
     else:
-        form = InvoiceForm(instance=role)
+        form = IncomeForm(instance=role)
     return render(request, 'invoice/income_edit.html', {'form': form, 'role': role})
 
 @login_required

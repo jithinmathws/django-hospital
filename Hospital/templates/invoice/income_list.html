@@ -35,10 +35,11 @@
                           <tr>
                              <th>ID</th>
                              <th>Patient name</th>
-                             <th>Invoice title</th>
-                             <th>Subtotal amount</th>
-                             <th>Adjusted amount</th>
+                             <th>Payment status</th>
+                             <th>Payment method</th>
                              <th>Date</th>
+                             <th>Payment amount</th>
+                             <th>Balance</th>
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
@@ -58,16 +59,17 @@
                              <td>
                                 {{ income.payment_method }}
                              </td>
-                             
-                             <td>
-                                {{ income.payment_details }}
-                             </td>
+                           
                              <td>
                                 {{ income.date }}
                              </td>
                              <td>
                                 {{ income.payment_amount }}
                              </td>
+                             <td>
+                              {{ income.balance_amount }}
+                              </td>
+
                              <td class="text-right">
                                 <div class="actions">
                                    <a href="{% url 'income_edit' income.id %}" class="btn btn-sm bg-success-light mr-2">

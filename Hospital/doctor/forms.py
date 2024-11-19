@@ -389,6 +389,7 @@ class IncomeForm(forms.ModelForm):
     
     class Meta:
         model = IncomeDetails
+        #fields = ['patient_name',  'payment_status', 'payment_method']
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
