@@ -54,7 +54,7 @@
             </label>
             <select class="form-control" name="guest" required="" id="id_guest">
                 {% for guest in guests %}
-                <option value="{{guest.id}}">{{guest.user.first_name}} {{guest.user.last_name}}</option>
+                <option value="{{guest.id}}">{{guest.patient_name}} </option>
                 {% endfor %}
             </select>
             <button type="submit" class="btn btn-info w-100 mt-3" name="bookGuestButton">Book</button>

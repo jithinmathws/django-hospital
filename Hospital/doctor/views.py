@@ -790,7 +790,7 @@ def bookings(request):
     return render(request, "assignBed/bookings.html", context)
 
 @login_required
-def booking_make(request, slug):
+def booking_make(request, slug, total=0):
 
     room = Room.objects.get(slug=slug)
     guests = PatientDetails.objects.all()  # we pass this to context
