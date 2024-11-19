@@ -13,24 +13,19 @@ from .models import *
 from .forms import *
 from .resources import doctorResources
 
-from crispy_forms.helper import FormHelper
-from django.forms import formset_factory
-from django.forms.models import modelformset_factory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.views.generic import ListView
-from django.views.generic.edit import (
-    CreateView, UpdateView
-)
-from django.db import transaction, IntegrityError
+
+from datetime import datetime, date, timedelta
+import random
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger
 from django.conf import settings
-from django.db.models import Q, Max
+from django.db.models import Q, Max, Count
 from functools import wraps
 from tablib import Dataset
 
@@ -684,6 +679,7 @@ def rooms(request):
     }
     return render(request, "assignBed/rooms.html", context)
 
+@login_required
 def room_profile(request, id):
     tempRoom = Room.objects.get(pk=id)
     bookings = Booking.objects.filter(roomNumber=tempRoom)
@@ -729,6 +725,124 @@ def room_profile(request, id):
                 messages.error(request, "There is a booking in the interval!")
 
     return render(request, "assignBed/room_profile.html", context)
+
+@login_required
+def bookings(request):
+    import datetime
+
+    bookings = Booking.objects.all()
+    # calculating total for every booking:
+    totals = {}  # <booking : total>
+    for booking in bookings:
+        start_date = datetime.datetime.strptime(
+            str(booking.startDate), "%Y-%m-%d")
+        end_date = datetime.datetime.strptime(str(booking.endDate), "%Y-%m-%d")
+        numberOfDays = abs((end_date-start_date).days)
+        # get room peice:
+        price = Room.objects.get(number=booking.roomNumber.number).price
+        total = price * numberOfDays
+        totals[booking] = total
+
+    if request.method == "POST":
+        if "filter" in request.POST:
+            if (request.POST.get("number") != ""):
+                rooms = Room.objects.filter(
+                    number__contains=request.POST.get("number"))
+                bookings = bookings.filter(
+                    roomNumber__in=rooms)
+
+            if (request.POST.get("name") != ""):
+                users = User.objects.filter(
+                    Q(first_name__contains=request.POST.get("name")) | Q(last_name__contains=request.POST.get("name")))
+                guests = Guest.objects.filter(user__in=users)
+                bookings = bookings.filter(
+                    guest__in=guests)
+
+            if (request.POST.get("rez") != ""):
+                bookings = bookings.filter(
+                    dateOfReservation=request.POST.get("rez"))
+
+            if (request.POST.get("fd") != ""):
+                bookings = bookings.filter(
+                    startDate__gte=request.POST.get("fd"))
+
+            if (request.POST.get("ed") != ""):
+                bookings = bookings.filter(
+                    endDate__lte=request.POST.get("ed"))
+
+            context = {
+                'bookings': bookings,
+                'totals': totals,
+                "name": request.POST.get("name"),
+                "number": request.POST.get("number"),
+                "rez": request.POST.get("rez"),
+                "fd": request.POST.get("fd"),
+                "ed": request.POST.get("ed")
+            }
+
+            return render(request, "assignBed/bookings.html", context)
+        
+    context = {
+        'bookings': bookings,
+        'totals': totals
+    }
+    return render(request, "assignBed/bookings.html", context)
+
+@login_required
+def booking_make(request):
+
+    room = Room.objects.get(number=request.POST.get("number"))
+    guests = PatientDetails.objects.all()  # we pass this to context
+    names = []
+    if request.method == 'POST':
+        if request.POST.get("fd") == "" or request.POST.get("ld") == "":
+            return redirect("bookRoom")
+
+        start_date = datetime.strptime(
+            str(request.POST.get("fd")), "%Y-%m-%d")
+        end_date = datetime.strptime(
+            str(request.POST.get("ld")), "%Y-%m-%d")
+        numberOfDays = abs((end_date-start_date).days)
+        # get room peice:
+        price = room.price
+        total = price * numberOfDays
+
+        if 'add' in request.POST:  # add dependee
+            name = request.POST.get("depName")
+            names.append(name)
+            for i in range(room.capacity-2):
+                nameid = "name" + str(i+1)
+                if request.POST.get(nameid) != "":
+                    names.append(request.POST.get(nameid))
+
+        if 'bookGuestButton' in request.POST:
+            if "guest" in request.POST:
+                curguest = PatientDetails.objects.get(id=request.POST.get("guest"))
+            else:
+                curguest = request.user.guest
+            curbooking = Booking(guest=curguest, roomNumber=room, startDate=request.POST.get(
+                "fd"), endDate=request.POST.get("ld"))
+            curbooking.save()
+
+            for i in range(room.capacity-1):
+                nameid = "name" + str(i+1)
+                if request.POST.get(nameid) != "":
+                    if request.POST.get(nameid) != None:
+                        d = Dependees(booking=curbooking,
+                                      name=request.POST.get(nameid))
+                        d.save()
+            return redirect("book_list")# return redirect("payment")
+
+    context = {
+        "fd": request.POST.get("fd"),
+        "ld": request.POST.get("ld"),
+        "guests": guests,
+        "room": room,
+        "total": total,
+        "names": names
+    }
+
+    return render(request, "assignBed/booking_make.html", context)
 
 
 #invoice

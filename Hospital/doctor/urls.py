@@ -58,6 +58,9 @@ urlpatterns = [
     path("rooms/", views.rooms, name="bookRoom"),
     path("room_profile/<int:id>/", views.room_profile, name="room_profile"),
 
+    path("booking/", views.bookings, name="booking"),
+    path("booking-make/", views.booking_make, name="booking_make"),
+
     #old bed path
     path("bedCategory/", views.bed_category, name="bedCategory"),
     path("categorylist/", views.category_list, name="category_list"),
