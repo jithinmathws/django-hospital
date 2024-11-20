@@ -98,7 +98,7 @@ def is_superuser(user):
     return user.is_superuser
 
 @login_required
-@user_passes_test(is_superuser)
+@user_has_role_or_superuser(['Administration'])
 def roles(request):
     return render(request, "home/roles_index.html", {})
 

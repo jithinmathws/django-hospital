@@ -50,7 +50,7 @@ def user_has_role_or_superuser(roles):
 
 
 @login_required
-@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director', 'Administration'])
 def doctor_index(request):
     return render(request, "doctor/index.html", {})
 
@@ -219,6 +219,7 @@ def ExportToCsv(request):
 # Patient Fields
 
 @login_required
+@user_has_role_or_superuser(['Doctor', 'Receptionist', 'Administration'])
 def patient_index(request):
     return render(request, "patient/index.html", {})
 
@@ -351,6 +352,7 @@ def patient_delete(request, patient_id):
     return redirect('patient_list')
 
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def guardian_add(request):
     if request.method == 'POST':
         form = GuardianForm(request.POST)
@@ -362,6 +364,7 @@ def guardian_add(request):
     return render(request, "patient/addGuardian.html", {'form': form})
 
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def guardian_list(request):
 
     guardians = GuardianDetails.objects.all()
@@ -369,12 +372,14 @@ def guardian_list(request):
     return render(request, "patient/guardian_list.html", {'guardians': guardians})
 
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def guardian_delete(request, guardian_id):
     member = GuardianDetails.objects.get(pk=guardian_id)
     member.delete()
     return redirect('guardian_list')
 
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def guardian_edit(request, guardian_id):
     role = GuardianDetails.objects.get(pk=guardian_id)
     if request.method == 'POST':
@@ -390,7 +395,7 @@ def guardian_edit(request, guardian_id):
 # Nurse Fields
 
 @login_required
-@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director', 'Administration'])
 def nurse_index(request):
     return render(request, "nurse/index.html", {})
 
@@ -453,7 +458,7 @@ def nurse_delete(request, nurse_id):
 
 #pharmacist
 @login_required
-@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director'])
+@user_has_role_or_superuser(['HR', 'SeniorHR', 'Director', 'Administration'])
 def pharmacist_index(request):
     return render(request, "pharmacist/index.html", {})
 
@@ -516,6 +521,7 @@ def pharmacist_delete(request, pharmacist_id):
 #Assign old Bed view
 
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def bed_category(request):
     if request.method == 'POST':
         form = BedCategoryForm(request.POST)
@@ -563,6 +569,7 @@ def bed_add(request):
 
 #new room/bed views
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def bed_index(request):
     return render(request, "assignBed/index.html", {})
 
@@ -848,6 +855,7 @@ def booking_make(request, slug, total=0):
 
 #invoice
 @login_required
+@user_has_role_or_superuser(['Receptionist', 'Administration'])
 def invoice_index(request):
     return render(request, "invoice/index.html", {})
 
@@ -1012,6 +1020,7 @@ def income_delete(request, income_id):
 
 #Treatment
 @login_required
+@user_has_role_or_superuser(['Doctor', 'Administration'])
 def treatment_index(request):
     return render(request, "treatment/index.html", {})
 
@@ -1052,6 +1061,7 @@ def treatment_delete(request, treatment_id):
 
 #Pharmacy
 @login_required
+@user_has_role_or_superuser(['Pharmacist', 'Administration'])
 def pharmacy_index(request):
     return render(request, "pharmaceuticals/index.html", {})
 

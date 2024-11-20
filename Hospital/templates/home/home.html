@@ -22,7 +22,7 @@
 
       <div class="row icon-boxes">
 
-        {% if user.is_superuser or 'HR' or 'SeniorHR' or 'Director' in user_groups %}
+        {% if user.is_superuser or 'HR' or 'SeniorHR' or 'Administration' in user_groups %}
         <div class="col-md-6 col-lg-3 d-flex align-items-center mb-2" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
             <div class="icon"><a href="#" class="logo"><img src="{% static 'img/icons/doctor.png' %}" alt="" class="img-fluid"></a></div>

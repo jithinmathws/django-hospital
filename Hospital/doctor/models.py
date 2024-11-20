@@ -6,6 +6,7 @@ from django.db.models import Case, When
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
+from shortuuid.django_fields import ShortUUIDField
 
 from django.db.models import Max, Value
 from django.utils.text import slugify
@@ -53,9 +54,8 @@ class DoctorInfo(models.Model):
          choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
      )
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
-    #certificate = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
-    #doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
     image = models.BinaryField(blank=True, null=True)
+    next_avaialable_appointment_date = models.CharField(max_length=100, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -69,6 +69,25 @@ class CertificateDoctor(models.Model):
     def __str__(self):
         return str(self.doctor)
 
+NOTIFICATION_TYPE = (
+    ("New Appointment", "New Appointment"),
+    ("Appointment Cancelled", "Appointment Cancelled"),
+)
+
+class Notification(models.Model):
+    doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
+    type = models.CharField(max_length=100, choices=NOTIFICATION_TYPE)
+    seen = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Notification"
+
+    def __str__(self):
+        return f"Dr {self.doctor.doctor_name} Notification"
+
+#old not required Doctor Field
 class DoctorDetails(models.Model):
     doctor_name = models.CharField(max_length=50)
     department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
@@ -96,7 +115,6 @@ class DoctorDetails(models.Model):
      )
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
     certificate = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
-    #doctor_image = models.ImageField(upload_to='doctor/', null=True, blank=True)
     image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -113,6 +131,8 @@ class DoctorCertificate(models.Model):
 
     def __str__(self):
         return str(self.doctor)
+#not required doctor model    
+
 '''
 class PatientNumber(models.Model):
     number = models.IntegerField(null=True)
@@ -153,7 +173,80 @@ class PatientDetails(models.Model):
 
     def __str__(self):
         return str(self.patient_name)
+
+NOTIFICATION = (
+    ("Appointment Scheduled", "Appointment Scheduled"),
+    ("Appointment Cancelled", "Appointment Cancelled"),
+)
+
+class PatientNotification(models.Model):
+    patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True)
+    appointmet = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
+    type = models.CharField(max_length=100, choices=NOTIFICATION)
+    seen = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "PatientNotification"
+
+    def __str__(self):
+        return f"{self.patient.patient_name} PatientNotification"
+
+
+class Service(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    available_doctors = models.ManyToManyField(DoctorInfo, blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.cost}"
+        
+
+class Appointment(models.Model):
+    STATUS = [
+        ('Scheduled', 'Scheduled'),
+        ('Completed', 'Completed'),
+        ('Pending', 'Pending'),
+        ('Cancelled', 'Cancelled')
+    ]
     
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
+    doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True)
+    patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True)
+    appointment_date = models.DateTimeField(null=True, blank=True)
+    issues = models.TextField(blank=True, null=True)
+    symptoms = models.TextField(blank=True, null=True)
+    appointment_id = ShortUUIDField(length=6, max_length=10, alphabet="1234567890")
+    status = models.CharField(max_length=120, choices=STATUS)
+
+    def __str__(self):
+        return f"{self.patient.patient_name} with {self.doctor.doctor_name}"
+
+class MedicalRecord(models.Model):
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    diagnosis = models.TextField()
+    treatment = models.TextField()
+
+    def __str__(self):
+        return f"Medical record for {self.appointment.patient.patient_name}"
+    
+class LabTest(models.Model):
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    test_name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    result = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.test_name)
+    
+class Prescription(models.Model):
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    medications = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Prescription for {self.appointment.patient.patient_name}"
+
 class PatientStatus(models.Model):
     patient_status = models.CharField(max_length=50)
 
