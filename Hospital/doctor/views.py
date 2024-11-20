@@ -760,11 +760,10 @@ def bookings(request):
                     roomNumber__in=rooms)
 
             if (request.POST.get("name") != ""):
-                users = User.objects.filter(
-                    Q(first_name__contains=request.POST.get("name")) | Q(last_name__contains=request.POST.get("name")))
-                guests = Guest.objects.filter(user__in=users)
+                patient = PatientDetails.objects.filter(
+                    Q(patient_name__contains=request.POST.get("name")))
                 bookings = bookings.filter(
-                    guest__in=guests)
+                    guest__in=patient)
 
             if (request.POST.get("rez") != ""):
                 bookings = bookings.filter(
@@ -839,7 +838,7 @@ def booking_make(request, slug, total=0):
                         d = Dependees(booking=curbooking,
                                       name=request.POST.get(nameid))
                         d.save()
-            return redirect("book_list")# return redirect("payment")
+            return redirect("booking")
 
     context = {
         "fd": request.POST.get("fd"),
@@ -998,6 +997,42 @@ def income_add(request):
 @login_required
 def income_list(request):
     incomes = IncomeDetails.objects.all()
+
+    if request.method == "POST":
+        if "filter" in request.POST:
+            if (request.POST.get("name") != ""):
+                patient = PatientDetails.objects.filter(
+                    Q(patient_name__contains=request.POST.get("name")))
+                incomes = incomes.filter(
+                    patient_name__in=patient)
+
+            if (request.POST.get("status") != ""):
+                incomes = incomes.filter(
+                    payment_status__contains=request.POST.get("status"))
+
+            if (request.POST.get("dat") != ""):
+                incomes = incomes.filter(
+                    date=request.POST.get("dat"))
+
+            if (request.POST.get("amount") != ""):
+                incomes = incomes.filter(
+                    payment_amount=request.POST.get("amount"))
+
+            if (request.POST.get("balance") != ""):
+                incomes = incomes.filter(
+                    balance_amount=request.POST.get("balance"))
+
+            context = {
+                "incomes": incomes,
+                "name": request.POST.get("name"),
+                "status": request.POST.get("status"),
+                "dat": request.POST.get("dat"),
+                "amount": request.POST.get("amount"),
+                "balance": request.POST.get("balance")
+            }
+            return render(request, "invoice/income_list.html", context)
+
+
     return render(request, "invoice/income_list.html", {'incomes': incomes})
 
 @login_required

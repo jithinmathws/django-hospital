@@ -74,18 +74,6 @@ NOTIFICATION_TYPE = (
     ("Appointment Cancelled", "Appointment Cancelled"),
 )
 
-class Notification(models.Model):
-    doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True)
-    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
-    type = models.CharField(max_length=100, choices=NOTIFICATION_TYPE)
-    seen = models.BooleanField(default=False)
-    date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = "Notification"
-
-    def __str__(self):
-        return f"Dr {self.doctor.doctor_name} Notification"
 
 #old not required Doctor Field
 class DoctorDetails(models.Model):
@@ -179,19 +167,6 @@ NOTIFICATION = (
     ("Appointment Cancelled", "Appointment Cancelled"),
 )
 
-class PatientNotification(models.Model):
-    patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True)
-    appointmet = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
-    type = models.CharField(max_length=100, choices=NOTIFICATION)
-    seen = models.BooleanField(default=False)
-    date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = "PatientNotification"
-
-    def __str__(self):
-        return f"{self.patient.patient_name} PatientNotification"
-
 
 class Service(models.Model):
     name = models.CharField(max_length=255)
@@ -222,6 +197,34 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.patient.patient_name} with {self.doctor.doctor_name}"
+
+
+class PatientNotification(models.Model):
+    patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True)
+    appointmet = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
+    type = models.CharField(max_length=100, choices=NOTIFICATION)
+    seen = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "PatientNotification"
+
+    def __str__(self):
+        return f"{self.patient.patient_name} PatientNotification"
+
+
+class Notification(models.Model):
+    doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
+    type = models.CharField(max_length=100, choices=NOTIFICATION_TYPE)
+    seen = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Notification"
+
+    def __str__(self):
+        return f"Dr {self.doctor.doctor_name} Notification"
 
 class MedicalRecord(models.Model):
     appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
