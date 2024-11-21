@@ -187,8 +187,8 @@ class Appointment(models.Model):
     ]
     
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
-    doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True)
-    patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True)
+    doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True, related_name="doctor_data")
+    patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True, related_name="patient_data")
     appointment_date = models.DateTimeField(null=True, blank=True)
     issues = models.TextField(blank=True, null=True)
     symptoms = models.TextField(blank=True, null=True)
@@ -201,7 +201,7 @@ class Appointment(models.Model):
 
 class PatientNotification(models.Model):
     patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True)
-    appointmet = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
+    appointmet = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True, related_name="patient_appointment_notification")
     type = models.CharField(max_length=100, choices=NOTIFICATION)
     seen = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
@@ -215,7 +215,7 @@ class PatientNotification(models.Model):
 
 class Notification(models.Model):
     doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True)
-    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True)
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE, null=True, blank=True, related_name="doctor_appointment_notification")
     type = models.CharField(max_length=100, choices=NOTIFICATION_TYPE)
     seen = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
@@ -249,6 +249,9 @@ class Prescription(models.Model):
 
     def __str__(self):
         return f"Prescription for {self.appointment.patient.patient_name}"
+
+
+
 
 class PatientStatus(models.Model):
     patient_status = models.CharField(max_length=50)
