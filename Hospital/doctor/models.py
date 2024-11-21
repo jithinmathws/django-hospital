@@ -55,7 +55,7 @@ class DoctorInfo(models.Model):
      )
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
     image = models.BinaryField(blank=True, null=True)
-    next_avaialable_appointment_date = models.CharField(max_length=100, blank=True, null=True)
+    next_avaialable_appointment_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
