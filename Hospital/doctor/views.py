@@ -216,6 +216,56 @@ def ExportToCsv(request):
     
     return response
 
+@login_required
+def book_appointment(request, service_id, doctor_id, patient_id):
+    service = Service.objects.get(id=service_id)
+    doctor = DoctorInfo.objects.get(id=doctor_id)
+    patient = PatientDetails.objects.get(id=patient_id)
+
+    if request.method == "POST":
+        patient_name = request.POST.get("patient_name")
+        email = request.POST.get("email")
+        phone_number = request.POST.get("phone_number")
+        gender = request.POST.get("gender")
+        address = request.POST.get("address")
+        date_of_birth = request.POST.get("date_of_birth")
+        issues = request.POST.get("issues")
+        symptoms = request.POST.get("symptoms")
+
+        patient.patient_name = patient_name
+        patient.email = email
+        patient.phone_number = phone_number
+        patient.gender = gender
+        patient.address = address
+        patient.date_of_birth = date_of_birth
+
+        appointment = Appointment.objects.create(
+            service=service,
+            doctor=doctor,
+            patien=patient,
+            appointment_date=doctor.next_avaialable_appointment_date,
+            issues=issues,
+            symptoms=symptoms,
+            )
+        
+        billing = Billing()
+        billing.patient = patient
+        billing.appointment = appointment
+        billing.sub_total = appointment.service.cost
+        billing.tax = appointment.service.cost * 5/100
+        billing.total = billing.sub_total + billing.tax
+        billing.status = "Unpaid"
+
+        return redirect('billCheckout', billing.billing_id)
+
+    context = {
+        "service": service,
+        "doctor": doctor,
+        "patient": patient,
+    }
+    return render(request, 'doctor/book_appointment.html', context)
+
+
 # Patient Fields
 
 @login_required
@@ -392,8 +442,8 @@ def guardian_edit(request, guardian_id):
         form = GuardianForm(instance=role)
     return render(request, 'patient/guardian_edit.html', {'form': form, 'role': role})
 
-# Nurse Fields
 
+# Nurse Fields
 @login_required
 @user_has_role_or_superuser(['HR', 'SeniorHR', 'Director', 'Administration'])
 def nurse_index(request):

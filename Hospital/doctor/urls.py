@@ -24,9 +24,14 @@ urlpatterns = [
     path("patient/", views.patient_index, name="Pindex"),
     path("addPatient/", views.patient_add, name="patient"),
     
+    path("book-appointment/<int:service_id>/<int:doctor_id>/<int:patient_id>/", views.book_appointment, name="book_appointment"),
+
+    #old appointment
     path("statusPatient/", views.patient_status, name="patient_status"),
     path("admissionPatient/", views.patient_admission, name="patient_admission"),
     path("appointmentPatient/", views.patient_appointment, name="patient_appointment"),
+    #old appointment ends
+
     path("patientlist/", views.patient_list, name="patient_list"),
     path("patientProfile/<int:patient_id>/", views.patient_profile, name="patient_profile"),
     path("patient_edit-account/<int:patient_id>/", views.patient_edit, name="patient_edit"),

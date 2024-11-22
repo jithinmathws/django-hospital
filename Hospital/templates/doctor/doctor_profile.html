@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %} Doctor details {% endblock %}
 
+<h2 class="#">
+    <a href="{% url 'doctor_profile' data.doctor.id %}">{{ data.doctor.doctor_name }}</a>
+ </h2>
+
 {% block content %}
 
 <div class="main-wrapper">
@@ -14,6 +18,7 @@
     <h3 class="page-title">Doctor profile</h3>
     <ul class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'doctor_list' %}">Doctor</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'book_appointment' %}">Doctor</a></li>
     <li class="breadcrumb-item active">Doctor Profile</li>
     </ul>
     </div>

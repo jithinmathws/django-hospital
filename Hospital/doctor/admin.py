@@ -88,6 +88,7 @@ admin.site.register(Appointment, AppointmentAdmin)
 admin.site.register(MedicalRecord, MedicalRecordAdmin)
 admin.site.register(LabTest, LabTestAdmin)
 admin.site.register(Prescription, PrescriptionAdmin)
+admin.site.register(Billing, BillingAdmin)
 
 admin.site.register(Notification, NotificationAdmin)
 admin.site.register(PatientNotification, PatientNotificationAdmin)
