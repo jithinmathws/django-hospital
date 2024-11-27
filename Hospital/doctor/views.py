@@ -127,7 +127,6 @@ def doctor_list(request):
 
     doctors = DoctorInfo.objects.filter(
         Q(id__icontains=search_query) |
-        Q(doctor_name__icontains=search_query) |
         Q(email__icontains=search_query) |
         Q(phone_number__icontains=search_query) 
     )
@@ -216,54 +215,6 @@ def ExportToCsv(request):
     
     return response
 
-@login_required
-def book_appointment(request, service_id, doctor_id, patient_id):
-    service = Service.objects.get(id=service_id)
-    doctor = DoctorInfo.objects.get(id=doctor_id)
-    patient = PatientDetails.objects.get(id=patient_id)
-
-    if request.method == "POST":
-        patient_name = request.POST.get("patient_name")
-        email = request.POST.get("email")
-        phone_number = request.POST.get("phone_number")
-        gender = request.POST.get("gender")
-        address = request.POST.get("address")
-        date_of_birth = request.POST.get("date_of_birth")
-        issues = request.POST.get("issues")
-        symptoms = request.POST.get("symptoms")
-
-        patient.patient_name = patient_name
-        patient.email = email
-        patient.phone_number = phone_number
-        patient.gender = gender
-        patient.address = address
-        patient.date_of_birth = date_of_birth
-
-        appointment = Appointment.objects.create(
-            service=service,
-            doctor=doctor,
-            patien=patient,
-            appointment_date=doctor.next_avaialable_appointment_date,
-            issues=issues,
-            symptoms=symptoms,
-            )
-        
-        billing = Billing()
-        billing.patient = patient
-        billing.appointment = appointment
-        billing.sub_total = appointment.service.cost
-        billing.tax = appointment.service.cost * 5/100
-        billing.total = billing.sub_total + billing.tax
-        billing.status = "Unpaid"
-
-        return redirect('billCheckout', billing.billing_id)
-
-    context = {
-        "service": service,
-        "doctor": doctor,
-        "patient": patient,
-    }
-    return render(request, 'doctor/book_appointment.html', context)
 
 
 # Patient Fields
@@ -273,19 +224,6 @@ def book_appointment(request, service_id, doctor_id, patient_id):
 def patient_index(request):
     return render(request, "patient/index.html", {})
 
-'''
-@login_required
-def patient_example(request):
-    number = 1001 if PatientNumber.objects.count() == 0 else PatientNumber.objects.aggregate(max=Max('patient_number'))["max"] + 1
-    if request.method == 'POST':
-        
-        try:
-            data = PatientDetails.objects.create(patient_number=number)
-            data.save()
-        except ObjectDoesNotExist:
-            pass
-    return render(request, "patient/example.html", locals())
-'''
 
 @login_required
 def patient_add(request):
@@ -315,10 +253,106 @@ def patient_add(request):
         except ObjectDoesNotExist:
             pass
         #patient.save()
-        return redirect('Pindex')
+        return redirect('doctor_select', slug=data.slug)
     
     
     return render(request, "patient/addPatient.html", context)
+
+@login_required
+def doctor_select(request, slug):
+    patient = PatientDetails.objects.get(slug=slug)
+    doctors = DoctorInfo.objects.all()
+
+    '''def chech_availability(fd, ed):
+        availableRooms = []
+        for room in rooms:
+            availList = []
+            bookingList = Booking.objects.filter(roomNumber=room)
+            if room.statusStartDate == None:
+                for booking in bookingList:
+                    if booking.startDate > ed.date() or booking.endDate < fd.date():
+                        availList.append(True)
+                    else:
+                        availList.append(False)
+                if all(availList):
+                    availableRooms.append(room)
+            else:
+                if room.statusStartDate > ed.date() or room.statusEndDate < fd.date():
+                    for booking in bookingList:
+                        if booking.startDate > ed.date() or booking.endDate < fd.date():
+                            availList.append(True)
+                        else:
+                            availList.append(False)
+                        if all(availList):
+                            availableRooms.append(room)
+
+        return availableRooms'''
+
+    if request.method == "POST":
+
+        if "filter" in request.POST:
+            if (request.POST.get("doctor_name") != ""):
+                doctors = doctors.filter(
+                    doctor_name__contains=request.POST.get("doctor_name"))
+
+            if (request.POST.get("department_name") != ""):
+                doctors = doctors.filter(
+                    department_name__contains=request.POST.get("department_name"))
+
+            if (request.POST.get("specialization") != ""):
+                doctors = doctors.filter(
+                    specialization__contains=request.POST.get("specialization"))
+
+            if (request.POST.get("email") != ""):
+                doctors = doctors.filter(
+                    email__contains=request.POST.get("email"))
+
+            if (request.POST.get("phone_number") != ""):
+                doctors = doctors.filter(
+                    phone_number=request.POST.get("phone_number"))
+
+            context = {
+                "patient": patient,
+                "doctors": doctors,
+                "doctor_name": request.POST.get("doctor_name"),
+                "department_name": request.POST.get("department_name"),
+                "specialization": request.POST.get("specialization"),
+                "email": request.POST.get("email"),
+                "phone_number": request.POST.get("phone_number")
+            }
+            return render(request, "patient/doctor_select.html", context)
+
+    context = {
+        'doctors': doctors,
+        'patient': patient
+    }
+    return render(request, "patient/doctor_select.html", context)
+
+
+@login_required
+def book_appointment(request, doctor_id, slug):
+    doctor = DoctorInfo.objects.get(id=doctor_id)
+    patient = PatientDetails.objects.get(slug=slug)
+
+    image_base64 = base64.b64encode(doctor.image).decode('utf-8') if doctor.image else None
+    patient_image = base64.b64encode(patient.patient_image).decode('utf-8') if doctor.image else None
+
+    context = {
+        "doctor": doctor,
+        "patient": patient,
+        "image_base64": image_base64,
+        "patient_image": patient_image
+    }
+    if request.method == "POST":
+        issues = request.POST.get("issues")
+        symptoms = request.POST.get("symptoms")
+
+        Appointment.objects.create(doctor=doctor, patient=patient, appointment_date=doctor.next_avaialable_appointment_date, issues=issues, symptoms=symptoms)
+
+        return redirect('patient_list')
+
+    
+    return render(request, 'patient/book_appointment.html', context)
 
 @login_required
 def patient_status(request):
@@ -367,7 +401,11 @@ def patient_list(request):
         Q(phone_number__icontains=search_query) 
     )
 
-    paginator = Paginator(patients, page_size)
+    patient_data = []
+    for patient in patients:
+        patient_data.append({'patient': patient})
+
+    paginator = Paginator(patient_data, page_size)
     try:
         patient_page = paginator.page(page)
     except PageNotAnInteger:

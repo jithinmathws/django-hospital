@@ -1,0 +1,80 @@
+{% extends 'home/base-login.html' %} 
+{% block content %}
+<section class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-12 col-lg-5">
+            {% if image_base64 %}
+            <img src="data:image/jpeg;base64,{{ image_base64 }}" class="mr-3" alt="Image">
+            {% else %}
+            <p>No image.</p>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-lg-7 p-4 rounded-3 bg-white">
+            <h1 class="display-4 fw-bold mt-5">
+                <span class=""><b>Dr. {{doctor.doctor_name}}</b></span>
+            </h1>
+            <p class="fs-4 mt-4">{{doctor.department_name|default:""}}</p>
+        </div>
+    </div>
+</section>
+
+<section class="container">
+    <div class="">
+        <h2 class="">Book Appointment</h2>
+    </div>
+    <h4>About Patient</h4>
+    
+            <div class="media mt-3">
+            {% if image_base64 %}
+            <img src="data:image/jpeg;base64,{{ patient_image }}" class="mr-3" alt="Image">
+            {% else %}
+            <p>No image.</p>
+            {% endif %}
+            <div class="media-body">
+
+            <ul>
+            <li>
+            <span class="title-span">Full Name : </span>
+            <span class="info-span">{{ patient.patient_name }}</span>
+            </li>
+            <li>
+            <span class="title-span">Blood Group : </span>
+            <span class="info-span">{{ patient.blood_group }}</span>
+            </li>
+            <li>
+            <span class="title-span">Mobile : </span>
+            <span class="info-span">{{ patient.phone_number }}</span>
+            </li>
+            <li>
+            <span class="title-span">Email : </span>
+            <span class="info-span">{{ patient.email }}</span>
+            </li>
+            <li>
+            <span class="title-span">Gender : </span>
+            <span class="info-span">{{ patient.gender }}</span>
+            </li>
+            <li>
+            <span class="title-span">DOB : </span>
+            <span class="info-span">{{ patient.date_of_birth }}</span>
+            </li>
+            
+            </ul>
+    <form class="row" method="POST">
+        {% csrf_token %}
+        
+        <div class="col-lg-12 mb-3">
+            <label for="name" class="mb-2">Issues</label>
+            <textarea name="issues" class="form-control" id=""></textarea>
+        </div>
+
+        <div class="col-lg-12 mb-3">
+            <label for="name" class="mb-2">Symptoms</label>
+            <textarea name="symptoms" class="form-control" id=""></textarea>
+        </div>
+        <div class="col-lg-12 mb-3">
+            <button type="submit" class="btn btn-primary w-100">Continue <i class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+    </form>
+</section>
+{% endblock %}

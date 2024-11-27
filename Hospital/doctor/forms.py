@@ -40,7 +40,7 @@ class DoctorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             print(field)
-        self.fields["doctor_name"].widget.attrs.update({"class": 'form-control', "type": 'text'})
+        self.fields["doctor_name"].widget.attrs.update({"class": 'form-control'})
         self.fields["department_name"].widget.attrs.update({"class": 'form-control'})
         self.fields["specialization"].widget.attrs.update({"class": 'form-control', "type": 'text'})
         self.fields["date_of_birth"].widget.attrs.update({"class": 'form-control', "type": 'date'})

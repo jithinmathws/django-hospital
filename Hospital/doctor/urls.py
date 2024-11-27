@@ -24,7 +24,11 @@ urlpatterns = [
     path("patient/", views.patient_index, name="Pindex"),
     path("addPatient/", views.patient_add, name="patient"),
     
-    path("book-appointment/<int:service_id>/<int:doctor_id>/<int:patient_id>/", views.book_appointment, name="book_appointment"),
+    path("doctor-select/<slug:slug>/", views.doctor_select, name="doctor_select"),
+
+    path("book-appointment/<int:doctor_id>/<slug:slug>/", views.book_appointment, name="book_appointment"),
+
+    
 
     #old appointment
     path("statusPatient/", views.patient_status, name="patient_status"),

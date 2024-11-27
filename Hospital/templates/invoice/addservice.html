@@ -3,60 +3,51 @@
 {% load widget_tweaks %}
 {% block title %} Services {% endblock %}
 
+
 {% block content %}
 
 
-    <div class="content container-fluid">
+<div class="content container-fluid">
     
-    <div class="page-header">
-    <div class="row align-items-center">
-    <div class="col">
-    <h3 class="page-title">Add Hospital services</h3>
-    
-    </div>
-    </div>
-    </div>
-    
-    <div class="row">
-    <div class="col-sm-12">
-    <div class="card">
-    <div class="card-body">
-    
-    
-    <form method="post">
-        {% csrf_token %}
-    
-        {% for field in form %}
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label>{{field.label}}</label>
-                    {{field}}
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Hospital services</h3>
+                    <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
                 </div>
             </div>
-        {% endfor %}
-
-   
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+                
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="form-title"><span>Add Hospital service</span></h5>
+                                </div>
+                                {% for field in form %}
+                                    <div class="col-12 col-sm-6">
+                                        <div class="form-group">
+                                            <label>{{field.label}}</label>
+                                            {{field}}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                    
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                            
+                        
+                
+                    </form>
+                </div>
             </div>
-            </div>
-    
-    <!-- <div class="login-or">
-    <span class="or-line"></span>
-    <span class="span-or">or</span>
-    </div>
-    
-    <div class="social-login">
-    <span>Register with</span>
-    <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
-    </div> -->
-    
-    <div class="text-center dont-have"><a href="{% url 'Invoiceindex' %}">Back</a></div>
-</div>
-</div>
-</div>
-</div>
-</div>
+        </div>
 </div>
 
 

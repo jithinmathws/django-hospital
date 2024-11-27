@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Case, When
 
+from django.contrib.auth.models import Group, User, Permission
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -29,7 +30,8 @@ class DoctorDepartment(models.Model):
         super().save(*args, **kwargs)
 
 class DoctorInfo(models.Model):
-    doctor_name = models.CharField(max_length=50)
+    doctor_name = models.ForeignKey(User, on_delete=models.CASCADE)
+    slug = models.SlugField(blank=True)
     department_name = models.ForeignKey(DoctorDepartment, on_delete=models.CASCADE)
     specialization = models.CharField(max_length=50, blank=True, null=True)
     date_of_birth = models.DateField()
@@ -61,6 +63,10 @@ class DoctorInfo(models.Model):
 
     def __str__(self):
         return str(self.doctor_name)
+    
+    def save(self, *args, **kwargs):
+        self.slug = generate_doctor_slug(self.doctor_name)
+        super(DoctorInfo, self).save(*args, **kwargs)
 
 class CertificateDoctor(models.Model):
     doctor = models.ForeignKey(DoctorInfo, on_delete=models.CASCADE)
@@ -91,15 +97,15 @@ class DoctorDetails(models.Model):
     pin_code = models.BigIntegerField(blank=True, null=True)
     email = models.EmailField(default="", max_length=50, unique=True)
     phone_number = models.CharField(default="", max_length=20)
-    visiting_charge = models.CharField(max_length=50, blank=True, null=True)
-    visiting_charge_tax = models.CharField(
-         max_length=20, blank=True, null=True,
-         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+    visiting_charge = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    visiting_charge_tax = models.PositiveSmallIntegerField(
+         blank=True, null=True,
+         choices=((10, "10%"), (15, "15%"), (20, "20%")),
      )
-    consulting_charge = models.CharField(max_length=50, blank=True, null=True)
-    consulting_charge_tax = models.CharField(
-         max_length=20, blank=True, null=True,
-         choices=(("10%", "10%"), ("15%", "15%"), ("20%", "20%")),
+    consulting_charge = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    consulting_charge_tax = models.PositiveSmallIntegerField(
+         blank=True, null=True,
+         choices=((10, "10%"), (15, "15%"), (20, "20%")),
      )
     cv_file = models.FileField(upload_to='doctor/cv/', null=True, blank=True)
     certificate = models.FileField(upload_to='doctor/certificates', null=True, blank=True)
@@ -130,10 +136,12 @@ class PatientNumber(models.Model):
 '''
 class PatientDetails(models.Model):
     patient_number = models.IntegerField(null=True)
-    patient_name = models.CharField(max_length=50)
+    patient_name = models.CharField(max_length=50, null=True)
+    slug = models.SlugField(blank=True)
     gender = models.CharField(
          max_length=20,
          choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")),
+         null=True
      )
     blood_group = models.CharField(
         max_length=20, blank=True, null=True,
@@ -152,30 +160,24 @@ class PatientDetails(models.Model):
     state = models.CharField(max_length=200, blank=True, null=True)
     country = models.CharField(max_length=200, blank=True, null=True)
     pin_code = models.BigIntegerField(blank=True, null=True)
-    email = models.EmailField(default="", max_length=50, unique=True)
-    date_of_birth = models.DateField()
-    phone_number = models.CharField(default="", max_length=20)
+    email = models.EmailField(default="", max_length=50, null=True)
+    date_of_birth = models.DateField(null=True)
+    phone_number = models.CharField(default="", max_length=20, null=True)
     patient_image = models.BinaryField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.patient_name)
+    
+    def save(self, *args, **kwargs):
+        self.slug = generate_patient_slug(self.patient_name)
+        super(PatientDetails, self).save(*args, **kwargs)
 
 NOTIFICATION = (
     ("Appointment Scheduled", "Appointment Scheduled"),
     ("Appointment Cancelled", "Appointment Cancelled"),
 )
-
-
-class Service(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
-    available_doctors = models.ManyToManyField(DoctorInfo, blank=True)
-
-    def __str__(self):
-        return f"{self.name} - {self.cost}"
         
 
 class Appointment(models.Model):
@@ -186,7 +188,6 @@ class Appointment(models.Model):
         ('Cancelled', 'Cancelled')
     ]
     
-    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
     doctor = models.ForeignKey(DoctorInfo, on_delete=models.SET_NULL, null=True, blank=True, related_name="doctor_data")
     patient = models.ForeignKey(PatientDetails, on_delete=models.SET_NULL, null=True, blank=True, related_name="patient_data")
     appointment_date = models.DateTimeField(null=True, blank=True)
@@ -196,7 +197,7 @@ class Appointment(models.Model):
     status = models.CharField(max_length=120, choices=STATUS)
 
     def __str__(self):
-        return f"{self.patient.patient_name} with {self.doctor.doctor_name}"
+        return f"{self.patient} with {self.doctor}"
 
 
 class PatientNotification(models.Model):

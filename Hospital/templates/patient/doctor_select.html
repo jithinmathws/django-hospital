@@ -1,0 +1,65 @@
+{% extends 'home/base-login.html' %}
+
+{% block content %}
+
+<div class="container py-5 clearfix">
+
+    <div class="table-header row mt-3 clearfix">
+
+        <div class="col-sm-12 col-md-12 col-lg-6 mb-4">
+            <h2>Doctor List</h2>
+        </div>
+
+
+    </div>
+
+    <table class="table table-hover table-striped">
+        <thead class="bg-secondary rounded">
+            <tr>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <th>Doctor Name<input type="text" name="doctor_name" value="{{doctor_name}}"
+                            class="form-control border border-secondary"></th>
+                    <th>Department Name<input type="text" name="department_name" value="{{department_name}}"
+                            class="form-control border border-secondary"></th>
+                    <th>Specialization<input type="text" name="specialization" value="{{specialization}}"
+                            class="form-control border border-secondary"></th>
+                    <th>Email<input type="text" name="email" value="{{email}}"
+                            class="form-control border border-secondary"></th>
+                    <th>Phone number<input type="text" name="phone_number" value="{{phone_number}}"
+                            class="form-control border border-secondary"></th>
+                    <th colspan="2"><button type="submit" name="filter" class="btn btn-warning w-100">Filter</button>
+                    </th>
+                </form>
+
+            </tr>
+
+
+        </thead>
+        <tbody>
+            {% for doctor in doctors %}
+            <tr>
+                <td>{{ doctor.doctor_name }}</td>
+                <td>{{ doctor.department_name }}</td>
+                <td>{{ doctor.specialization }}</td>
+                <td>{{ doctor.email }}</td>
+                <td>{{ doctor.phone_number }}</td>
+
+                
+                <td> <a href="{% url 'doctor_profile' doctor.id  %}" class="btn btn-info btn-sm w-100">View</a>
+                </td>
+                
+                <td> <a href="{% url 'book_appointment' doctor.id patient.slug  %}" class="btn btn-info btn-sm w-100">Book</a>
+                </td>
+                
+            </tr>
+
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    
+</div>
+
+{% endblock %}

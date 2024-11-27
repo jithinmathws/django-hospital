@@ -29,10 +29,6 @@ class PrescriptionInline(admin.TabularInline):
     model = Prescription
     extra = 1
 
-class ServiceAdmin(ImportExportModelAdmin):
-    list_display = ['name', 'cost']
-    search_fields = ['name', 'description']
-    filter_horizontal = ['available_doctors']
 
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = ['patient', 'doctor', 'appointment_date', 'status']
@@ -83,7 +79,6 @@ data_wizard.register(NurseDetails)
 admin.site.register(NurseDetails, ImportExportModelAdmin)
 
 
-admin.site.register(Service, ServiceAdmin)
 admin.site.register(Appointment, AppointmentAdmin)
 admin.site.register(MedicalRecord, MedicalRecordAdmin)
 admin.site.register(LabTest, LabTestAdmin)
