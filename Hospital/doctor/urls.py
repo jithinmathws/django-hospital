@@ -17,6 +17,10 @@ urlpatterns = [
     path("doctorProfile/<int:doctor_id>/", views.doctor_profile, name="doctor_profile"),
     path("importDoctor/", views.importDoctorExcel, name="doctorExcel"),
     path("exportDoctor/", views.ExportToCsv, name="doctorExportCsv"),
+
+    path("DocAppointments/", views.doctor_appointments, name="doctor_appointments"),
+
+    path("appointmentDetail/<int:appointment_id>/", views.appointment_detail, name="appointment_detail"),
       
     path("doctor_edit-account/<int:doctor_id>/", views.doctor_edit, name="doctor_edit"),
     path("doctor_delete-account/<int:doctor_id>/", views.doctor_delete, name="doctor_delete"),

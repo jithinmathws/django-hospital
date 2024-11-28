@@ -119,6 +119,36 @@ def doctor_add(request):
     return render(request, "doctor/doctor.html", {'form': form})
 
 @login_required
+def doctor_appointments(request):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointments = Appointment.objects.filter(doctor=doctor)
+
+    context = {
+        "appointments": appointments,
+    }
+
+    return render(request, "doctor/appointments.html", context)
+
+@login_required
+def appointment_detail(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    
+    medical_records = MedicalRecord.objects.filter(appointment=appointment)
+    lab_tests = LabTest.objects.filter(appointment=appointment)
+    prescriptions = Prescription.objects.filter(appointment=appointment)
+
+    context = {
+        "appointment": appointment,
+        "medical_records": medical_records,
+        "lab_tests": lab_tests,
+        "prescriptions": prescriptions,
+    }
+
+    return render(request, "patient/appointment_detail.html", context)
+
+
+@login_required
 def doctor_list(request):
     page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
     page = request.GET.get('page', 1)

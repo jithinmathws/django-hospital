@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User, Group
+
 from django import forms
 from django.forms import ModelForm, Form, TypedChoiceField, CharField, inlineformset_factory
 from crispy_forms.helper import FormHelper
@@ -58,6 +60,9 @@ class DoctorForm(forms.ModelForm):
         self.fields["cv_file"].widget.attrs.update({"class": 'form-control', "type": 'file'})
         #self.fields["doctor_image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
         self.fields["image"].widget.attrs.update({"class": 'form-control', "type": 'file'})
+
+        
+        #self.fields['doctor_name'].queryset = User.objects.filter(role=self.instance.role)
             
 
 class PatientForm(forms.ModelForm):
