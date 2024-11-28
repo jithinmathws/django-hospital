@@ -15,8 +15,8 @@
                         <p>
                             <a>
                                 <p><span class="fw-semibold text-dark">Appointment ID:</span> #{{appointment.appointment_id}}</p>
-                                <p><span class="fw-semibold text-dark">Service:</span> {{appointment.service.name}}</p>
-                                <p><span class="fw-semibold text-dark">Patient:</span> {{appointment.patient.full_name}}</p>
+                                
+                                <p><span class="fw-semibold text-dark">Patient:</span> {{appointment.patient.patient_name}}</p>
                                 <p><span class="fw-semibold text-dark">Issue:</span> {{appointment.issues}}</p>
                                 <p><span class="fw-semibold text-dark">Symptoms:</span> {{appointment.symptoms}}</p>
                                 <p><span class="fw-semibold text-dark">Status:</span> {{appointment.status}}</p>
@@ -24,7 +24,7 @@
                                 <p>
                                     <span class="fw-semibold text-dark">Action:</span>
 
-                                    {% if appointment.status == "Scheduled" %}
+                                    {% if appointment.status == "" %}
                                     <a href="" class="btn btn-outline-danger btn-sm">Cancel Appointment <i class="fas fa-trash ms-2"></i></a>
                                     <a href="" class="btn btn-outline-success btn-sm">Complete Appointment <i class="fas fa-check-circle ms-2"></i></a>
                                     {% endif %} {% if appointment.status == "Cancelled" %}
