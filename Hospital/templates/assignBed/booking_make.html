@@ -23,7 +23,7 @@
             Total price : {{total}}
         </p>
     </div>
-
+    
 
     <form action="" method="POST">
         {% csrf_token %}
@@ -59,7 +59,8 @@
             </select>
             <button type="submit" class="btn btn-info w-100 mt-3" name="bookGuestButton">Book</button>
         </div>
-    </form>
+
+    </form><div class="text-center dont-have"><a href="{% url 'Bindex' %}">Back</a></div>
 
 
     <div class="py-3">

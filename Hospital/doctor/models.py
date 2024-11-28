@@ -385,7 +385,7 @@ class Room(models.Model):
         return str(self.number)
     
     def save(self, *args, **kwargs):
-        self.slug = generate_bed_slug(self.roomType)
+        self.slug = generate_room_slug(self.roomType)
         super(Room, self).save(*args, **kwargs)
 
 class Booking(models.Model):

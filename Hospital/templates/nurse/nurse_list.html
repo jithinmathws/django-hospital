@@ -123,11 +123,18 @@
                           
                        </tbody>
                        {% endfor %}
-                    </table>
-
-                    
-
+                    </table>                    
                  </div>
+                 <nav>
+                  <ul class="pagination">
+
+                     {% for page_num in nurse_page.paginator.page_range %}
+                        <li class="page-item{% if page_num == nurse_page.number %} active{% endif %}"> 
+                           <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
+                        </li> 
+                     {% endfor %}
+                  </ul>
+                 </nav>
                  
               </div>
             </div>

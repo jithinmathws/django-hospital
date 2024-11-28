@@ -675,7 +675,11 @@ def nurse_list(request):
         Q(phone_number__icontains=search_query) 
     )
 
-    paginator = Paginator(nurses, page_size)
+    nurse_data = []
+    for nurse in nurses:
+        nurse_data.append({'nurse': nurse})
+
+    paginator = Paginator(nurse_data, page_size)
     try:
         nurse_page = paginator.page(page)
     except PageNotAnInteger:
@@ -831,8 +835,30 @@ def add_room(request):
 
 @login_required
 def room_list(request):
-    room = Room.objects.all()
-    return render(request, "assignBed/room_list.html", {'room': room})
+
+    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page = request.GET.get('page', 1)
+
+    search_query = request.GET.get('search', '')
+
+    rooms = Room.objects.filter(
+        Q(id__icontains=search_query) |
+        Q(roomType__icontains=search_query) |
+        Q(price__icontains=search_query) |
+        Q(number__icontains=search_query) 
+    )
+
+    room_data = []
+    for room in rooms:
+        room_data.append({'room': room})
+
+    paginator = Paginator(room_data, page_size)
+    try:
+        room_page = paginator.page(page)
+    except PageNotAnInteger:
+        room_page = paginator.page(1)
+    
+    return render(request, "assignBed/room_list.html", {'room_page': room_page, 'page_size': page_size, 'search_query': search_query})
 
 @login_required
 def room_edit(request, room_id):

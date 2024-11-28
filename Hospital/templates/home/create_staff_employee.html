@@ -1,38 +1,56 @@
-{% extends 'home/base-login.html' %}
+{% extends 'pharmaceuticals/base.html' %}
 {% load static %}
 {% load widget_tweaks %}
 {% block title %} Add Staff {% endblock %}
 
+
 {% block content %}
 
-    <div class="main-wrapper login-body">
-        <div class="login-wrapper">
-            <div class="container">
-                <div class="loginbox">
-                    <div class="login-right">
-                        <div class="login-right-wrap">
-                            <h1>New Staff</h1>
-        
-        
-                            <form method="post">
-                                {% csrf_token %}
-                            
-                                <div class="form-group">
-                                    
-                                    {{ form.as_p }}
-                                </div>
-                            
-                                <div class="form-group mb-0">
-                                    <button class="btn btn-primary btn-block" type="submit">Create</button>
-                                </div> 
-                            </form>
-        
-                            <div class="text-center dont-have"><a href="{% url 'staff' %}">Back</a></div>
-                        </div>
-                    </div>
-                </div>
+<div class="content container-fluid">
+    
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Add Staff</h3>
+                <div class="text-center dont-have"><a href="{% url 'staff' %}">Back</a></div>
             </div>
         </div>
     </div>
+            
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="form-title"><span>Add details</span></h5>
+                            </div>
+                            {% for field in form %}
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>{{field.label}}</label>
+                                        {{field}}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                        
+                    
+            
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#id_role").select2();
+</script>
 
 {% endblock %}

@@ -3,10 +3,6 @@
 {% block title %} Room detail list {% endblock %}
 
 {% block content %}
-
-
-
-   
       
       <div class="content container-fluid">
          
@@ -22,6 +18,14 @@
                  <li class="breadcrumb-item active">List room details</li>
               </ul>
            </div>
+
+           <div class="top-nav-search">
+            <form method="get" action="">
+               <input type="text" id="search" class="form-control" placeholder="Search here" name="search" value="{{ search_query }}">
+               <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+
            <div class="col-auto text-right float-right ml-auto">
               <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
               <a href="add-student.html" class="btn btn-primary"><i class="fas fa-plus"></i></a>
@@ -31,6 +35,17 @@
      
      <div class="row">
         <div class="col-sm-12">
+
+         <form id="page-size-form" method="get" action="">
+            <label for="page_size">Items per page:</label>
+            <select id="page_size" name="page_size" onchange="updatePageSize()">
+               <option value="5" {% if page_size == 5 %}selected{% endif %}>5</option>
+               <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+               <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+               <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
+            </select>
+         </form>
+
            <div class="card card-table">
               <div class="card-body">
                  <div class="table-responsive">
@@ -45,7 +60,7 @@
                              <th class="text-right">Action</th>
                           </tr>
                        </thead>
-                       {% for data in room %}
+                       {% for data in room_page %}
                        <tbody>
                           <tr>
                              <td>{{ data.id }}</td>
@@ -61,9 +76,7 @@
                              
                              <td class="text-right">
                                 <div class="actions">
-                                   <a href="{% url 'room_edit' data.id %}" class="btn btn-sm bg-success-light mr-2">
-                                   <i class="fas fa-pen"></i>
-                                   </a>
+                                   
                                    <a href="#" class="btn btn-sm bg-danger-light" onclick="confirmDelete('{{ data.number }}', '{{ data.id }}')">
                                    <i class="fas fa-trash"></i>
                                    </a>
@@ -73,15 +86,29 @@
                           
                        </tbody>
                        {% endfor %}
-                    </table>
-
-                    
-
+                    </table>                  
                  </div>
+
+                 <nav>
+                  <ul class="pagination">
+
+                     {% for page_num in room_page.paginator.page_range %}
+                        <li class="page-item{% if page_num == room_page.number %} active{% endif %}"> 
+                           <a class="page-link" href="?page={{ page_num }}&page_size={{ page_size }}">{{ page_num }}</a>
+                        </li> 
+                     {% endfor %}
+                  </ul>
+                 </nav>
                  
               </div>
             </div>
          </div>
+
+         <script>
+            function updatePageSize(){
+               document.getElementById("page-size-form").submit();
+            }
+         </script>
       
    <script>
             function confirmDelete(roleName, roleId){
