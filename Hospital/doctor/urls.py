@@ -21,6 +21,16 @@ urlpatterns = [
     path("DocAppointments/", views.doctor_appointments, name="doctor_appointments"),
 
     path("appointmentDetail/<int:appointment_id>/", views.appointment_detail, name="appointment_detail"),
+    path("appointmentCancel/<int:appointment_id>/", views.appointment_cancel, name="appointment_cancel"),
+    path("appointmentActivate/<int:appointment_id>/", views.activate_appointment, name="activate_appointment"),
+    path("appointmentComplete/<int:appointment_id>/", views.complete_appointment, name="complete_appointment"),
+
+    path("medicalRecord/<int:appointment_id>/", views.add_medical_report, name="add_medical_report"),
+    path("medicalRecordEdit/<int:appointment_id>/<int:medical_report_id>/", views.edit_medical_report, name="edit_medical_report"),
+    path("labTest/<int:appointment_id>/", views.add_lab_test, name="add_lab_test"),
+    path("labTestEdit/<int:appointment_id>/<int:lab_test_id>/", views.edit_lab_test, name="edit_lab_test"),
+    path("prescription/<int:appointment_id>/", views.add_prescription, name="add_prescription"),
+    path("prescriptionEdit/<int:appointment_id>/<int:prescription_id>/", views.edit_prescription, name="edit_prescription"),
       
     path("doctor_edit-account/<int:doctor_id>/", views.doctor_edit, name="doctor_edit"),
     path("doctor_delete-account/<int:doctor_id>/", views.doctor_delete, name="doctor_delete"),

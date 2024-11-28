@@ -9,12 +9,14 @@ import logging
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, HttpResponse
 
+
 from .models import *
 from .forms import *
 from .resources import doctorResources
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -146,6 +148,131 @@ def appointment_detail(request, appointment_id):
     }
 
     return render(request, "patient/appointment_detail.html", context)
+
+@login_required
+def appointment_cancel(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+
+    appointment.status = "Cancelled"
+    appointment.save()
+
+    messages.success(request, "Appointment Cancelled Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def activate_appointment(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+
+    appointment.status = "Scheduled"
+    appointment.save()
+
+    messages.success(request, "Appointment Re-Scheduled Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def complete_appointment(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+
+    appointment.status = "Completed"
+    appointment.save()
+
+    messages.success(request, "Appointment Completed Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def add_medical_report(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+
+    if request.method == "POST":
+        diagnosis = request.POST.get("diagnosis")
+        treatment = request.POST.get("treatment")
+        MedicalRecord.objects.create(appointment=appointment, diagnosis=diagnosis, treatment=treatment)
+
+    
+    messages.success(request, "Medical Report Added Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def edit_medical_report(request, appointment_id, medical_report_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    medical_report = MedicalRecord.objects.get(id=medical_report_id, appointment=appointment)
+
+    if request.method == "POST":
+        diagnosis = request.POST.get("diagnosis")
+        treatment = request.POST.get("treatment")
+
+        medical_report.diagnosis = diagnosis
+        medical_report.treatment = treatment
+        medical_report.save()
+
+    messages.success(request, "Medical Report Updated Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def add_lab_test(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+
+    if request.method == "POST":
+        test_name = request.POST.get("test_name")
+        description = request.POST.get("description")
+        result = request.POST.get("result")
+
+        LabTest.objects.create(appointment=appointment, test_name=test_name, description=description, result=result)
+
+    messages.success(request, "Lab report Added Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+
+@login_required
+def edit_lab_test(request, appointment_id, lab_test_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    lab_test = LabTest.objects.get(id=lab_test_id, appointment=appointment)
+
+    if request.method == "POST":
+        test_name = request.POST.get("test_name")
+        description = request.POST.get("description")
+        result = request.POST.get("result")
+
+        lab_test.test_name = test_name
+        lab_test.description = description
+        lab_test.result = result
+        lab_test.save()
+
+    messages.success(request, "Lab Report Updated Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def add_prescription(request, appointment_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+
+    if request.method == "POST":
+        medications = request.POST.get("medications")
+        Prescription.objects.create(medications=medications, appointment=appointment)
+
+    messages.success(request, "Prescription Added Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
+
+@login_required
+def edit_prescription(request, appointment_id, prescription_id):
+    doctor = DoctorInfo.objects.get(doctor_name=request.user)
+    appointment = Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    prescription = Prescription.objects.get(id=prescription_id)
+
+    if request.method == "POST":
+        medications = request.POST.get("medications")
+        prescription.medications = medications
+        prescription.save()
+
+    messages.success(request, "Prescription Updated Successfully")
+    return redirect("appointment_detail", appointment.appointment_id)
 
 
 @login_required
@@ -377,7 +504,7 @@ def book_appointment(request, doctor_id, slug):
         issues = request.POST.get("issues")
         symptoms = request.POST.get("symptoms")
 
-        Appointment.objects.create(doctor=doctor, patient=patient, appointment_date=doctor.next_avaialable_appointment_date, issues=issues, symptoms=symptoms)
+        Appointment.objects.create(doctor=doctor, patient=patient, appointment_date=doctor.next_avaialable_appointment_date, issues=issues, symptoms=symptoms, status="Scheduled")
 
         return redirect('patient_list')
 
