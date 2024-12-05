@@ -63,15 +63,15 @@
                        {% for data in room_page %}
                        <tbody>
                           <tr>
-                             <td>{{ data.id }}</td>
+                             <td>{{ data.room.id }}</td>
                              
                              <td>
-                                {{ data.number }}
+                                {{ data.room.number }}
                              </td>
-                             <td>{{ data.roomType }}</td>
+                             <td>{{ data.room.roomType }}</td>
                              
                              <td>
-                                {{ data.price }}
+                                {{ data.room.price }}
                              </td>
                              
                              <td class="text-right">
