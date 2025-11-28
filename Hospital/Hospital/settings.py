@@ -43,7 +43,7 @@ EXTERNAL_APPS = [
     "doctor",
 
     #packages
-    'compressor',
+    #'compressor',
     'django_bootstrap5',
     'django_htmx',
     'crispy_forms',

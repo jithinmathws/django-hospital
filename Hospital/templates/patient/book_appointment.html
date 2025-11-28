@@ -26,7 +26,7 @@
     <h4>About Patient</h4>
     
             <div class="media mt-3">
-            {% if image_base64 %}
+            {% if patient_image %}
             <img src="data:image/jpeg;base64,{{ patient_image }}" class="mr-3" alt="Image">
             {% else %}
             <p>No image.</p>

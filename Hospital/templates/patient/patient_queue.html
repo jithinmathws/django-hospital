@@ -1,0 +1,72 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} Patient Queue {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3>Today's Queue for Dr. {{ doctor.doctor_name.get_full_name|default:doctor.doctor_name }}</h3>
+  {% if not is_owner %}
+    <div class="alert alert-info py-1 px-2 small mb-2">Public view – patient names are hidden.</div>
+  {% endif %}
+  <p class="text-muted">Date: {{ today }}</p>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <span class="badge bg-primary">Waiting: {{ waiting_count }}</span>
+    </div>
+    <div>
+      <span class="badge bg-secondary">Next Number: {{ next_number }}</span>
+    </div>
+  </div>
+
+  {% if appointments %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Patient</th>
+          <th>Appointment Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in appointments %}
+        {% with appt=item.appointment %}
+        <tr>
+          <td>{{ item.position }}</td>
+          <td>
+            {% if is_owner %}
+              {{ appt.patient.patient_name }}
+            {% else %}
+              Anonymous Patient
+            {% endif %}
+          </td>
+          <td>
+            {% if appt.appointment_date %}
+              {{ appt.appointment_date|date:'Y-m-d H:i' }}
+            {% else %}
+              N/A
+            {% endif %}
+          </td>
+          <td>
+            {% if appt.status == 'Scheduled' %}
+              <span class="badge bg-info">Scheduled</span>
+            {% elif appt.status == 'Pending' %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% else %}
+              <span class="badge bg-light text-dark">{{ appt.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="alert alert-light border">No patients in the queue for today.</div>
+  {% endif %}
+</div>
+{% endblock %}

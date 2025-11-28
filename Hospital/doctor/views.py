@@ -8,7 +8,7 @@ import logging
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, HttpResponse
-
+from django.utils import timezone
 
 from .models import *
 from .forms import *
@@ -274,6 +274,59 @@ def edit_prescription(request, appointment_id, prescription_id):
     messages.success(request, "Prescription Updated Successfully")
     return redirect("appointment_detail", appointment.appointment_id)
 
+def doctor_queue(request):
+    """
+    Public patient-facing queue for a doctor.
+    - Use ?doctor_id=<id> to specify the doctor publicly.
+    - If no doctor_id and user is authenticated as a doctor, show their queue.
+    - Names are hidden unless the viewer is the same doctor (is_owner).
+    """
+    doctor_id = request.GET.get("doctor_id")
+    doctor = None
+    if doctor_id:
+        doctor = get_object_or_404(DoctorInfo, pk=doctor_id)
+    elif request.user.is_authenticated:
+        try:
+            doctor = DoctorInfo.objects.get(doctor_name=request.user)
+        except DoctorInfo.DoesNotExist:
+            doctor = None
+
+    if not doctor:
+        return HttpResponse("Doctor not specified.", status=400)
+
+    today = timezone.localdate()
+    appointments_qs = (
+        Appointment.objects
+        .filter(
+            doctor=doctor,
+            status__in=["Scheduled", "Pending"],
+            appointment_date__date=today,
+        )
+        .order_by("appointment_date", "id")
+    )
+
+    appointments = [
+        {"position": idx, "appointment": appt}
+        for idx, appt in enumerate(appointments_qs, start=1)
+    ]
+
+    is_owner = False
+    if request.user.is_authenticated:
+        try:
+            viewer_doctor = DoctorInfo.objects.get(doctor_name=request.user)
+            is_owner = (viewer_doctor.id == doctor.id)
+        except DoctorInfo.DoesNotExist:
+            is_owner = False
+
+    context = {
+        "doctor": doctor,
+        "today": today,
+        "appointments": appointments,
+        "waiting_count": len(appointments),
+        "next_number": len(appointments) + 1,
+        "is_owner": is_owner,
+    }
+    return render(request, "patient/patient_queue.html", context)
 
 @login_required
 def doctor_list(request):
@@ -379,7 +432,7 @@ def ExportToCsv(request):
 @login_required
 @user_has_role_or_superuser(['Doctor', 'Receptionist', 'Administration'])
 def patient_index(request):
-    return render(request, "patient/index.html", {})
+    return render(request, "patient/index.html")
 
 
 @login_required
@@ -488,28 +541,36 @@ def doctor_select(request, slug):
 
 @login_required
 def book_appointment(request, doctor_id, slug):
-    doctor = DoctorInfo.objects.get(id=doctor_id)
-    patient = PatientDetails.objects.get(slug=slug)
+    doctor = get_object_or_404(DoctorInfo, pk=doctor_id)
+    patient = get_object_or_404(PatientDetails, slug=slug)
 
-    image_base64 = base64.b64encode(doctor.image).decode('utf-8') if doctor.image else None
-    patient_image = base64.b64encode(patient.patient_image).decode('utf-8') if doctor.image else None
+    image_base64 = base64.b64encode(doctor.image).decode('utf-8') if getattr(doctor, 'image', None) else None
+    patient_image = base64.b64encode(patient.patient_image).decode('utf-8') if getattr(patient, 'patient_image', None) else None
 
     context = {
         "doctor": doctor,
         "patient": patient,
         "image_base64": image_base64,
-        "patient_image": patient_image
+        "patient_image": patient_image,
     }
-    if request.method == "POST":
-        issues = request.POST.get("issues")
-        symptoms = request.POST.get("symptoms")
 
-        Appointment.objects.create(doctor=doctor, patient=patient, appointment_date=doctor.next_avaialable_appointment_date, issues=issues, symptoms=symptoms, status="Scheduled")
+    if request.method == "POST":
+        issues = request.POST.get("issues", "")
+        symptoms = request.POST.get("symptoms", "")
+
+        Appointment.objects.create(
+            doctor=doctor,
+            patient=patient,
+            appointment_date=doctor.next_avaialable_appointment_date,
+            issues=issues,
+            symptoms=symptoms,
+            status="Scheduled",
+        )
 
         return redirect('patient_list')
 
-    
     return render(request, 'patient/book_appointment.html', context)
+
 
 @login_required
 def patient_status(request):
@@ -1644,6 +1705,8 @@ def checkout(request, slug, total=0, quantity=0):
         cart_item = CartItem.objects.get(id=cart_id)
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
+        product.stock -= quantity
+        product.save()
     entire_cart = CartItem.objects.filter(customer=customer)
     context = {
         'total': total,
