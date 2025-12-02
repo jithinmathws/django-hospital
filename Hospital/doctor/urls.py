@@ -20,6 +20,7 @@ urlpatterns = [
 
     path("DocAppointments/", views.doctor_appointments, name="doctor_appointments"),
     path("doctor-queue/", views.doctor_queue, name="doctor_queue"),
+    path("multiple-queue/", views.multipleQueue, name="multiple_queue"),
 
     path("appointmentDetail/<int:appointment_id>/", views.appointment_detail, name="appointment_detail"),
     path("appointmentCancel/<int:appointment_id>/", views.appointment_cancel, name="appointment_cancel"),

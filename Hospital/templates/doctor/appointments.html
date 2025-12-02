@@ -12,6 +12,70 @@
             <div class="col-lg-9 col-md-8 col-12">
                 <h4 class="mb-0 mb-4 fw-bold">Appointment</h4>
                 <div class="text-center dont-have"><a href="{% url 'Pindex' %}">Back</a></div>
+                <div class="card mb-4 p-3">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label for="department" class="form-label">Department</label>
+                            <select id="department" name="department" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Departments</option>
+                                {% for d in departments %}
+                                    <option value="{{ d.id }}" {% if selected_department_id %}{% if d.id|stringformat:'s' == selected_department_id|stringformat:'s' %}selected{% endif %}{% endif %}>{{ d.department_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="doctor" class="form-label">Doctor</label>
+                            <select id="doctor" name="doctor" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Doctors</option>
+                                {% for d in doctors %}
+                                    <option value="{{ d.id }}" {% if selected_doctor_id %}{% if d.id|stringformat:'s' == selected_doctor_id|stringformat:'s' %}selected{% endif %}{% endif %}>Dr {{ d.doctor_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Filter</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card mb-4 p-3">
+                    <h5 class="mb-3">Create New Appointment</h5>
+                    <form method="post" class="row g-3">
+                        {% csrf_token %}
+                        <div class="col-md-4">
+                            <label for="patient" class="form-label">Patient</label>
+                            <select id="patient" name="patient" class="form-select" required>
+                                <option value="" selected disabled>Select patient</option>
+                                {% for p in patients %}
+                                    <option value="{{ p.id }}">{{ p.patient_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="doctor_post" class="form-label">Doctor</label>
+                            <select id="doctor_post" name="doctor" class="form-select" required>
+                                <option value="" {% if not selected_doctor_id %}selected{% endif %} disabled>Select doctor</option>
+                                {% for d in doctors %}
+                                    <option value="{{ d.id }}" {% if selected_doctor_id %}{% if d.id|stringformat:'s' == selected_doctor_id|stringformat:'s' %}selected{% endif %}{% endif %}>Dr {{ d.doctor_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="appointment_date" class="form-label">Appointment Date (optional)</label>
+                            <input type="datetime-local" id="appointment_date" name="appointment_date" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="issues" class="form-label">Issues</label>
+                            <textarea id="issues" name="issues" class="form-control" rows="2" placeholder="Describe patient issues"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="symptoms" class="form-label">Symptoms</label>
+                            <textarea id="symptoms" name="symptoms" class="form-control" rows="2" placeholder="Describe symptoms"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success">Create Appointment</button>
+                        </div>
+                    </form>
+                </div>
                 <div class="card mb-4">
                     <!-- Single item -->
 

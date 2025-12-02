@@ -1,0 +1,103 @@
+{% extends 'home/base-login.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} Multiple Doctor Queues {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Today's Queues</h3>
+    <span class="text-muted">Date: {{ today }}</span>
+  </div>
+
+  <form method="post" class="card card-body mb-3">
+    {% csrf_token %}
+    <div class="row g-2 align-items-end">
+      <div class="col-md-8">
+        <label class="form-label">Select doctors</label>
+        <select name="doctors" id="doctorSelect" class="form-select" multiple size="6">
+          {% for d in doctors %}
+            <option value="{{ d.id }}" {% if d.id in selected_ids %}selected{% endif %}>
+              Dr. {{ d.doctor_name.get_full_name|default:d.doctor_name }} — {{ d.department_name }}
+            </option>
+          {% endfor %}
+        </select>
+        <div class="form-text">Tip: Hold Ctrl (Cmd on Mac) to select multiple.</div>
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Apply</button>
+        {% if selected_ids %}
+          <a class="btn btn-outline-secondary" href="?">Clear</a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  {% if queues %}
+    {% for q in queues %}
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Dr. {{ q.doctor.doctor_name.get_full_name|default:q.doctor.doctor_name }}</strong>
+            <span class="text-muted">— {{ q.doctor.department_name }}</span>
+          </div>
+          <div>
+            <span class="badge bg-primary">Waiting: {{ q.waiting_count }}</span>
+            <span class="badge bg-secondary ms-2">Next: {{ q.next_number }}</span>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          {% if q.appointments %}
+          <div class="table-responsive">
+            <table class="table table-striped align-middle mb-0">
+              <thead>
+                <tr>
+                  <th style="width:60px">#</th>
+                  <th>Patient</th>
+                  <th>Appointment Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in q.appointments %}
+                {% with appt=item.appointment %}
+                <tr>
+                  <td>{{ item.position }}</td>
+                  <td>{{ appt.patient.patient_name|default:'-' }}</td>
+                  <td>
+                    {% if appt.appointment_date %}
+                      {{ appt.appointment_date|date:'Y-m-d H:i' }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if appt.status == 'Scheduled' %}
+                      <span class="badge bg-info">Scheduled</span>
+                    {% elif appt.status == 'Pending' %}
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif appt.status == 'Completed' %}
+                      <span class="badge bg-success">Completed</span>
+                    {% elif appt.status == 'Cancelled' %}
+                      <span class="badge bg-danger">Cancelled</span>
+                    {% else %}
+                      <span class="badge bg-light text-dark">{{ appt.status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+            <div class="p-3">No patients waiting for this doctor today.</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-light border">No queues to display for today.</div>
+  {% endif %}
+</div>
+{% endblock %}

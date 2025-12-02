@@ -122,11 +122,71 @@ def doctor_add(request):
 
 @login_required
 def doctor_appointments(request):
-    doctor = DoctorInfo.objects.get(doctor_name=request.user)
-    appointments = Appointment.objects.filter(doctor=doctor)
+    # Read filters
+    selected_department_id = request.GET.get("department")
+    selected_doctor_id = request.GET.get("doctor")
+
+    # Data sources
+    departments = DoctorDepartment.objects.all()
+    doctors = DoctorInfo.objects.all()
+    if selected_department_id:
+        doctors = doctors.filter(department_name_id=selected_department_id)
+
+    # Handle creation of a new appointment
+    if request.method == "POST":
+        patient_id = request.POST.get("patient")
+        create_doctor_id = request.POST.get("doctor")
+        issues = request.POST.get("issues", "")
+        symptoms = request.POST.get("symptoms", "")
+        appt_date_str = request.POST.get("appointment_date")
+
+        if patient_id and create_doctor_id:
+            try:
+                patient_obj = PatientDetails.objects.get(pk=patient_id)
+                doctor_obj = DoctorInfo.objects.get(pk=create_doctor_id)
+
+                appointment_date = None
+                if appt_date_str:
+                    try:
+                        # Expecting HTML datetime-local value
+                        dt = datetime.fromisoformat(appt_date_str)
+                        if timezone.is_naive(dt):
+                            appointment_date = timezone.make_aware(dt, timezone.get_current_timezone())
+                        else:
+                            appointment_date = dt
+                    except Exception:
+                        appointment_date = doctor_obj.next_avaialable_appointment_date
+                else:
+                    appointment_date = doctor_obj.next_avaialable_appointment_date
+
+                Appointment.objects.create(
+                    doctor=doctor_obj,
+                    patient=patient_obj,
+                    appointment_date=appointment_date,
+                    issues=issues,
+                    symptoms=symptoms,
+                    status="Scheduled",
+                )
+                messages.success(request, "Appointment created successfully")
+                return redirect("doctor_appointments")
+            except (PatientDetails.DoesNotExist, DoctorInfo.DoesNotExist):
+                messages.error(request, "Invalid patient or doctor selected")
+
+    appointments = Appointment.objects.all()
+    if selected_doctor_id:
+        appointments = appointments.filter(doctor_id=selected_doctor_id)
+    elif selected_department_id:
+        appointments = appointments.filter(doctor__department_name_id=selected_department_id)
+
+    patients = PatientDetails.objects.all()
 
     context = {
+        "departments": departments,
+        "doctors": doctors,
+        "patients": patients,
         "appointments": appointments,
+        "selected_department_id": selected_department_id,
+        "selected_doctor_id": selected_doctor_id,
     }
 
     return render(request, "doctor/appointments.html", context)
@@ -329,8 +389,65 @@ def doctor_queue(request):
     return render(request, "patient/patient_queue.html", context)
 
 @login_required
+def multipleQueue(request):
+    """
+    Display multiple doctors' queues for today.
+    - If no doctors are selected, default to doctors who have waiting patients today.
+    - Selection is via GET param `doctors` (comma-separated ids) or POST form `doctors` (multi-select).
+    """
+    today = timezone.localdate()
+
+    base_appts = (
+        Appointment.objects
+        .filter(status__in=["Scheduled", "Pending"], appointment_date__date=today)
+        .select_related("doctor", "patient")
+        .order_by("doctor_id", "appointment_date", "id")
+    )
+
+    selected_ids = []
+    if request.method == "POST":
+        selected_ids = request.POST.getlist("doctors")
+    else:
+        ids_str = request.GET.get("doctors", "").strip()
+        if ids_str:
+            selected_ids = [s for s in ids_str.split(",") if s]
+
+    if not selected_ids:
+        selected_ids = list(base_appts.values_list("doctor_id", flat=True).distinct())
+
+    doctors_qs = DoctorInfo.objects.all()
+    if selected_ids:
+        doctors_qs = doctors_qs.filter(id__in=selected_ids)
+
+    queues = []
+    for doctor in doctors_qs:
+        appts_qs = base_appts.filter(doctor=doctor)
+        appts_list = [
+            {"position": idx, "appointment": appt}
+            for idx, appt in enumerate(appts_qs, start=1)
+        ]
+        queues.append({
+            "doctor": doctor,
+            "appointments": appts_list,
+            "waiting_count": len(appts_list),
+            "next_number": len(appts_list) + 1,
+        })
+
+    available_today_ids = base_appts.values_list("doctor_id", flat=True).distinct()
+    available_today = DoctorInfo.objects.filter(id__in=available_today_ids)
+
+    context = {
+        "today": today,
+        "queues": queues,
+        "doctors": DoctorInfo.objects.all(),
+        "available_today": list(available_today),
+        "selected_ids": [int(i) for i in selected_ids if str(i).isdigit()],
+    }
+    return render(request, "patient/multiple_queue.html", context)
+
+@login_required
 def doctor_list(request):
-    page_size = int(request.GET.get('page_size', getattr(settings, 'PAGE_SIZE', 5)))
+    page_size = 10
     page = request.GET.get('page', 1)
 
     search_query = request.GET.get('search', '')
